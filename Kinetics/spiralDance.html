@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Spiral Dance Animation</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			xbody {
+				font-family: Monospace;
+				background-color: #000;
+				color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				text-align: center;
+				padding: 10px;
+				z-index: 10;
+				width: 100%;
+				position: absolute;
+			}
+
+			a {
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			#stats { position: absolute; top:0; left: 0 }
+			#stats #fps { background: transparent !important }
+			#stats #fps #fpsText { color: #aaa !important }
+			#stats #fps #fpsGraph { display: none }
+		</style>
+	</head>
+
+	<body>
+
+<div id="controls">
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   Controls: <input id="showParams" type="checkbox">
+   &nbsp;
+   <input id="reset" type="button" value="reset">
+   <span id="viewControls"></span id="viewControls">
+   <div id="params" hidden>
+       <div id="midiControl">
+       </div>
+<p>
+   </div>
+</div>
+
+		<div id="info">Spiral Dance Connecting Earth and Heaven<br/>
+			Toggle:
+                        <a onclick="SKIRT.rotateSkirts = !SKIRT.rotateSkirts;">Rotate Skirt</a> |
+                        <a onclick="rotateCam = !rotateCam;">Rotate Camera</a> |
+			<a onclick="SKIRT.wind = !SKIRT.wind;">Wind</a> |
+		</div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="js/three.js"></script>
+	<script src="js/Detector.js"></script>
+	<script src="js/libs/stats.min.js"></script>
+
+	<script src="js/skirt.js"></script>
+        <script src="js/imageSpirals.js"></script>
+	<script src="GetWebSock.js"></script>
+<!--
+        <script src="js/PVViewControls.js"></script>
+        <script src="js/controls/OrthographicTrackballControls.js"></script>
+        <script src="js/controls/PVEditorControls.js"></script>
+-->
+        <script src="js/controls/EditorControls.js"></script>
+        <script src="js/controls/TrackballControls.js"></script>
+        <script src="js/controls/OrbitControls.js"></script>
+
+
+<!-- Beginning of midi scripts -->
+	<!-- shims -->
+	<script src="./wmb/Base64.js"></script>
+	<script src="./wmb/Base64binary.js"></script>
+	<script src="./wmb/WebAudioAPI.js"></script>
+	<!-- midi.js package -->
+	<script src="./wmb/audioDetect.js"></script>
+	<script src="./wmb/gm.js"></script>
+	<script src="./wmb/loader.js"></script>
+	<script src="./wmb/plugin.audiotag.js"></script>
+	<script src="./wmb/plugin.webaudio.js"></script>
+	<script src="./wmb/plugin.webmidi.js"></script>
+	<script src="./wmb/player.js"></script>
+	<!-- utils -->
+	<script src="./wmb/dom_request_xhr.js"></script>
+	<script src="./wmb/dom_request_script.js"></script>
+	<!-- includes -->
+	<script src="./wmb/timer.js"></script>
+	<script src="pvplayer.js"></script>
+<!-- End of midi scripts -->
+<script src="paramsGUI.js"></script>
+<script src="js/anim.js"></script>
+<script>
+
+var imageBase = "../imagesPow2";
+imageList = [];
+//for (var i=1; i<=256; i++) {
+//for (var i=1; i<=32; i++) {
+for (var i=1; i<=128; i++) {
+//for (var i=1; i<=4; i++) {
+    imageList.push(imageBase + "/image"+i+".jpg");
+};
+
+var imageList2 = imageList;
+var imageList3 = [];
+for (var i=1; i<=256; i++) {
+    imageList3.push(imageBase + "/image"+i+".jpg");
+};
+
+var t0 = 0;
+var angle = 0;
+var prev_a = null;
+//var CRANK_ANGLE = null;
+
+WS = GetWebSock({'motion': handleMotion,
+                 'YEI': handleYEI } );
+
+var myAnim = new ANIM.Animation("myAnim1");
+myAnim.activate();
+
+function handleMotion(msg)
+{
+}
+
+function handleYEI(msg) {
+   //report("msg: "+JSON.stringify(msg));
+   var angles = msg.angles;
+   var a = angles[1];
+
+   var da = 0;
+   if (prev_a == null) {
+      prev_a = a;
+   }
+   else {
+      da = a - prev_a;
+      prev_a = a;
+      if (da > 180)
+         da -= 360;
+      if (da < -180)
+         da += 360;
+   }
+   angle += da;
+  // report("angle: "+angle);
+   SKIRT.CRANK_ANGLE = angle*Math.PI/180;
+   PLAYER.crankAngle = SKIRT.CRANK_ANGLE;
+}
+
+function vec3(x,y,z) { return new THREE.Vector3(x,y,z); }
+
+CHAKRA = {};
+CHAKRA.hues = [ 0, 30, 60, 120, 240, 260, 320 ];
+
+function getChakra(num, opts)
+{
+    if (!opts)
+        opts = {};
+    var ballSize = 20;
+    var geo = new THREE.SphereGeometry( ballSize, 20, 20 );
+    var material = new THREE.MeshPhongMaterial( { color: 0xffaaaa } );
+    var hue = CHAKRA.hues[num-1]/360;
+    material.color.setHSL(hue, .9, .5);
+    material.transparent = true;
+    material.opacity = .8;
+    var chakra = new THREE.Mesh( geo, material );
+    chakra.position.y = 100 + num*50;
+    chakra.castShadow = false;
+    chakra.receiveShadow = false;
+    if (opts.scale) {
+        report("Setting chakra scale "+opts.scale);
+        chakra.scale.x = opts.scale[0];
+        chakra.scale.y = opts.scale[1];
+        chakra.scale.z = opts.scale[2];
+    }
+    return chakra;
+}
+
+var scene;
+			/* testing cloth simulation */
+
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var container, stats;
+			var camera, renderer;
+
+			var object, arrow;
+
+			var rotateCam = false;
+			var rotateSkirt = false;
+	                var ballSpiral1 = null;
+	                var ballSpiral2 = null;
+
+			init();
+                        PLAYER.scene = scene;
+                        PLAYER.graphicsScale = [100,100,100];
+			animate();
+
+
+			function init() {
+	                        P = {};
+
+                                P.v0 = 0.04;
+                                P.theta0 = 0;
+                                P.xbias = 0;
+                                P.lastTrackedTime = 0;
+                                P.pauseTime = 5;
+	             
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				// scene
+
+				scene = new THREE.Scene();
+
+				scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 ); //NOFOG
+				//scene.fog = new THREE.Fog( 0xcce0ff, 500, 50000 ); //NOFOG
+
+				// camera
+
+				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.y = 50;
+				camera.position.z = 1500;
+				scene.add( camera );
+	                        P.camera = camera;
+
+				// lights
+
+				var light, materials;
+
+				scene.add( new THREE.AmbientLight( 0x666666 ) );
+
+				light = new THREE.DirectionalLight( 0xdfebff, 1.75 );
+				light.position.set( 50, 200, 100 );
+				light.position.multiplyScalar( 1.3 );
+
+				light.castShadow = true;
+				//light.shadowCameraVisible = true;
+
+				light.shadowMapWidth = 1024;
+				light.shadowMapHeight = 1024;
+
+				//var d = 300;
+				var d = 1200;
+
+				light.shadowCameraLeft = -d;
+				light.shadowCameraRight = d;
+				light.shadowCameraTop = d;
+				light.shadowCameraBottom = -d;
+
+				light.shadowCameraFar = 1000;
+				light.shadowDarkness = 0.5;
+
+				scene.add( light );
+
+	                        var chakra = getChakra(1, {scale: [2.1,.8, 2.1]});
+				scene.add( chakra );
+	                        var chakra = getChakra(2);
+				scene.add( chakra );
+	                        var chakra = getChakra(3);
+				scene.add( chakra );
+	                        var chakra = getChakra(4);
+				scene.add( chakra );
+	                        var chakra = getChakra(5);
+				scene.add( chakra );
+	                        var chakra = getChakra(6);
+				scene.add( chakra );
+	                        var chakra = getChakra(7);
+				scene.add( chakra );
+
+				var skirt = SKIRT.setupSkirt(scene, 'textures/patterns/paisley1.jpg', vec3(   0,  0,  0));
+
+				// ground
+
+				var groundTexture = THREE.ImageUtils.loadTexture( "textures/terrain/grasslight-big.jpg" );
+				groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+				groundTexture.repeat.set( 25, 25 );
+				groundTexture.anisotropy = 16;
+				
+				var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, map: groundTexture } );
+
+				var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
+				mesh.position.y = -250;
+				mesh.rotation.x = - Math.PI / 2;
+				mesh.receiveShadow = true;
+				scene.add( mesh );
+
+	                        imageSpiral1 = new ImageSpiral(imageList, {scale: [4,20,20], position: [0,200,0]});
+	                        images = imageSpiral1.images;
+	                        images.rotation.z = Math.PI/2;
+	                        scene.add(images);
+
+	                        imageSpiral2 = new ImageSpiral(imageList2, {scale: [4,20,20], position: [0,300,0]});
+	                        images = imageSpiral2.images;
+	                        images.rotation.z = Math.PI/2;
+	                        scene.add(images);
+
+	                        imageSpiral3 = new ImageSpiral(imageList3, {scale: [40,200,200], position: [0,800,0]});
+	                        images = imageSpiral3.images;
+	                        images.rotation.z = Math.PI/2;
+	                        scene.add(images);
+
+	                        ballSpiral1 = new BallSpiral(200, {scale: [4,40,40], position: [0,250,0], hue: 60/360});
+	                        var group = ballSpiral1.group;
+	                        group.rotation.z = Math.PI/2;
+	                        scene.add(group);
+	       /*
+	                        ballSpiral2 = new BallSpiral(200, {scale: [4,40,40], position: [0,350,0], hue: 240/360});
+	                        var group = ballSpiral2.group;
+	                        group.rotation.z = Math.PI/2;
+	                        scene.add(group);
+               */
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColor( scene.fog.color ); //NOFOG
+
+				container.appendChild( renderer.domElement );
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+				renderer.shadowMapEnabled = true;
+
+				//
+
+				stats = new Stats();
+				container.appendChild( stats.domElement );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+	                        trackball = 1;
+                                if (trackball) {
+                                 //controls = new THREE.TrackballControls( camera, container );
+                                 //controls = new THREE.EditorControls( camera, container );
+                                 //controls = new THREE.OrthographicTrackballControls( camera, container );
+	                         controls = new THREE.OrbitControls( camera, container );
+                                 controls.rotateSpeed = 2.0;
+                                 controls.zoomSpeed = 1.2;
+                                 controls.panSpeed = 0.8;
+
+                                 controls.noZoom = false;
+                                 controls.noPan = false;
+
+                                 controls.staticMoving = true;
+                                 controls.dynamicDampingFactor = 0.3;
+
+                                 controls.keys = [ 65, 83, 68 ];
+                                 //controls.addEventListener( 'change', render );
+                               }
+			}
+
+			//
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			//
+
+			function animate() {
+				requestAnimationFrame( animate );
+				var time = Date.now();
+				//arrow.setLength( windMag );
+				//arrow.setDirection( SKIRT.windForce );
+				SKIRT.simulate(time);
+				render();
+	                        if (PLAYER)
+                                    PLAYER.update();
+				stats.update();
+			}
+
+
+			function render() {
+				var timer = Date.now() * 0.0002;
+				//sphere.position.copy( ballPosition );
+				if ( rotateCam ) {
+					camera.position.x = Math.cos( timer ) * 1500;
+					camera.position.z = Math.sin( timer ) * 1500;
+				        camera.lookAt( scene.position );
+				}
+				//camera.lookAt( scene.position );
+
+	                        var ct = new Date().getTime() / 1000;
+                                adjust = 1;
+                                if (adjust) {
+                         	      if (ct - P.lastTrackedTime > P.pauseTime)
+                         		  t0 += P.v0;
+                                      imageSpiral1.adjust(t0);
+                                      imageSpiral2.adjust(2*t0);
+                                      imageSpiral3.adjust(4*t0);
+		                      if (ballSpiral1)
+                                          ballSpiral1.adjust(t0);
+                                      if (ballSpiral2)
+                                          ballSpiral2.adjust(2.5*t0);
+                                }
+	       
+				renderer.render( scene, camera );
+		                if (ANIM) {
+		                   ANIM.update();
+                                }
+                                if (controls && controls.update) {
+                                   controls.update();
+                                }
+			}
+
+
+$(document).ready(function() {
+   report("Setting up GUI");
+   setupGUI(["v0", "PLAYER.crankFactor"]);
+   //var instrument = "acoustic_grand_piano";
+   //instrument = "choir_aahs";
+   MIDI.loader=new sketch.ui.Timer;
+   PLAYER.loadInstrument("acoustic_grand_piano");
+   PLAYER.loadCompositions("midi/compositions.json");
+});
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,102 @@
+<html>
+<head>
+    <title>Playing with trails of images</title>
+    <style>
+      body { margin: 0; }
+      canvas { width: 100%; height: 100% }
+    </style>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/three.js"></script>
+<script src="js/controls/TrackballControls.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/libs/stats.min.js"></script>
+
+<div id="controls">
+   Params: <input id="showParams" type="checkbox">
+   &nbsp;
+   <input id="reset" type="button" value="reset">
+   <div id="params" hidden>
+   </div>
+</div>
+
+<script src="imageScrolls.js"></script>
+<script src="paramsGUI.js"></script>
+<script src="GetWebSock.js"></script>
+<script src="kinScroll.js"></script>
+
+<script>
+//wsUrl = "ws://platonia:8100";
+wsUrl = "ws://pfd1:8100";
+//wsUrl = null;
+report("using wsUrl: "+wsUrl);
+
+WS = GetWebSock({'motion': handleMotion,
+                 'joint': function(msg) {},
+                 'kinect.skeleton.pose': KS.handleKinSkelPose},
+                 wsUrl);
+
+//HORIZONTAL = false;
+
+var imageBase = "../imagesPow2";
+//imageBase = "https://jumpchat.paldeploy.com/static/physviz/images";
+
+imageList = [];
+for (var i=1; i<=256; i++) {
+//for (var i=1; i<=128; i++) {
+//for (var i=1; i<=4; i++) {
+    imageList.push(imageBase + "/image"+i+".jpg");
+}
+
+$(document).ready(function() {
+    setupWorld(imageList);
+    setupGUI(["v0", "theta0", "xbias"]);
+});
+
+var gain = 1;
+var ogain = 1;
+
+var angle = 0;
+
+function handleOrientation(msg) {
+   report("msg: "+JSON.stringify(msg));
+   var a = msg.yaw;
+   var da = 0;
+   if (prev_a == null) {
+      prev_a = a;
+   }
+   else {
+      da = a - prev_a;
+      prev_a = a;
+      if (da > 180)
+         da -= 360;
+      if (da < -180)
+         da += 360;
+   }
+   angle += ogain*da;
+   report("angle: "+angle);
+   CRANK_ANGLE = angle;
+   P.xbias = CRANK_ANGLE;
+//   setHeading(angle);
+}
+
+
+function handleMotion(msg) {
+   report("msg: "+JSON.stringify(msg));
+   var rrate = msg.rotationRate;
+   var idx = 2;
+   var omega = rrate[idx];
+   prev_motion_t = null;
+   //var da = 360*omega/(2*Math.PI);
+   var da = omega;
+   angle += ogain*da;
+   report("angle: "+angle);
+   CRANK_ANGLE = angle;
+   P.xbias = CRANK_ANGLE;
+//   setHeading(angle);
+}
+
+</script>
+</body>
+</html>

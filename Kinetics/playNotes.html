@@ -1,0 +1,61 @@
+<html xmlns = "http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<!-- polyfill -->
+	<script src="wmb/Base64.js" type="text/javascript"></script>
+	<script src="wmb/Base64binary.js" type="text/javascript"></script>
+	<script src="wmb/WebAudioAPI.js" type="text/javascript"></script>
+	<!-- midi.js package -->
+	<script src="wmb/audioDetect.js" type="text/javascript"></script>
+	<script src="wmb/gm.js" type="text/javascript"></script>
+	<script src="wmb/loader.js" type="text/javascript"></script>
+	<script src="wmb/plugin.audiotag.js" type="text/javascript"></script>
+	<script src="wmb/plugin.webaudio.js" type="text/javascript"></script>
+	<script src="wmb/plugin.webmidi.js" type="text/javascript"></script>
+	<!-- utils -->
+	<script src="wmb/dom_request_xhr.js" type="text/javascript"></script>
+	<script src="wmb/dom_request_script.js" type="text/javascript"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="pvplayer.js"></script>
+</head>
+<body>
+<p>Play Notes with MIDI.</p>
+
+<button onclick='loadInstrument("choir_aahs");'>Choir</button>
+<button onclick='loadInstrument("acoustic_guitar_steel");'>Guitar</button>
+<button onclick='loadInstrument("acoustic_grand_piano");'>Piano</button>
+<button onclick='loadInstrument("violin");'>Violin</button>
+<button onclick='loadInstrument("harpsichord");'>Harpsichord</button>
+<p>
+<button onclick='playScale()'>Play Scale</button><p>
+<button onclick='playMelody("chopin69")'>Play Chopin69</button>
+<button onclick='playMelody("wtc0")'>Play WTC0</button>
+<button onclick='playMelody("beethovenSym5m1")'>Play BeethSym5m1</button>
+<button onclick='playMelody("shepard")'>Play Shepard</button><p>
+<button onclick='stopPlaying()'>Stop</button>
+(this calls MIDI.stopAllNotes() but that seems to not work.)<br>
+<script>
+
+function report(str)
+{
+    console.log(str);
+}
+
+//var instrument = "acoustic_guitar_steel";
+var instrument = "acoustic_grand_piano";
+//var instrument = "choir_aahs";
+//var melodyUrl = "midi/chopin69.json";
+//var melodyUrl = "midi/wtc0.json";
+//var melodyUrl = "midi/beethovenSym5m1.json";
+//var melodyUrl = "midi/funky.json";
+var melodyUrl = "midi/shepard.json";
+
+
+
+window.onload = function(){
+    loadInstrument(instrument);
+};
+</script>
+</body>
+</html>

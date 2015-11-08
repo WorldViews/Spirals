@@ -1,0 +1,85 @@
+<html xmlns = "http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<!-- polyfill -->
+	<script src="wmb/Base64.js" type="text/javascript"></script>
+	<script src="wmb/Base64binary.js" type="text/javascript"></script>
+	<script src="wmb/WebAudioAPI.js" type="text/javascript"></script>
+	<!-- midi.js package -->
+	<script src="wmb/audioDetect.js" type="text/javascript"></script>
+	<script src="wmb/gm.js" type="text/javascript"></script>
+	<script src="wmb/loader.js" type="text/javascript"></script>
+	<script src="wmb/plugin.audiotag.js" type="text/javascript"></script>
+	<script src="wmb/plugin.webaudio.js" type="text/javascript"></script>
+	<script src="wmb/plugin.webmidi.js" type="text/javascript"></script>
+	<!-- utils -->
+	<script src="wmb/dom_request_xhr.js" type="text/javascript"></script>
+	<script src="wmb/dom_request_script.js" type="text/javascript"></script>
+</head>
+<body>
+<p>Play Chromatic Scales.</p>
+
+<button onclick='loadInstrument("choir_aahs");'>Choir</button>
+<button onclick='loadInstrument("acoustic_guitar_steel");'>Guitar</button>
+<button onclick='loadInstrument("acoustic_grand_piano");'>Piano</button>
+<button onclick='loadInstrument("violin");'>Violin</button>
+<button onclick='loadInstrument("harpsichord");'>Harpsichord</button>
+<p>
+<button onclick='stopPlaying()'>Stop</button><br>
+(this calls MIDI.stopAllNotes() but that seems to not work.)
+<script>
+
+function report(str)
+{
+    console.log(str);
+}
+
+//var instrument = "acoustic_guitar_steel";
+//var instrument = "acoustic_grand_piano";
+var instrument = "choir_aahs";
+
+function stopPlaying()
+{
+   report("Stop Playing");
+   MIDI.stopAllNotes();
+}
+
+function playScale(){
+    report("scheduling notes");
+    MIDI.programChange(0, instrument);
+    var firstNote = 21;
+    var lastNote = firstNote + 5*12+1;
+    var t = 0;
+    var delay = 0.6; // delta time - time between events
+    var velocity = 127; // how hard the note hits
+    var note = 21; // the note to use
+    MIDI.setVolume(0, 127);
+    for(var note=firstNote; note <= lastNote; ++note){
+        MIDI.noteOn(0, note, velocity, t);
+	MIDI.noteOff(0, note, t += delay);
+    }
+    report("finished scheduling notes");
+}
+
+function loadInstrument(inst)
+{
+    instrument = inst;
+    MIDI.loadPlugin({
+        soundfontUrl: "./soundfont/",
+	instrument: instrument,
+	//instrument: "acoustic_guitar_steel",
+	onprogress: function(state, progress) {
+		report(""+state+" "+progress);
+	},
+	onsuccess: function(){
+		playScale();
+	}
+    });
+}
+
+window.onload = function(){
+    loadInstrument(instrument);
+};
+</script>
+</body>
+</html>

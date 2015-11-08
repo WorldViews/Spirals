@@ -1,0 +1,88 @@
+<html>
+<head>
+    <title>Variations on a barber pole</title>
+    <style>
+      body { margin: 0; }
+      canvas { width: 100%; height: 100% }
+    </style>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/three.js"></script>
+<script src="js/controls/TrackballControls.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/libs/stats.min.js"></script>
+	<!-- shims -->
+	<script src="./wmb/Base64.js"></script>
+	<script src="./wmb/Base64binary.js"></script>
+	<script src="./wmb/WebAudioAPI.js"></script>
+	<!-- midi.js package -->
+	<script src="./wmb/audioDetect.js"></script>
+	<script src="./wmb/gm.js"></script>
+	<script src="./wmb/loader.js"></script>
+	<script src="./wmb/plugin.audiotag.js"></script>
+	<script src="./wmb/plugin.webaudio.js"></script>
+	<script src="./wmb/plugin.webmidi.js"></script>
+	<script src="./wmb/player.js"></script>
+	<!-- utils -->
+	<script src="./wmb/dom_request_xhr.js"></script>
+	<script src="./wmb/dom_request_script.js"></script>
+	<!-- includes -->
+	<script src="./wmb/timer.js"></script>
+	<script src="pvplayer.js"></script>
+	<!-- font -->
+<script>
+playMelody = PLAYER.playMelody;
+</script>
+<div id="controls">
+   Colors: <input id="colors" type="checkbox">
+   &nbsp;
+   Audio: <input id="audio" type="checkbox">
+   &nbsp;
+   Params: <input id="showParams" type="checkbox">
+   &nbsp;
+   <input id="reset" type="button" value="reset">
+   <div id="params" hidden>
+
+     <div id="midiControl">
+     </div>
+
+<p>
+     <button onclick='playMelody("chopin69")'>Play Chopin69</button>
+     <button onclick='playMelody("wtc0")'>Play WTC0</button>
+     <button onclick='playMelody("beethovenSym5m1")'>Play BeethSym5m1</button>
+     <button onclick='playMelody("shepard")'>Play Shepard</button>
+     <button onclick='playMelody("BluesRhythm1")'>Play Rhythm1</button>
+     <button onclick='playMelody("minute_waltz")'>Minute Waltz</button>
+     <button onclick='playMelody("jukebox")'>Jukebox</button>
+     <button onclick='playMelody("trackTest")'>trackTest</button>
+     <button onclick='playMelody("risset0")'>Accelerando</button>
+<p>
+     <button onclick='playMelody("risset0.25_0.5")'>risset0.25_0.5</button>
+     <button onclick='playMelody("risset0.5_1")'>risset0.5_1</button>
+     <button onclick='playMelody("risset1_2")'>risset1_2</button>
+     <button onclick='playMelody("risset2_4")'>risset2_4</button>
+     <button onclick='playMelody("risset2_4x2")'>risset2_4x2</button>
+     <button onclick='playMelody("rissetvoice")'>risset v1</button>
+     <button onclick='playMelody("crazy_risset")'>crazy_risset</button>
+     <button onclick='playMelody("short")'>short</button>
+   </div>
+</div>
+<script src="barberMidi.js"></script>
+<script src="paramsGUI.js"></script>
+<script src="skyBox.js"></script>
+
+<script>
+
+$(document).ready(function() {
+   setupWorld();
+   setupGUI(["hv0", "v0", "dv", "cs1", "cs2", "helixR",
+             "PLAYER.ticksPerBeat"]);
+   PLAYER.scene = P.scene;
+   $("#audio").click(toggleAudio);
+   $("#colors").click(toggleColor);
+});
+
+</script>
+</body>
+</html>

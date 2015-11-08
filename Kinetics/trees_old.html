@@ -1,0 +1,306 @@
+<html>
+<head>
+    <title>Variations on a barber pole</title>
+    <style>
+      body { margin: 0; }
+      canvas { width: 100%; height: 100% }
+    </style>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/three.js"></script>
+<script src="js/controls/TrackballControls.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/libs/stats.min.js"></script>
+
+<script src="timbre.js"></script>
+<script src="timbre/misc/MoogFF.js"></script>
+<script src="timbre/misc/subcollider.js"></script>
+<script src="gymnopedie.js"></script>
+
+<div id="controls">
+   Colors: <input id="colors" type="checkbox">
+   &nbsp;
+   Audio: <input id="audio" type="checkbox">
+   &nbsp;
+   Params: <input id="showParams" type="checkbox">
+   &nbsp;
+   <input id="reset" type="button" value="reset">
+   <div id="params" hidden>
+   </div>
+</div>
+
+<script>
+
+function report(s)
+{
+   console.log(s);
+}
+
+
+function getVal(id)
+{
+   var s = $("#"+id).val();
+   report("got "+id+" "+s);
+   P[id] = eval(s);
+}
+
+function getVals(e)
+{
+   getVal("hv0");
+   getVal("v0");
+   getVal("dv");
+}
+
+function addInput(id)
+{
+   var pd = $("#params");
+   report("add input for "+id);
+   pd.append("<br>\n");
+   pd.append("&nbsp;"+id+": <input id='"+id+"' value='"+P[id]+"'>\n");
+}
+
+function setFun(id)
+{
+    addInput(id);
+    $("#"+id).keypress(function (e) {
+       if(e.which == 13)  // the enter key code
+           getVals();
+    });
+}
+
+function toggleAudio()
+{
+    if ($("#audio").prop("checked"))
+        startMusic();
+    else
+       stopMusic();			     
+}
+
+function toggleParams()
+{
+    if ($("#showParams").prop("checked"))
+        $("#params").show();
+    else
+        $("#params").hide();
+}
+
+function toggleColor()
+{
+    P.doColors = $("#colors").prop("checked");
+}
+
+function setupGUI()
+{
+      $("#reset").click(reset);
+      $("#audio").click(toggleAudio);
+      $("#colors").click(toggleColor);
+      $("#showParams").click(toggleParams);
+      setFun("hv0");
+      setFun("v0");
+      setFun("dv");
+}
+
+
+function getTree(P, args)
+{
+    var r = 1;
+    var h = 0.5;
+    n = args.n;
+    children = args.children;
+    if (children) {
+        maxChildR = 0
+        n = children.length;
+        for (var i=0; i<n; i++) {
+            c = children[i];
+            if (c.r && c.r > maxChildR)
+                maxChildR = c.r;
+        }
+        r = maxChildR;
+    }
+    
+    var obj = new THREE.Object3D();
+    var material = new THREE.MeshPhongMaterial( { color: 0x222222 } );
+    var geometry = new THREE.SphereGeometry( P.hubR );
+    var node = new THREE.Mesh( geometry, material );
+    var lmat = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 1.0 } );
+    lmat.linewidth = 1;
+    node.position.y = 0;
+    obj.add(node)
+    var child;
+    for (var i=0; i<n; i++) {
+       var material = new THREE.MeshPhongMaterial( { color: 0x00dddd } );
+       var geometry = new THREE.BoxGeometry( P.cubeW, P.cubeW, P.cubeW );
+       if (children) {
+           child = children[i];
+       }
+       else {
+           child = new THREE.Mesh( geometry, material );
+       }
+       var theta = 2*Math.PI*i / n;
+       child.position.y = node.position.y+h;
+       child.position.x = r*Math.cos(theta);
+       child.position.z = r*Math.sin(theta);
+       obj.add( child );
+       var lgeom = new THREE.Geometry();
+       lgeom.vertices.push(node.position);
+       lgeom.vertices.push(child.position);
+       var line = new THREE.Line( lgeom, lmat);
+       obj.add(line);
+    }
+    obj.r = 2*r;
+    return obj;
+}
+
+function reset()
+{
+   getVals();
+}
+
+function buildTree(P, arg)
+{
+    report("buildTree "+arg);
+    if (Number.isInteger(arg)) {
+       report("atomic case "+arg);
+       return getTree(P, {n: arg});
+    }
+    else {
+       report("list case case "+arg);
+       var children = arg;
+       var nodes = [];
+       for (var i=0; i<children.length; i++) {
+           nodes.push(buildTree(P, children[i]));
+       }
+       return getTree(P, {children: nodes});
+    }
+}
+
+function setupWorld()
+{
+      container = document.createElement( 'div');
+      document.body.appendChild(container);
+
+      P = {};
+      P.hubR = 0.1;
+      P.ncubes = 24;
+      P.cubeW = .2;
+      P.cubeL = 0.7;
+      P.gap = .4;
+      P.v0 = 0.01;
+      P.hv0 = 0.001;
+      P.dv = 0.0005;
+      var controls = null;
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera( 75,
+                             window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+      trackball = 1;
+      if (trackball) {
+          //controls = new THREE.TrackballControls( camera );
+          controls = new THREE.TrackballControls( camera, container );
+          controls.rotateSpeed = 2.0;
+          controls.zoomSpeed = 1.2;
+          controls.panSpeed = 0.8;
+
+          controls.noZoom = false;
+          controls.noPan = false;
+
+          controls.staticMoving = true;
+          controls.dynamicDampingFactor = 0.3;
+
+          controls.keys = [ 65, 83, 68 ];
+          controls.addEventListener( 'change', render );
+      }
+
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      //document.body.appendChild( renderer.domElement );
+      container.appendChild( renderer.domElement );
+
+      //var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+      //var material = new THREE.MeshPhongMaterial( { color: 0xdddddd } );
+
+      P.cubes = {};
+      P.speeds = {};
+      var cube = null;
+
+      c1 = getTree(P, {n: 3})
+      c2 = getTree(P, {n: 4})
+      c3 = getTree(P, {children: [c1,c2]});
+      c4 = getTree(P, {n: 2})
+      c5 = getTree(P, {n: 5})
+      //P.root = getTree(P, {children: [c3, c4,c5]})
+      //P.root = buildTree(P, [[3, 4], 2, 5])
+      P.root = buildTree(P, [[3, 4], [2, [3,3]], 5])
+      scene.add(P.root)
+
+      // LIGHT
+      var light;
+      light = new THREE.PointLight(0xeeeeff);
+      light.position.set(0,150,100);
+      scene.add(light);
+      light = new THREE.PointLight(0xeeffee);
+      light.position.set(100,50,150);
+      scene.add(light);
+      light = new THREE.PointLight(0xffeeee);
+      light.position.set(-150,50,150);
+      scene.add(light);
+      // FLOOR
+      var floorTexture = new THREE.ImageUtils.loadTexture( 'images/floor.jpg' );
+      floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+      floorTexture.repeat.set( 10, 10 );
+      var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+      var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+      var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+      floor.position.y = -100.0;
+      floor.rotation.x = Math.PI / 2;
+      scene.add(floor);
+      // SKYBOX/FOG
+      var skyBoxGeometry = new THREE.BoxGeometry( 10000, 10000, 10000 );
+      var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
+      var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+      scene.add(skyBox);
+      scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
+
+//      P.root.position.y = floor.position.y + 10;
+
+      camera.position.z = 5;
+      var steps = 0;
+
+      var render = function () {
+          //report("render n: "+steps);
+	  requestAnimationFrame( render );
+          steps += 1;
+          adjust = 1;
+          if (adjust) {
+              adjustChildren(P.root, 0)
+          }
+          renderer.render(scene, camera);
+
+          if (controls) {
+             controls.update();
+          }
+      };
+      setupGUI();
+      render();
+}
+
+function adjustChildren(node, depth)
+{
+   if (depth > 0)
+      return;
+   node.rotation.y += P.hv0*(depth+1);
+   if (node.children) {
+       for (var i=0; i<node.children.length; i++) {
+           adjustChildren(node.children[i], depth+1);
+       }
+   }
+}
+
+setupWorld();
+
+
+    </script>
+  </body>
+</html>
