@@ -182,6 +182,32 @@ ANIM.update = function()
     }
 }
 
+ANIM.deleteView = function(name)
+{
+    report("deleteView");
+    var viewName = $("#currentViewName").val();
+    report("viewName: "+viewName);
+    if (ANIM.views[viewName]) {
+	delete ANIM.views[viewName];
+        $("#currentViewName").val("");
+        ANIM.uploadBookmarks();
+        ANIM.handleBookmarks(ANIM.views);
+    }
+    report("No such view as "+viewName);
+}
+
+
+ANIM.getViewName = function()
+{
+    var name;
+    do {
+	ANIM.viewNum += 1;
+	name = "View"+ANIM.viewNum;
+    }
+    while (ANIM.views[name]);
+    return name;
+}
+
 ANIM.bookmarkView = function(name)
 {
     report("bookmarkView");
@@ -190,11 +216,14 @@ ANIM.bookmarkView = function(name)
         return;
     }
     if (!name) {
-	do {
-            ANIM.viewNum += 1;
-            name = "View"+ANIM.viewNum;
-        }
-	while (ANIM.views[name]);
+	name = $("#currentViewName").val();
+	if (name == "")
+	    name = ANIM.getViewName();
+	$("#currentViewName").val("");
+    }
+    if (!name) {
+	report("*** no name");
+	return;
     }
     var pos = P.camera.position.clone();
     var eulerAngles = P.camera.rotation.clone();
@@ -230,7 +259,7 @@ ANIM.handleBookmarks = function(obj)
     ANIM.views = obj;
     ANIM.viewNames = Object.keys(ANIM.views);
     ANIM.viewNames.sort();
-    $("#viewNameSelection").html();
+    $("#viewNameSelection").html("");
     //for (var name in ANIM.views) {
     for (var i=0; i<ANIM.viewNames.length; i++) {
 	var name = ANIM.viewNames[i];
@@ -268,7 +297,7 @@ ANIM.gotoView = function(name, dur)
     }
     report("pos: "+view.position);
     report("rot: "+view.rotation);
-    $("#currentViewName").html(name);
+    $("#currentViewName").val(name);
     if (dur > 0) {
         var c = P.camera;
 	var pos0 = P.camera.position.clone();
@@ -304,11 +333,18 @@ ANIM.createButtons = function()
 {
     hstr = '';
     hstr += '<input id="markViewpoint" type="button" value="mark">\n';
+    hstr += '<input id="delViewpoint" type="button" value="del">\n';
     hstr += '<input id="nextViewpoint" type="button" value="next">\n';
     hstr += '&nbsp;&nbsp;';
-    hstr += '<span id="currentViewName"></span>';
+    hstr += '<input id="currentViewName" type="text" size="8"></input>\n';
     hstr += '<select id="viewNameSelection"></select>';
     $("#viewControls").html(hstr);
+    $("#currentViewName").keyup(function(e) {
+	    report("viewname keyup");
+	    if (e.keyCode==13) {
+		ANIM.bookmarkView();
+	    }
+	});
     $("#viewNameSelection").change(ANIM.viewSelectionChanged);
 }
 
@@ -320,6 +356,7 @@ ANIM.setupHTML = function()
         report("No View Controls");
     }
     ANIM.createButtons();
+    $("#delViewpoint").click(function(e) { ANIM.deleteView()});
     $("#markViewpoint").click(function(e) { ANIM.bookmarkView()});
     $("#nextViewpoint").click(function(e) { ANIM.gotoView()});
 }
