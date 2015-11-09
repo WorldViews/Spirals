@@ -779,18 +779,19 @@ PLAYER.setupMidiControlDiv = function()
     report("setupMidiControlDiv");
     if ($("#midiControl").length == 0) {
 	report("*** no midiControlDiv found ****");
+	return;
     }
-    str = '<div id="midiTrackInfo">\n' +
-          'No Tracks Loaded<br>\n' +
-          '</div>\n'  +
+    str = '<button onclick="PLAYER.toggleTracks()">&nbsp;</button>\n' +
           '<button onclick="PLAYER.rewind()">|&#60; </button>\n' +
           '<button id="midiTogglePlaying" onclick="PLAYER.togglePlaying()" style="width:60px;">Play</button>\n' +
           '&nbsp;&nbsp;<select id="midiCompositionSelection"></select>\n' +
-    //    '&nbsp;&nbsp;<span id="midiStatus" style="{width: 300px;}">No Midi Object</span>\n' +
           '&nbsp;&nbsp;Time: <input type="text" id="midiTime" size="5"></input>\n' +
           '&nbsp;&nbsp;BPM: <input type="text" id="midiBPM" size="4"></input>\n' +
           '&nbsp;&nbsp;TPS: <input type="text" id="midiTPS" size="4"></input>\n' +
-          '&nbsp;&nbsp;TPB: <input type="text" id="midiTPB" size="4"></input>\n';
+          '&nbsp;&nbsp;TPB: <input type="text" id="midiTPB" size="4"></input>\n' +
+          '<div id="midiTrackInfo">\n' +
+          'No Tracks Loaded<br>\n' +
+          '</div>\n';
     $("#midiControl").html(str);
     //
     $("#midiCompositionSelection").change(PLAYER.compositionChanged);
@@ -919,6 +920,18 @@ PLAYER.setupTrackInfo = function()
         sel.change(instrumentChanged);
     }
     PLAYER.showTempo();
+}
+
+PLAYER.toggleTracks = function()
+{
+    report("toggleTracks");
+    var d = $("#midiTrackInfo");
+    if (d.is(":visible")) {
+	$("#midiTrackInfo").hide();
+    }
+    else {
+	$("#midiTrackInfo").show();
+    }
 }
 
 $(document).ready( function() {

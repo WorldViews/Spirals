@@ -96,8 +96,26 @@ function handleReset(e)
     }
 }
 
+function popoutControls()
+{
+    report("popoutControls");
+    //var w = window.open("emptyJQ.html", "Controls", "menubar=0");
+    var w = window.open("emptyJQ.html", "Controls");
+    controlWindow = w;
+    /*
+    hStr = '<h3>Midi Control</h3>\n';
+    hStr += '<div id="midiControl">Inside Midi Div</div>\n';
+    $(w.document.body).html(hStr);
+    $("#params").html("");
+    */
+    $("#params").html("");
+    PLAYER.setupTrackInfo();
+}
+
 function setupGUI(names)
 {
+    report("setupGUI");
+    $("#popoutControls").click(popoutControls);
     $("#reset").click(handleReset);
     $("#showParams").click(toggleParams);
     if (!names)

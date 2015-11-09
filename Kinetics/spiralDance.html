@@ -39,7 +39,10 @@
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    Controls: <input id="showParams" type="checkbox">
    &nbsp;
+   <button id="popoutControls">Popout</button>
+   &nbsp;
    <input id="reset" type="button" value="reset">
+   &nbsp;
    <span id="viewControls"></span id="viewControls">
    <div id="params" hidden>
        <div id="midiControl">
@@ -68,6 +71,7 @@
         <script src="js/controls/OrthographicTrackballControls.js"></script>
         <script src="js/controls/PVEditorControls.js"></script>
 -->
+        <script src="js/controls/PVControls.js"></script>
         <script src="js/controls/EditorControls.js"></script>
         <script src="js/controls/TrackballControls.js"></script>
         <script src="js/controls/OrbitControls.js"></script>
@@ -341,7 +345,8 @@ var scene;
                                  //controls = new THREE.TrackballControls( camera, container );
                                  //controls = new THREE.EditorControls( camera, container );
                                  //controls = new THREE.OrthographicTrackballControls( camera, container );
-	                         controls = new THREE.OrbitControls( camera, container );
+	                         //controls = new THREE.OrbitControls( camera, container );
+	                         controls = new THREE.PVControls( camera, container );
                                  controls.rotateSpeed = 2.0;
                                  controls.zoomSpeed = 1.2;
                                  controls.panSpeed = 0.8;
