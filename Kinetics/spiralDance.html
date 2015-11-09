@@ -346,7 +346,7 @@ var scene;
                                  //controls = new THREE.EditorControls( camera, container );
                                  //controls = new THREE.OrthographicTrackballControls( camera, container );
 	                         //controls = new THREE.OrbitControls( camera, container );
-	                         controls = new THREE.PVControls( camera, container );
+	                         controls = new THREE.PVControls( camera, container, scene );
                                  controls.rotateSpeed = 2.0;
                                  controls.zoomSpeed = 1.2;
                                  controls.panSpeed = 0.8;
@@ -413,9 +413,11 @@ var scene;
 		                if (ANIM) {
 		                   ANIM.update();
                                 }
+		                /*
                                 if (controls && controls.update) {
-                                   controls.update();
+                                 //  controls.update();
                                 }
+		                */
 			}
 
 

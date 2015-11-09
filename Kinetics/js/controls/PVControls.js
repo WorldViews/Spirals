@@ -15,9 +15,10 @@
 //    Zoom - middle mouse, or mousewheel / touch: two finger spread or squish
 //    Pan - right mouse, or arrow keys / touch: three finter swipe
 
-THREE.PVControls = function ( object, domElement ) {
+THREE.PVControls = function ( object, domElement, scene ) {
 
 	this.object = object;
+	this.scene = scene;
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
 
 	// API
@@ -135,6 +136,9 @@ THREE.PVControls = function ( object, domElement ) {
 	var startEvent = { type: 'start' };
 	var endEvent = { type: 'end' };
 
+	this.raycaster = null;
+	//this.raycaster = new THREE.Raycaster();
+
 	this.rotateLeft = function ( angle ) {
 
 		if ( angle === undefined ) {
@@ -164,6 +168,21 @@ THREE.PVControls = function ( object, domElement ) {
 	    report("recomputeTarget");
 	    var cam = scope.object;
 	    var d = cam.position.distanceTo(scope.target);
+	    var coords = new THREE.Vector2(0,0);
+	    if (scope.scene && scope.raycaster) {
+		report("scene: "+scope.scene);
+		scope.raycaster.setFromCamera(coords, cam);
+		var isects = scope.raycaster.intersectObject(scope.scene, true);
+		report("isects: "+isects+" num: "+isects.length);
+		//for (var i=0; i<isects.length; i++) { report(i+": "+JSON.stringify(isects[i])); }
+		if (isects.length) {
+		    var isect = isects[0];
+		    d = isect.distance;
+		}
+	    }
+	    else {
+		report("no scene or raycaster");
+	    }
 	    var v = cam.getWorldDirection();
 	    v.multiplyScalar(d);
 	    report("d: "+d+"  v: "+JSON.stringify(v));
@@ -349,6 +368,7 @@ THREE.PVControls = function ( object, domElement ) {
 
 		position.copy( this.target ).add( offset );
 
+		report("******** PVManipulator lookAt");
 		this.object.lookAt( this.target );
 
 		thetaDelta = 0;
@@ -420,7 +440,7 @@ THREE.PVControls = function ( object, domElement ) {
 		scope.recomputeTarget();
 
                 report("onMouseDown event.button: "+event.button+"  scope.mouseButtons.PAN: "+scope.mouseButtons.PAN);
-		report("event: "+JSON.stringify(event));
+		//report("event: "+JSON.stringify(event));
 
 		if ( event.shiftKey && event.button === scope.mouseButtons.ORBIT ) {
                             report("start turn...");

@@ -64,19 +64,24 @@ ANIM.ViewInterpolatorLerp = function(p0, r0, p1, r1, camera)
 // really correct
 ANIM.ViewInterpolator = function(p0, r0, p1, r1, camera)
 {
-    report("ViewInterpolator p0:"+JSON.stringify(p0)+" p1: "+JSON.stringify(p1));
+    //report("ViewInterpolator p0:"+JSON.stringify(p0)+" p1: "+JSON.stringify(p1));
+    //report("ViewInterpolator r0:"+JSON.stringify(r0)+" r1: "+JSON.stringify(r1));
+    this.r0 = r0;
+    this.r1 = r1;
     this.p0 = p0;
     this.q0 = new THREE.Quaternion().setFromEuler(new THREE.Euler().setFromVector3(r0));
     this.p1 = p1;
     this.q1 = new THREE.Quaternion().setFromEuler(new THREE.Euler().setFromVector3(r1));
     this.p = new THREE.Vector3(0,0,0);
     this.q = new THREE.Quaternion();
+    //report("ViewInterpolator q0:"+JSON.stringify(this.q0)+" q1: "+JSON.stringify(this.q1));
     this.camera = camera;
     this.range = 1.0;
     this.targetP;
     this.targetR;
 
-    this.setVal = function(s) {
+    // This seems to have a problem that some quaternions are bad
+    this.setValSLERP = function(s) {
 	report("setVal "+s);
 	var f = s/this.range;
         this.p.lerpVectors(this.p0, this.p1, f);
@@ -87,6 +92,23 @@ ANIM.ViewInterpolator = function(p0, r0, p1, r1, camera)
 	THREE.Quaternion.slerp(this.q0, this.q1, this.q, f);
 	report("q: "+JSON.stringify(this.q));
 	camera.rotation.setFromQuaternion(this.q)
+    }
+    this.setVal = function(s) {
+	report("setVal "+s);
+        //report("this.r1:"+JSON.stringify(this.r1));
+	var f = s/this.range;
+        this.p.lerpVectors(this.p0, this.p1, f);
+	report("p: "+JSON.stringify(this.p));
+	camera.position.x = this.p.x;
+	camera.position.y = this.p.y;
+	camera.position.z = this.p.z;
+	var rx = (1-f)*this.r0._x + f*this.r1._x;
+	var ry = (1-f)*this.r0._y + f*this.r1._y;
+	var rz = (1-f)*this.r0._z + f*this.r1._z;
+	//report("rx,ry,rz: "+rx+" "+ry+" "+rz);
+	camera.rotation.x = rx;
+	camera.rotation.y = ry;
+	camera.rotation.z = rz;
     }
     //    P.camera.updateProjectionMatrix();
 }
