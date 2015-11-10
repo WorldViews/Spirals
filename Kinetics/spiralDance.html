@@ -78,8 +78,7 @@
         <script src="js/controls/EditorControls.js"></script>
         <script src="js/controls/TrackballControls.js"></script>
         <script src="js/controls/OrbitControls.js"></script>
-
-
+ 
 <!-- Beginning of midi scripts -->
 	<!-- shims -->
 	<script src="./wmb/Base64.js"></script>
@@ -103,6 +102,7 @@
 <script src="js/anim.js"></script>
 <script src="js/SCRIPT.js"></script>
 <script src="js/AUDIO.js"></script>
+<script src="js/CLOUDS.js"></script>
 <script src="pvplayer.js"></script>
 <script src="spiralDanceScripts.js"></script>
 <script>
@@ -299,6 +299,9 @@ var scene;
 				mesh.receiveShadow = true;
 				scene.add( mesh );
 
+				clouds = new CLOUDS.Clouds(scene, new THREE.Vector3(200,0,0));
+		                scene.add(clouds.group);
+
 	                        imageSpiral1 = new ImageSpiral(imageList, {scale: [4,20,20], position: [0,200,0]});
 	                        images = imageSpiral1.images;
 	                        images.rotation.z = Math.PI/2;
@@ -403,6 +406,9 @@ var scene;
 
 	                        var ct = new Date().getTime() / 1000;
                                 adjust = 1;
+	                        if (clouds) {
+	                            clouds.update();
+	                        }
                                 if (adjust) {
                          	      if (ct - P.lastTrackedTime > P.pauseTime)
                          		  t0 += P.v0;
