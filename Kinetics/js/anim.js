@@ -20,45 +20,13 @@ ANIM.Vector3Interpolator = function(p0, p1, target)
     this.target = target;
 
     this.setVal = function(s) {
-	report("setVal "+s);
+	//report("setVal "+s);
 	var f = s/this.range;
 	target.lerpVectors(p0, p1, f);
     }
     //    P.camera.updateProjectionMatrix();
 }
 
-// THis version uses linear interpolation or rotations, which is not
-// really correct
-ANIM.ViewInterpolatorLerp = function(p0, r0, p1, r1, camera)
-{
-    report("ViewInterpolator p0:"+JSON.stringify(p0)+" p1: "+JSON.stringify(p1));
-    this.p0 = p0;
-    this.r0 = new THREE.Vector3(r0.x, r0.y, r0.z);
-    this.p1 = p1;
-    this.r1 = new THREE.Vector3(r1.x, r1.y, r1.z);
-    this.p = new THREE.Vector3(0,0,0);
-    this.r = new THREE.Vector3(0,0,0);
-    this.camera = camera;
-    this.range = 1.0;
-    this.targetP;
-    this.targetR;
-
-    this.setVal = function(s) {
-	report("setVal "+s);
-	var f = s/this.range;
-        this.p.lerpVectors(this.p0, this.p1, f);
-	report("p: "+JSON.stringify(this.p));
-	camera.position.x = this.p.x;
-	camera.position.y = this.p.y;
-	camera.position.z = this.p.z;
-	this.r.lerpVectors(this.r0, this.r1, f);
-	report("r: "+JSON.stringify(this.r));
-	camera.rotation.x = this.r.x;
-	camera.rotation.y = this.r.y;
-	camera.rotation.z = this.r.z;
-    }
-    //    P.camera.updateProjectionMatrix();
-}
 
 // THis version uses linear interpolation or rotations, which is not
 // really correct
@@ -94,11 +62,11 @@ ANIM.ViewInterpolator = function(p0, r0, p1, r1, camera)
 	camera.rotation.setFromQuaternion(this.q)
     }
     this.setVal = function(s) {
-	report("setVal "+s);
+	//report("setVal "+s);
         //report("this.r1:"+JSON.stringify(this.r1));
 	var f = s/this.range;
         this.p.lerpVectors(this.p0, this.p1, f);
-	report("p: "+JSON.stringify(this.p));
+	//report("p: "+JSON.stringify(this.p));
 	camera.position.x = this.p.x;
 	camera.position.y = this.p.y;
 	camera.position.z = this.p.z;
@@ -140,7 +108,7 @@ ANIM.Animation = function(name, dur, interpolator)
 	var pt = this.playTime + dt;
 	this.lastClockTime = ct;
 	this.playTime = pt;
-	report("ANIM run "+pt+" update");
+	//report("ANIM run "+pt+" update");
 	var dur = this.t1-this.t0;
 	var f = pt/dur;
 	for (var i=0; i<this.interpolators.length; i++) {

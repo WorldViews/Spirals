@@ -66,22 +66,21 @@ PLAYER.togglePlaying = function()
     }
 }
 
-PLAYER.playMelody = function(name)
+PLAYER.loadMelody = function(name, autoStart)
 {
     var melodyUrl = "midi/"+name+".json";
     PLAYER.stopPlaying();
-    $.getJSON(melodyUrl, function(obj) { PLAYER.playMidiObj(obj) });
+    $.getJSON(melodyUrl, function(obj) { PLAYER.playMidiObj(obj, autoStart) });
 }
 
 PLAYER.fmt = function(t) { return ""+Math.floor(t*1000)/1000; }
 
-PLAYER.playMidiObj = function(obj)
+PLAYER.playMidiObj = function(obj, autoStart)
 {
     PLAYER.midiObj = processMidiObj(obj);
     //TODO: make this really wait until instruments are loaded.
     PLAYER.i = 0;
     PLAYER.setPlayTime(0);
-    //PLAYER.startPlaying();
     if (PLAYER.scene) {
         report("***** adding Note Graphics ******");
         PLAYER.addNoteGraphics(PLAYER.scene, PLAYER.midiObj);
@@ -89,6 +88,8 @@ PLAYER.playMidiObj = function(obj)
     else {
         report("***** No registered scene so not adding Note Graphics ******");
     }
+    if (autoStart)
+        PLAYER.startPlaying();
 }
 
 /*
@@ -224,7 +225,8 @@ function processMidiObj(midiObj)
     }
     else {
 	var tempos = midiObj.tempo;
-	report("tempos: "+JSON.stringify(tempos));
+	report("tempos: "+tempos.length);
+	//report("tempos: "+JSON.stringify(tempos));
 	if (tempos.length > 0) {
 	    var tempo = tempos[0];
 	    if (tempo.bpm) {
@@ -771,7 +773,7 @@ PLAYER.compositionChanged = function(e)
 {
     var name = $(this).val();
     report("compositionChanged: "+name);
-    PLAYER.playMelody(name);
+    PLAYER.loadMelody(name);
 }
 
 PLAYER.setupMidiControlDiv = function()

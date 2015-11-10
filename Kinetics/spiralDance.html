@@ -39,11 +39,12 @@
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    Controls: <input id="showParams" type="checkbox">
    &nbsp;
-   <button id="popoutControls">Popout</button>
-   &nbsp;
    <input id="reset" type="button" value="reset">
    &nbsp;
    <span id="viewControls"></span id="viewControls">
+   &nbsp;
+   <span id="scriptControls"></span id="scriptControls">
+
    <div id="params" hidden>
        <div id="midiControl">
        </div>
@@ -99,6 +100,8 @@
 <!-- End of midi scripts -->
 <script src="paramsGUI.js"></script>
 <script src="js/anim.js"></script>
+<script src="js/SCRIPT.js"></script>
+<script src="spiralDanceScripts.js"></script>
 <script>
 
 var imageBase = "../imagesPow2";
@@ -429,6 +432,7 @@ $(document).ready(function() {
    MIDI.loader=new sketch.ui.Timer;
    PLAYER.loadInstrument("acoustic_grand_piano");
    PLAYER.loadCompositions("midi/compositions.json");
+   //script1.run();
 });
 
 		</script>

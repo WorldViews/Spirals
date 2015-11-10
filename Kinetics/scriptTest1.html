@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Spiral Dance Animation</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+</head>
+<body>
+
+<div id="controls">
+   Controls: <input id="showParams" type="checkbox">
+   <input id="reset" type="button" value="reset">
+   &nbsp;
+   <div id="params" hidden>
+   </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/three.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/libs/stats.min.js"></script>
+
+<script src="js/skirt.js"></script>
+<script src="js/imageSpirals.js"></script>
+<script src="GetWebSock.js"></script>
+<script src="js/SCRIPT.js"></script>
+
+<script src="pvplayer.js"></script>
+<!-- End of midi scripts -->
+<script src="js/anim.js"></script>
+<script>
+
+$(document).ready(function() {
+   //var instrument = "acoustic_grand_piano";
+   //instrument = "choir_aahs";
+   SCRIPT.testScript1.run();
+});
+
+</script>
+</body>
+</html>
