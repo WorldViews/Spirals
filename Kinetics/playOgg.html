@@ -1,0 +1,25 @@
+<html>
+<head>
+</head>
+<body>
+<!--
+<audio src="../data/AsCleanAsFire.ogg" controls autoplay loop>
+-->
+<audio id="oggPlayer" controls autoplay loop>
+<p>Your browser does not support the <code>audio</code> element </p>
+</audio>
+<script>
+var player = document.getElementById("oggPlayer");
+</script>
+
+<button onclick='player.src="../data/AsCleanAsFire.ogg"'>Stretta</button>
+<p>
+<button onclick="player.play()">Play</button>
+<button onclick="player.pause()">Pause</button>
+&nbsp;&nbsp;
+<button onclick="player.volume+=0.1">Increase Volume</button>
+<button onclick="player.volume-=0.1">Decrease Volume</button>
+
+
+</body>
+</html>
