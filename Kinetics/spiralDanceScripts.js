@@ -64,8 +64,9 @@ new SCRIPT.Script("Chakra Tour", [
     {delay: 2, action: function() { ANIM.gotoView("Home", 2);	}},
     {delay: 2, action: function() {
 	    //PLAYER.loadMelody("NewAge/silkroad");
-	    PLAYER.loadMelody("NewAge/sail-away");
+	    //PLAYER.loadMelody("NewAge/sail-away");
 	    //PLAYER.loadMelody("Classical/minute_waltz", true);
+	    PLAYER.loadMelody("Bach/wtc0", true);
 	}},
     {delay: 4, action: function() {   PLAYER.startPlaying();	}},
     {delay: 10, action: function() { ANIM.gotoView("Chakra 1", 6);  }},
