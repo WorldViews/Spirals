@@ -102,7 +102,7 @@
 <script src="js/anim.js"></script>
 <script src="js/SCRIPT.js"></script>
 <script src="js/AUDIO.js"></script>
-<script src="js/CLOUDS.js"></script>
+<script src="js/HURRICANE.js"></script>
 <script src="pvplayer.js"></script>
 <script src="spiralDanceScripts.js"></script>
 <script>
@@ -232,7 +232,8 @@ var scene;
 
 				// camera
 
-				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+				//camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 30000 );
 				camera.position.y = 50;
 				camera.position.z = 1500;
 				scene.add( camera );
@@ -299,8 +300,8 @@ var scene;
 				mesh.receiveShadow = true;
 				scene.add( mesh );
 
-				clouds = new CLOUDS.Clouds(scene, new THREE.Vector3(200,2000,0));
-		                scene.add(clouds.group);
+				hurricane = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,6000,0));
+		                scene.add(hurricane.group);
 
 	                        imageSpiral1 = new ImageSpiral(imageList, {scale: [4,20,20], position: [0,200,0]});
 	                        images = imageSpiral1.images;
@@ -406,8 +407,8 @@ var scene;
 
 	                        var ct = new Date().getTime() / 1000;
                                 adjust = 1;
-	                        if (clouds) {
-	                            clouds.update();
+	                        if (hurricane) {
+	                            hurricane.update();
 	                        }
                                 if (adjust) {
                          	      if (ct - P.lastTrackedTime > P.pauseTime)

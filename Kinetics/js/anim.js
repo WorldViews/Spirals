@@ -251,7 +251,7 @@ ANIM.uploadBookmarks = function()
 ANIM.gotoView = function(name, dur)
 {
     if (dur == null)
-	dur = 1;
+	dur = 3;
     report("gotoView "+name);
     if (!name) {
         ANIM.idx++;

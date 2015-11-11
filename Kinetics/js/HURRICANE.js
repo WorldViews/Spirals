@@ -33,8 +33,8 @@ HURRICANE.Hurricane = function(scene, pos, spread)
 	*/
 	this.group = new THREE.Object3D();
 	this.group.scale.y = 0.2;
-	this.group.scale.x = 5;
-	this.group.scale.z = 5;
+	this.group.scale.x = 4;
+	this.group.scale.z = 4;
 	this.group.position.copy(pos);
 
 	for (var i=0; i<this.narms; i++) {
@@ -62,7 +62,7 @@ HURRICANE.Hurricane = function(scene, pos, spread)
 	    vertex.x = x0 + Math.random() * spread - spread/2;
 	    vertex.y =      Math.random() * spread - spread/2;
 	    vertex.z = z0 + Math.random() * spread - spread/2;
-	    report("v "+JSON.stringify(vertex));
+	    //report("v "+JSON.stringify(vertex));
 	    arm.vertices.push( vertex );
 	}
 	return arm;
