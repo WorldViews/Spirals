@@ -66,8 +66,6 @@
 	<script src="js/Detector.js"></script>
 	<script src="js/libs/stats.min.js"></script>
 
-	<script src="js/skirt.js"></script>
-        <script src="js/imageSpirals.js"></script>
 	<script src="GetWebSock.js"></script>
 <!--
         <script src="js/PVViewControls.js"></script>
@@ -77,7 +75,7 @@
         <script src="js/controls/TrackballControls.js"></script>
         <script src="js/controls/OrbitControls.js"></script>
 -->
-        <script src="js/controls/PVControls.js"></script>
+        <script src="js/PVControls.js"></script>
  
 <!-- Beginning of midi scripts -->
 	<!-- shims -->
@@ -99,7 +97,9 @@
 	<script src="./wmb/timer.js"></script>
 <!-- End of midi scripts -->
 <script src="paramsGUI.js"></script>
-<script src="js/anim.js"></script>
+<script src="js/ANIM.js"></script>
+<script src="js/ISPIRAL.js"></script>
+<script src="js/SKIRT.js"></script>
 <script src="js/SCRIPT.js"></script>
 <script src="js/AUDIO.js"></script>
 <script src="js/HURRICANE.js"></script>
@@ -286,13 +286,16 @@ var scene;
 				var skirt = SKIRT.setupSkirt(scene, 'textures/patterns/paisley1.jpg', vec3(   0,  0,  0));
 
 				// ground
-
-				var groundTexture = THREE.ImageUtils.loadTexture( "textures/terrain/grasslight-big.jpg" );
+	                        var texLoader = new THREE.TextureLoader();
+				//var groundTexture = THREE.ImageUtils.loadTexture( "textures/terrain/grasslight-big.jpg" );
+				var groundTexture = texLoader.load( "textures/terrain/grasslight-big.jpg" );
 				groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
 				groundTexture.repeat.set( 25, 25 );
 				groundTexture.anisotropy = 16;
 				
-				var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, map: groundTexture } );
+				var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff,
+	                                                                            specular: 0x111111,
+	                                                                            map: groundTexture } );
 
 				var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
 				mesh.position.y = -250;
@@ -339,7 +342,8 @@ var scene;
 
 				renderer.gammaInput = true;
 				renderer.gammaOutput = true;
-				renderer.shadowMapEnabled = true;
+				//renderer.shadowMapEnabled = true;
+				renderer.shadowMap.enabled = true;
 
 				//
 

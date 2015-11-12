@@ -8,7 +8,9 @@ function getSkyBox()
         path + 'py' + format, path + 'ny' + format,
         path + 'pz' + format, path + 'nz' + format
     ];
+    var loader = new THREE.TextureLoader();
     var textureCube = THREE.ImageUtils.loadTextureCube( urls, THREE.CubeRefractionMapping );
+    //var textureCube = THREE.CubeTextureLoader( urls, THREE.CubeRefractionMapping );
     var material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube, refractionRatio: 0.95 } );
     var sbox = {
         'textureCube': textureCube,

@@ -445,11 +445,13 @@ SKIRT.setupSkirt = function(scene, texPath, pos) {
         pos = new THREE.Vector3(0,0,0)
     var skirt = new Skirt(SKIRT.xSegs, SKIRT.ySegs, pos.x, pos.z);
     //skirts.push(skirt);
-    var clothTexture = THREE.ImageUtils.loadTexture( texPath );
+    var loader = new THREE.TextureLoader();
+    //var clothTexture = THREE.ImageUtils.loadTexture( texPath );
+    var clothTexture = loader.load( texPath );
     clothTexture.wrapS = clothTexture.wrapT = THREE.RepeatWrapping;
     clothTexture.anisotropy = 16;
     var clothMaterial = new THREE.MeshPhongMaterial( { alphaTest: 0.5, color: 0xffffff,
-						   specular: 0x030303, emissive: 0x111111, shiness: 10,
+						   specular: 0x030303, emissive: 0x111111, shininess: 10,
 						   map: clothTexture, side: THREE.DoubleSide } );
 
     // cloth geometry

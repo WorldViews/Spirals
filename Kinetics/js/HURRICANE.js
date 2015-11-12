@@ -18,7 +18,9 @@ HURRICANE.Hurricane = function(scene, pos, spread)
     this.init = function() {
 	color  = [1.0, 0.2, 0.5];
 
-	var sprite = THREE.ImageUtils.loadTexture( "textures/sprites/clouds.png" );
+	this.loader = new THREE.TextureLoader();
+	//var sprite = THREE.ImageUtils.loadTexture( "textures/sprites/clouds.png" );
+	var sprite = this.loader.load( "textures/sprites/clouds.png" );
 	material = new THREE.PointCloudMaterial(
 				 { size: this.spriteSize,
 				   map: sprite,

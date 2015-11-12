@@ -196,11 +196,11 @@ function setupWorld()
           controls.zoomSpeed = 1.2;
           controls.panSpeed = 0.8;
 
-          controls.noZoom = false;
-          controls.noPan = false;
+          controls.enableZoom = true;
+          controls.enablePan = true;
 
-          controls.staticMoving = true;
-          controls.dynamicDampingFactor = 0.3;
+          controls.enableDamping = true;
+          controls.dampingFactor = 0.3;
 
           controls.keys = [ 65, 83, 68 ];
           //controls.addEventListener( 'change', render );

@@ -1,6 +1,7 @@
 
 var P = null;
 var HORIZONTAL = true;
+var texLoader = false;
 THREE.ImageUtils.crossOrigin = '';
 
 function report(s)
@@ -8,6 +9,13 @@ function report(s)
    console.log(s);
 }
 
+function loadTexture(url)
+{
+    if (!texLoader) {
+	texLoader = new THREE.TextureLoader();
+    }
+    return texLoader.load(url);
+}
 
 var imageObjs = [];
 //var imageUrl = 'http://www.html5canvastutorials.com/demos/assets/crate.jpg';
@@ -22,7 +30,8 @@ function getImageBox(P, imageUrl)
    //var material = new THREE.MeshPhongMaterial( { color: 0x7733dd } );
    //var material = new THREE.MeshPhongMaterial(
    var material = new THREE.MeshLambertMaterial(
-      { color: 0xdddddd, map: THREE.ImageUtils.loadTexture(imageUrl) });
+//      { color: 0xdddddd, map: THREE.ImageUtils.loadTexture(imageUrl) });
+	{ color: 0xdddddd, map: loadTexture(imageUrl) });
    var geometry = new THREE.BoxGeometry( P.boxW, P.boxH, P.boxD );
    var obj = new THREE.Mesh( geometry, material );
    var box = new THREE.Object3D();
@@ -36,7 +45,8 @@ function getImageBox(P, imageUrl)
 function getImageCard(P, imageUrl)
 {
    var material = new THREE.MeshLambertMaterial(
-      { color: 0xdddddd, map: THREE.ImageUtils.loadTexture(imageUrl) });
+   // { color: 0xdddddd, map: THREE.ImageUtils.loadTexture(imageUrl) });
+      { color: 0xdddddd, map: loadTexture(imageUrl) });
    material.side = THREE.DoubleSide;
    var geometry = new THREE.PlaneGeometry( P.boxW, P.boxH );
    var obj = new THREE.Mesh( geometry, material );
@@ -132,7 +142,8 @@ function setupWorld(imageList)
       light.position.set(150,50,-1050);
       scene.add(light);
       // FLOOR
-      var floorTexture = new THREE.ImageUtils.loadTexture( 'images/floor.jpg' );
+      //var floorTexture = new THREE.ImageUtils.loadTexture( 'images/floor.jpg' );
+      var floorTexture = loadTexture( 'images/floor.jpg' );
       floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
       var fs = 40;
       floorTexture.repeat.set( 10, 10 );
