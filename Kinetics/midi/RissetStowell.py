@@ -19,10 +19,19 @@ def pw2(v):
     return 2*pw2(v-1)
     """
 
-class Risset:
+class RissetMapper:
+    """
+    This class has time remmapping functions for taking base
+    peices with events at times tl (for 'logical time') and
+    mapping to actual elapsed times te in the Risset output.
+    """
     def __init__(self, T, tau):
         self.T = T
         self.tau = tau
+
+    def get_rate(self, te, v=0):
+        r = (self.T * log(2)/self.tau) * pow(2,te/self.tau+v)
+        return r
 
     def get_te(self, tl, v):
         te_vals = []
@@ -34,12 +43,10 @@ class Risset:
             num = 1
         #print num
         for w in range(num):
-            #te = self.tau * lg( (tl + w*self.T + N)/float(self.T)) - v
             a = (tl + (w+N)*self.T) / self.T
-            #print "a:", a
             te = self.tau * (lg(a) - v)
-            #te = self.tau * lg( (tl + (w+N)*self.T)/float(self.T)) - v
-            te_vals.append(te)
+            if te <= self.tau:
+                te_vals.append(te)
         return te_vals
 
 def test1():
@@ -53,4 +60,6 @@ def test1():
     print "0,-1", r.get_te(0,-1)
 
 
-test1()
+if __name__ == '__main__':
+    test1()
+

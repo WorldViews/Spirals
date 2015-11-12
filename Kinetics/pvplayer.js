@@ -22,6 +22,7 @@ PLAYER.crankFactor = 0;
 PLAYER.crankAngle0 = null;
 PLAYER.crankAngle = null;
 PLAYER.instruments = {};
+PLAYER.loop = false;
 PLAYER.USE_NEW_METHOD = true;
 
 //PLAYER.tracks = {}
@@ -66,10 +67,16 @@ PLAYER.togglePlaying = function()
     }
 }
 
+PLAYER.playMelody = function(name)
+{
+    PLAYER.loadMelody(name, true);
+}
+
 PLAYER.loadMelody = function(name, autoStart)
 {
-    var melodyUrl = "midi/"+name+".json";
+    report("PLAYER.loadMelody "+name+" autostart: "+autoStart);
     PLAYER.stopPlaying();
+    var melodyUrl = "midi/"+name+".json";
     $.getJSON(melodyUrl, function(obj) { PLAYER.playMidiObj(obj, autoStart) });
 }
 
@@ -124,6 +131,11 @@ function processMidiObj(midiObj)
                                 // arise from a given channel of a
                                 // midi track                      
     PLAYER.instruments = {};
+    PLAYER.loop = false;
+    if (midiObj.loop) {
+	report("***set to loop");
+	PLAYER.loop = true;
+    }
     for (var i=0; i<tracks.length; i++) {
 	var track = tracks[i];
 	var ntchs = 0;
@@ -327,10 +339,17 @@ PLAYER.playNextStep = function(seqNum)
    PLAYER.handleEventGroup(evGroup);
    PLAYER.i += 1;
    if (PLAYER.i >= PLAYER.events.length) {
-      report("FInished playing");
-      PLAYER.isPlaying = false;
-      PLAYER.stopPlaying();
-      return;
+       if (PLAYER.loop) {
+	   report("Finished loop");
+	   PLAYER.i = 0;
+	   PLAYER.lastEventPlayTime = 0;
+       }
+       else {
+	   report("FInished playing");
+	   PLAYER.isPlaying = false;
+	   PLAYER.stopPlaying();
+	   return;
+       }
    }
    var t1 = PLAYER.events[PLAYER.i][0];
    //var dt = (t1-t0)/PLAYER.ticksPerBeat;
@@ -375,7 +394,13 @@ PLAYER.checkForEvent = function()
    PLAYER.handleEventGroup(evGroup);
    PLAYER.i += 1;
    if (PLAYER.i >= PLAYER.events.length) {
-      report("FInished playing");
+       if (PLAYER.loop) {
+	   report("Finished loop");
+	   PLAYER.i = 0;
+	   PLAYER.lastEventPlayTime = 0;
+	   return;
+       }
+      report("Finished playing");
       PLAYER.isPlaying = false;
       PLAYER.stopPlaying();
       return;

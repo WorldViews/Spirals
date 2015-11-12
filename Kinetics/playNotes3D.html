@@ -31,6 +31,8 @@
 	<script src="./wmb/timer.js"></script>
 	<script src="pvplayer.js"></script>
 	<!-- font -->
+<script src="js/controls/OrbitControls.js"></script>
+
 <script>
 playMelody = PLAYER.playMelody;
 </script>
@@ -48,14 +50,16 @@ playMelody = PLAYER.playMelody;
      </div>
 
 <p>
-     <button onclick='playMelody("chopin69")'>Play Chopin69</button>
-     <button onclick='playMelody("wtc0")'>Play WTC0</button>
-     <button onclick='playMelody("beethovenSym5m1")'>Play BeethSym5m1</button>
+     <button onclick='playMelody("Classical/chopin69")'>Play Chopin69</button>
+     <button onclick='playMelody("Bach/wtc0")'>Play WTC0</button>
+     <button onclick='playMelody("Classical/beethovenSym5m1")'>Play BeethSym5m1</button>
      <button onclick='playMelody("shepard")'>Play Shepard</button>
      <button onclick='playMelody("BluesRhythm1")'>Play Rhythm1</button>
      <button onclick='playMelody("minute_waltz")'>Minute Waltz</button>
      <button onclick='playMelody("jukebox")'>Jukebox</button>
      <button onclick='playMelody("trackTest")'>trackTest</button>
+     <button onclick='playMelody("basicBeat")'>basicBeat</button>
+     <button onclick='playMelody("rissetBeat")'>rissetBeat</button>
      <button onclick='playMelody("risset0")'>Accelerando</button>
 <p>
      <button onclick='playMelody("risset0.25_0.5")'>risset0.25_0.5</button>
@@ -79,6 +83,7 @@ $(document).ready(function() {
    setupGUI(["hv0", "v0", "dv", "cs1", "cs2", "helixR",
              "PLAYER.ticksPerBeat"]);
    PLAYER.scene = P.scene;
+   PLAYER.loadCompositions("midi/compositions.json");
    $("#audio").click(toggleAudio);
    $("#colors").click(toggleColor);
 });

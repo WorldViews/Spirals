@@ -8,13 +8,18 @@ import json
 import midi
 import os, glob, sys, string
 from midi.events import *
+import copy
 
 def is_ascii(s):
     return all(ord(c) < 128 for c in s)
 
 import base64
 
-class ProgChangeEvent:
+class PVEvent:
+    def clone(self):
+        return copy.copy(self)
+
+class ProgChangeEvent(PVEvent):
     def __init__(self, t0, ch, instrument):
         self.t0 = t0
         self.channel = ch
@@ -37,7 +42,7 @@ class ProgChangeEvent:
         return ["programChange", self.t0, self.channel, self.instrument]
 
 
-class TempoEvent:
+class TempoEvent(PVEvent):
     def __init__(self, t0, bpm, mpqn):
         self.t0 = t0
         self.bpm = bpm
@@ -59,7 +64,7 @@ class TempoEvent:
         return ["tempo", self.t0, self.bpm, self.mpqn]
 
 
-class Note:
+class Note(PVEvent):
     def __init__(self, channel, pitch, t0, velocity, dur=None):
         self.channel = channel
         self.pitch = pitch
@@ -414,10 +419,28 @@ class MidiObj:
         self.tracks = []
         self.instruments = set()
         self.channels = set()
-        self.resolution = 1000;
-        self.format = 1;
+        self.resolution = 1000 # this is ticksPerBeat
+        self.bpm = 100
+        self.format = 1
+        self.loop = False
         if path:
             self.load(path)
+
+    def setResolution(self, r):
+        self.resolution = r
+
+    def setBPM(self, bpm):
+        self.bpm = bpm
+
+    def getTicksPerSec(self):
+        # resolution is ticksPerBeat
+        return self.resolution*self.bpm/60.0
+
+    def ticksFromTime(self, t):
+        return t*self.getTicksPerSec()
+
+    def timeFromTicks(self, ticks):
+        return ticks/self.getTicksPerSec()
 
     def dumpInfo(self):
         print "Num tracks", len(self.tracks)
@@ -459,6 +482,7 @@ class MidiObj:
                 'channels': list(self.channels),
                 'format': self.format,
                 'resolution': self.resolution,
+                'loop': self.loop,
                 'tracks': map(TrackObj.toDict, self.tracks)}
 
     def saveAsJSON(self, jpath):
