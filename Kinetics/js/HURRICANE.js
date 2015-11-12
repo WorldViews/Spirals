@@ -21,7 +21,7 @@ HURRICANE.Hurricane = function(scene, pos, spread)
 	this.loader = new THREE.TextureLoader();
 	//var sprite = THREE.ImageUtils.loadTexture( "textures/sprites/clouds.png" );
 	var sprite = this.loader.load( "textures/sprites/clouds.png" );
-	material = new THREE.PointCloudMaterial(
+	material = new THREE.PointsMaterial(
 				 { size: this.spriteSize,
 				   map: sprite,
 				   blending: THREE.AdditiveBlending,
@@ -42,7 +42,7 @@ HURRICANE.Hurricane = function(scene, pos, spread)
 	for (var i=0; i<this.narms; i++) {
 	    var a0 = 2*Math.PI*i/this.narms;
 	    arm = this.genArm(a0);
-	    var particles = new THREE.PointCloud( arm, material );
+	    var particles = new THREE.Points( arm, material );
 	    this.group.add(particles);
 	}
     }

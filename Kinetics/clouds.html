@@ -70,13 +70,19 @@
 
 				geometry = new THREE.Geometry();
 
-				//sprite1 = THREE.ImageUtils.loadTexture( "textures/sprites/snowflake1.png" );
+			        var loader = new THREE.TextureLoader();
+			        /*
 				sprite1 = THREE.ImageUtils.loadTexture( "textures/sprites/clouds.png" );
 				sprite2 = THREE.ImageUtils.loadTexture( "textures/sprites/snowflake2.png" );
 				sprite3 = THREE.ImageUtils.loadTexture( "textures/sprites/snowflake3.png" );
 				sprite4 = THREE.ImageUtils.loadTexture( "textures/sprites/snowflake4.png" );
 				sprite5 = THREE.ImageUtils.loadTexture( "textures/sprites/snowflake5.png" );
-
+			        */
+				sprite1 = loader.load( "textures/sprites/clouds.png" );
+				sprite2 = loader.load( "textures/sprites/snowflake2.png" );
+				sprite3 = loader.load( "textures/sprites/snowflake3.png" );
+				sprite4 = loader.load( "textures/sprites/snowflake4.png" );
+				sprite5 = loader.load( "textures/sprites/snowflake5.png" );
 			        var nparts = 1000;
 				for ( i = 0; i < nparts; i ++ ) {
 					var vertex = new THREE.Vector3();
@@ -106,7 +112,7 @@
 					sprite = sprite1;
 					size   = parameters[i][2];
 				        size = 350;
-					materials[i] = new THREE.PointCloudMaterial(
+					materials[i] = new THREE.PointsMaterial(
 						 { size: size,
 						   map: sprite,
 						   blending: THREE.AdditiveBlending,
@@ -114,7 +120,7 @@
                                                    transparent : true } );
 					materials[i].color.setHSL( color[0], color[1], color[2] );
 					materials[i].opacity = 0.02;
-					particles = new THREE.PointCloud( geometry, materials[i] );
+					particles = new THREE.Points( geometry, materials[i] );
 					particles.rotation.x = Math.random() * 6;
 					particles.rotation.y = Math.random() * 6;
 					particles.rotation.z = Math.random() * 6;

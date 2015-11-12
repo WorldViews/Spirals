@@ -66,7 +66,7 @@
 	<script src="js/skirt.js"></script>
         <script src="js/imageSpirals.js"></script>
 	<script src="GetWebSock.js"></script>
-        <script src="js/controls/PVControls.js"></script>
+        <script src="js/PVControls.js"></script>
 
  
 <!-- Beginning of midi scripts -->
@@ -185,7 +185,8 @@ var scene;
 
 				// ground
 
-				var groundTexture = THREE.ImageUtils.loadTexture( "textures/terrain/grasslight-big.jpg" );
+                                var loader = new THREE.TextureLoader();
+				var groundTexture = loader.load( "textures/terrain/grasslight-big.jpg" );
 				groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
 				groundTexture.repeat.set( 25, 25 );
 				groundTexture.anisotropy = 16;
@@ -210,7 +211,7 @@ var scene;
 
 				renderer.gammaInput = true;
 				renderer.gammaOutput = true;
-				renderer.shadowMapEnabled = true;
+				renderer.shadowMap.enabled = true;
 
 				//
 
