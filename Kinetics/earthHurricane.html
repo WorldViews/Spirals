@@ -230,12 +230,17 @@ var scene;
 
 				// ground
 
-				hurricane = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
-	                        hurricane.material.opacity = 0.5;
+				hurricane1 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
+	                        hurricane1.material.opacity = 0.5;
                                 var sfLatLon = LOCATIONS["SF"];
                                 sfLoc = earth.getLocalGroup(sfLatLon[0], sfLatLon[1]);
-		                //scene.add(hurricane.group);
-		                sfLoc.add(hurricane.group);
+		                sfLoc.add(hurricane1.group);
+
+				hurricane2 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
+	                        hurricane2.material.opacity = 0.5;
+                                var amLatLon = LOCATIONS["Amsterdam"];
+                                amLoc = earth.getLocalGroup(amLatLon[0], amLatLon[1]);
+		                amLoc.add(hurricane2.group);
 
 				//
 
@@ -317,12 +322,11 @@ var scene;
                                 var dt = ct-prev_ct;
                                 prev_ct = ct;
 	                        //egroup.rotation.y += Math.PI*dt/30;
-	                        if (hurricane) {
-	                            hurricane.update();
+	                        if (hurricane1) {
+	                            hurricane1.update();
 	                        }
-
-	                        if (hurricane) {
-	                            hurricane.update();
+	                        if (hurricane2) {
+	                            hurricane2.update();
 	                        }
                                 if (ct - P.lastTrackedTime > P.pauseTime)
                                    t0 += P.v0;
