@@ -15,6 +15,12 @@ def is_ascii(s):
 
 import base64
 
+def put(dic, key, val):
+    if key in dic:
+        dic[key].append(val)
+    else:
+        dic[key] = [val]
+
 class PVEvent:
     def clone(self):
         return copy.copy(self)
@@ -489,7 +495,48 @@ class MidiObj:
         print "Save MidiObj to", jpath
         json.dump(self.toDict(), file(jpath, "w"), indent=4)
 
-        
+    def saveAsMidi(self, mpath, loop=False):
+        print "Save MidiObj to", mpath
+        pattern = midi.Pattern(resolution=self.resolution)
+        for track in self.tracks:
+            mtrack = midi.Track()
+            mevents = {}
+            #put(mevents, 0, midi.ProgramChangeEvent(channel=0, tick=0, value=0))
+            for ev in track.allEvents():
+                if isinstance(ev, ProgChangeEvent):
+                    t = ev.t0
+                    me = midi.ProgramChangeEvent(channel=ev.channel, tick=0, value=ev.instrument)
+                    put(mevents, t, me)
+                elif isinstance(ev, Note):
+                    t = ev.t0
+                    dur = ev.dur
+                    me = midi.NoteOnEvent(channel=ev.channel, tick=0, velocity=ev.velocity, pitch=ev.pitch)
+                    put(mevents, t, me)
+                    me = midi.NoteOffEvent(channel=ev.channel, tick=0, pitch=ev.pitch)
+                    put(mevents, t+dur, me)
+                else:
+                    continue
+            tvals = mevents.keys()
+            tvals.sort()
+            prevT = 0
+            for t in tvals:
+                dt = t - prevT
+                prevT = t
+                mevs = mevents[t]
+                i = 0
+                for mev in mevs:
+                    i += 1
+                    mev.tick = 0
+                    if i == 1:
+                        mev.tick = int(dt)
+                    mtrack.append(mev)
+            if loop:
+                mtrack.append(midi.TrackLoopEvent(tick=0))
+            mtrack.append(midi.EndOfTrackEvent(tick=0))
+            pattern.append(mtrack)
+        print pattern
+        midi.write_midifile(mpath, pattern)
+
 
 def convertToJSON(path, jpath=None):
     if not jpath:

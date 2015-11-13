@@ -9,6 +9,9 @@ http://c4dm.eecs.qmul.ac.uk/papers/2011/Stowell2011icmc.pdf
 from PVMidi import TrackObj, MidiObj, Note, ProgChangeEvent
 from math import log, pow, cos, floor, pi
 
+def round(r):
+    return int(r+0.5)
+
 def lg(x):
     return log(x)/log(2.0)
 
@@ -68,12 +71,11 @@ def save(tObj, path):
     mObj.saveAsJSON(path)
     mObj.dumpInfo()
 
-
 class Risset:
     def __init__(self):
         pass
 
-    def remapMidi(self, tobj, tau=None, vLow=-2, vHigh=2, inst=127):
+    def remapMidi(self, tobj, tau=None, vLow=-2, vHigh=2, inst=127, fch=None):
         mObj = MidiObj()
         T = tobj.getMaxTime()
         print "T:", T
@@ -87,6 +89,8 @@ class Risset:
         for v in range(vLow, vHigh+1):
             print "v: ", v
             #rtObj = self.remapv(tobj, v, tau, ch=ch, inst=10+v)
+            if fch != None:
+                ch = fch
             rtObj = self.remapv(tobj, v, tau, ch=ch, inst=inst)
             rtObj.trackName = "risset v=%s" % v
             mObj.addTrack(rtObj)
@@ -134,7 +138,7 @@ class Risset:
                     dr = dur/rate
                     if rate>2:
                         dr = dur
-                    note = Note(ch, ev.pitch, te, p*ev.velocity, dr)
+                    note = Note(ch, ev.pitch, round(te), round(p*ev.velocity), dr)
                     rtObj.addNote(note)
                     nNotes += 1
         rtObj.resolution = tObj.resolution
@@ -167,8 +171,9 @@ def gen():
     print "------------------"
     r = Risset()
     save(tObj, "basicBeat.json")
-    mObj = r.remapMidi(tObj)
+    mObj = r.remapMidi(tObj, inst=11, fch=9)
     mObj.saveAsJSON("rissetBeat.json")
+    mObj.saveAsMidi("rissetBeat.mid", loop=True)
     mObj.dumpInfo()
 
 

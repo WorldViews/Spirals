@@ -88,14 +88,17 @@ class Shepard:
         midiObj = MidiObj()
         midiObj.addTrack(tobj)
         midiObj.saveAsJSON(path)
+        mpath = path.replace(".json", ".mid")
+        midiObj.saveAsMidi(mpath)
 
-    
+
 def run():
     s = Shepard()
     s.gen("shepard.json")
+    return
     s.gen("shepard_major.json", motif="1 3 5 6 8 10 12")
     s.gen("shepard2.json", motif="1e 3e 5e 1q 5e 6e 8h 10 6 10 12")
-    playMelody("shepard2")
+    #playMelody("shepard2")
 
 if __name__ == '__main__':
     run()

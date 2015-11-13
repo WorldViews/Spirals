@@ -1,6 +1,8 @@
 {
-    "channels": [], 
+    "format": 1, 
     "instruments": [], 
+    "resolution": 1000, 
+    "channels": [], 
     "tracks": [
         {
             "trackName": "Track1", 
@@ -7820,5 +7822,6 @@
             "type": "TrackObj"
         }
     ], 
-    "type": "MidiObj"
+    "type": "MidiObj", 
+    "loop": false
 }
