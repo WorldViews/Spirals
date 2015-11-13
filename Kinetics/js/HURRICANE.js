@@ -16,7 +16,8 @@ HURRICANE.Hurricane = function(scene, pos, spread)
     this.turnsPerArm = 1;
 
     this.init = function() {
-	color  = [1.0, 0.2, 0.5];
+	//color  = [1.0, 0.2, 0.5];
+	color  = [1.0, 0.0, 0.2];
 
 	this.loader = new THREE.TextureLoader();
 	//var sprite = THREE.ImageUtils.loadTexture( "textures/sprites/clouds.png" );
@@ -29,6 +30,7 @@ HURRICANE.Hurricane = function(scene, pos, spread)
                                    transparent : true } );
 	material.color.setHSL( color[0], color[1], color[2] );
 	material.opacity = 0.02;
+	this.material = material;
 
         /*
         for ( var i = 0; i < nparts; i ++ ) {

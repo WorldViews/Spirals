@@ -207,6 +207,19 @@ ANIM.bookmarkView = function(name)
     //    report("bookmarkView "+JSON.stringify(view));
 }
 
+ANIM.setBookmarksURL = function(url)
+{
+    report("ANIM.setBookmarksURL "+url);
+    ANIM.bookmarksURL_ = url;
+}
+
+ANIM.setBookmarksName = function(name)
+{
+    report("ANIM.setBookmarksName "+name);
+    var url = "/Kinetics/"+name+"Bookmarks.json";
+    ANIM.setBookmarksURL(url);
+}
+
 ANIM.getBookmarksURL = function()
 {
     //TODO: maybe make smarter...

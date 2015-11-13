@@ -1,11 +1,27 @@
 
 EARTH = {};
 
+// convert the positions from a lat, lon to a position on a sphere.
+// http://www.smartjava.org/content/render-open-data-3d-world-globe-threejs
+EARTH.latLonToVector3 = function(lat, lon, radius, height) {
+    var phi = (lat)*Math.PI/180;
+    var theta = (lon-180)*Math.PI/180;
+ 
+    var x = -(radius+height) * Math.cos(phi) * Math.cos(theta);
+    var y = (radius+height) * Math.sin(phi);
+    var z = (radius+height) * Math.cos(phi) * Math.sin(theta);
+ 
+    return new THREE.Vector3(x,y,z);
+}
+
 EARTH.Earth = function(group, radius)
 {
     radius = radius || 200;
+
     this.init = function() {
+	this.radius = radius;
         this.loaded = false;
+	this.group = group;
         var loader = new THREE.TextureLoader();
         loader.load( 'textures/land_ocean_ice_cloud_2048.jpg', function ( texture ) {
             var geometry = new THREE.SphereGeometry( radius, 30, 30 );
@@ -14,6 +30,37 @@ EARTH.Earth = function(group, radius)
             group.add(this.mesh);
             this.loaded = true;
        });
+    }
+
+    this.latLonToVector3 = function(lat, lng, h) {
+	if (!h)
+	    h = 1;
+	return EARTH.latLonToVector3(lat, lng, this.radius, h);
+    }
+
+    this.getLocalGroup = function(lat, lng, h) {
+	var localGroup = new THREE.Group();
+	localGroup.position.copy(this.latLonToVector3(lat, lng, h));
+	this.group.add(localGroup);
+	return localGroup;
+    }
+
+    this.addMarker = function(lat, lon) {
+        var h = 0.01*this.radius;
+        var geometry = new THREE.SphereGeometry( h, 20, 20 );
+        var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+        var marker = new THREE.Mesh( geometry, material );
+	var lg = this.getLocalGroup(lat, lon, h);
+	var phi = (90-lat)*Math.PI/180;
+	var theta = (lon-180)*Math.PI/180;
+	lg.add(marker);
+	lg.rotation.set(phi, theta, 0, "XYZ");
+	//lg.rotation.set(theta, phi, 0, "YXZ");
+	//	lg.rotation.x = -phi;
+	//	lg.rotation.y = theta;
+	var axisHelper = new THREE.AxisHelper( 10*h );
+	lg.add( axisHelper );
+	return lg;
     }
 
     this.init();

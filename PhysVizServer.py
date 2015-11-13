@@ -23,8 +23,13 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         body = self.rfile.read(content_len)
         obj = json.loads(body)
         print obj
-        path = "Kinetics/bookmarks.json"
-        shutil.copyfile(path, path+".bak")
+        path = self.path[len("/update/"):]
+        print "path", path
+        #path = "Kinetics/bookmarks.json"
+        try:
+            shutil.copyfile(path, path+".bak")
+        except:
+            pass
         json.dump(obj, file(path, "w"), indent=3)
 
 httpd = SocketServer.TCPServer(("", PORT), MyHandler)
