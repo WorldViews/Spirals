@@ -5,12 +5,20 @@ AUDIO.player = null;
 AUDIO.choices = {};
 AUDIO.choices[""] = 1;
 AUDIO.choices["AsCleanAsFire"] = 1;
+AUDIO.choices["Unconditional.mp3"] = 1;
+AUDIO.choices["Unconditional.ogg"] = 1;
+AUDIO.choices["MBBSound/lowthunder.mp3"] = 1;
+AUDIO.choices["MBBSound/rain.mp3"] = 1;
+AUDIO.choices["MBBSound/Shepardupndown.mp3"] = 1;
 
 AUDIO.play = function(name)
 {
     report("AUDIO.play "+name);
     if (name) {
-	var url = "../data/"+name+".ogg";
+	if (name.indexOf(".") < 0) {
+	    name = name+".ogg";
+	}
+	var url = "../data/"+name;
 	report("url: "+url);
 	//$("#audioPlayer").src = url;
 	AUDIO.player.src = url;

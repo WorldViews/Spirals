@@ -1,7 +1,7 @@
 
 from math import log, pow
 import os
-import Image
+import Image, ImageDraw
 
 def lg(x):
     return log(x)/log(2.0)
@@ -14,7 +14,20 @@ def verifyDir(path):
        print "Creating", path
        os.mkdir(path)
 
-def genImagePow2(path, opath, ow=None, oh=None):
+def add_corners(im, rad):
+    circle = Image.new('L', (rad * 2, rad * 2), 0)
+    draw = ImageDraw.Draw(circle)
+    draw.ellipse((0, 0, rad * 2, rad * 2), fill=255)
+    alpha = Image.new('L', im.size, 255)
+    w, h = im.size
+    alpha.paste(circle.crop((0, 0, rad, rad)), (0, 0))
+    alpha.paste(circle.crop((0, rad, rad, rad * 2)), (0, h - rad))
+    alpha.paste(circle.crop((rad, 0, rad * 2, rad)), (w - rad, 0))
+    alpha.paste(circle.crop((rad, rad, rad * 2, rad * 2)), (w - rad, h - rad))
+    im.putalpha(alpha)
+    return im
+
+def genImagePow2(path, opath, ow=None, oh=None, cornerRad=200):
     if not (path.endswith(".jpg") or path.endswith(".png")):
         return
     im = Image.open(path)
@@ -25,6 +38,8 @@ def genImagePow2(path, opath, ow=None, oh=None):
         oh = truncDown(h)
     size = im.size
     im = im.resize((ow,oh), Image.ANTIALIAS)
+    if cornerRad:
+        im = add_corners(im, cornerRad)
     print path, w, h, ow, oh
     im.save(opath)
 
@@ -36,8 +51,23 @@ def genImagesPow2(inputDir, outputDir):
         opath = os.path.join(outputDir, name)
         genImagePow2(path, opath)
 
+def genImagesPow2Rename(inputDir, outputDir):
+    verifyDir(outputDir)
+    names = os.listdir(inputDir)
+    i = 0
+    for name in names:
+        if not name.lower().endswith(".jpg"):
+            continue
+        i += 1
+        #oname = "image%03d.png"
+        oname = "image%d.png" % i
+        path = os.path.join(inputDir, name)
+        opath = os.path.join(outputDir, oname)
+        genImagePow2(path, opath)
+
+
 
 if __name__ == '__main__':
-#    genImagesPow2("../images", "../imagesPow2")
-    genImagePow2("images/clouds.png", "images/cloudsP2.png", 128,128)
+    genImagesPow2Rename("../images", "../imagesPow2")
+#    genImagePow2("images/clouds.png", "images/cloudsP2.png", 128,128)
 

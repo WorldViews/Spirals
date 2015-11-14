@@ -56,7 +56,7 @@ HURRICANE.Hurricane = function(scene, pos, spread)
 	    var t = i/this.nparts;
 	    //t = t*t;            // Doing this puts more clouds towards outside.
 	    //t = Math.sqrt(t); // Doing this puts more clouds towards center.
-	    var a = w*t;
+	    var a = -w*t;
 	    var r = this.rMin*(t) + this.rMax*(1-t);
 	    var spread = this.spread0*(1-t) + this.spread1*t;
 	    var x0 = r*Math.cos(a0+a);
@@ -80,7 +80,7 @@ HURRICANE.Hurricane = function(scene, pos, spread)
 	this.prevT = t;
 	var da = -this.rotSpeed*dt;
 	//report("dt: "+dt+"  da: "+da);
-        this.group.rotation.y += da;
+        this.group.rotation.y -= da;
 	da = dt;
 	/*
 	var children = this.group.children;

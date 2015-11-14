@@ -560,7 +560,7 @@ class MidiObj:
                 mtrack.append(midi.TrackLoopEvent(tick=0))
             mtrack.append(midi.EndOfTrackEvent(tick=0))
             pattern.append(mtrack)
-        print pattern
+        #print pattern
         midi.write_midifile(mpath, pattern)
 
 
@@ -653,6 +653,4 @@ def run():
 
 if __name__ == '__main__':
     run()
-
-
 

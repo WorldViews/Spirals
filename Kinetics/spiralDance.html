@@ -109,17 +109,14 @@
 
 var imageBase = "../imagesPow2";
 imageList = [];
-//for (var i=1; i<=256; i++) {
-//for (var i=1; i<=32; i++) {
-for (var i=1; i<=128; i++) {
-//for (var i=1; i<=4; i++) {
-    imageList.push(imageBase + "/image"+i+".jpg");
+for (var i=1; i<=49; i++) {
+    imageList.push(imageBase + "/image"+i+".png");
 };
 
 var imageList2 = imageList;
 var imageList3 = [];
-for (var i=1; i<=256; i++) {
-    imageList3.push(imageBase + "/image"+i+".jpg");
+for (var i=1; i<=49; i++) {
+    imageList3.push(imageBase + "/image"+i+".png");
 };
 
 var t0 = 0;
@@ -448,7 +445,7 @@ $(document).ready(function() {
    //instrument = "choir_aahs";
    MIDI.loader=new sketch.ui.Timer;
    PLAYER.loadInstrument("acoustic_grand_piano");
-   PLAYER.loadCompositions("midi/compositions.json");
+   PLAYER.loadCompositions("midi/midiMenu.json");
    //script1.run();
 });
 

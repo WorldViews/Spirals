@@ -45,16 +45,21 @@ ISPIRAL.getImageCard = function(spiral, imageUrl)
    var material = new THREE.MeshLambertMaterial(
       { color: 0xdddddd,
 	//map: THREE.ImageUtils.loadTexture(imageUrl)
-	map: ISPIRAL.getLoader().load(imageUrl)
+	map: ISPIRAL.getLoader().load(imageUrl),
+	transparent: true
       });
    material.side = THREE.DoubleSide;
    var geometry = new THREE.PlaneGeometry( spiral.boxW, spiral.boxH );
    var obj = new THREE.Mesh( geometry, material );
    var card = new THREE.Object3D();
    card.add(obj);
+   obj.rotation.z = - Math.PI/2;
+   obj.scale.y = 2;
+   obj.scale.x = 0.5;
    obj.position.y += 0.5*spiral.boxH + spiral.boxD;
    obj.position.x += 0.0*spiral.boxW;
    obj.position.z += 0.0*spiral.boxD;
+   card.obj = obj;
    return card;
 }
 
@@ -221,6 +226,13 @@ ISPIRAL.horizontal_adjustImageObjs = function(spiral, t0)
         obj.scale.x = s;
 	obj.scale.y = s;
 	obj.scale.z = s;
+	//obj.obj.lookAt(P.camera.position);
+	faceUp = false;
+	if (faceUp) {
+	    obj.obj.rotation.y = - Math.PI/2;
+	    obj.obj.rotation.x = - Math.PI/2;
+	}
+	//obj.lookAt(new THREE.Vector3(10000,0,0));
     }
 }
 

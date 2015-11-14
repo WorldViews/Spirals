@@ -1,0 +1,290 @@
+{
+    "format": 0, 
+    "instruments": [], 
+    "resolution": 2, 
+    "channels": [
+        9
+    ], 
+    "tracks": [
+        {
+            "trackName": "Track1", 
+            "seq": [
+                [
+                    0, 
+                    [
+                        {
+                            "bpm": 120.0, 
+                            "type": "tempo", 
+                            "mpqn": 500000, 
+                            "t0": 0
+                        }, 
+                        {
+                            "pitch": 64, 
+                            "t0": 0, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    400, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 400, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    600, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 600, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    800, 
+                    [
+                        {
+                            "pitch": 64, 
+                            "t0": 800, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    1200, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 1200, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    1600, 
+                    [
+                        {
+                            "pitch": 64, 
+                            "t0": 1600, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    2000, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 2000, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    2200, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 2200, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    2400, 
+                    [
+                        {
+                            "pitch": 64, 
+                            "t0": 2400, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    2800, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 2800, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    3200, 
+                    [
+                        {
+                            "pitch": 64, 
+                            "t0": 3200, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    3600, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 3600, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    3800, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 3800, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    4000, 
+                    [
+                        {
+                            "pitch": 64, 
+                            "t0": 4000, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    4400, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 4400, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    4800, 
+                    [
+                        {
+                            "pitch": 64, 
+                            "t0": 4800, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    5200, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 5200, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    5400, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 5400, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    5600, 
+                    [
+                        {
+                            "pitch": 64, 
+                            "t0": 5600, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ], 
+                [
+                    6000, 
+                    [
+                        {
+                            "pitch": 62, 
+                            "t0": 6000, 
+                            "v": 127, 
+                            "dur": 0, 
+                            "type": "note", 
+                            "channel": 9
+                        }
+                    ]
+                ]
+            ], 
+            "instruments": [], 
+            "tMax": 6400, 
+            "channels": [
+                9
+            ], 
+            "numNotes": 20, 
+            "type": "TrackObj"
+        }
+    ], 
+    "type": "MidiObj", 
+    "loop": false
+}
