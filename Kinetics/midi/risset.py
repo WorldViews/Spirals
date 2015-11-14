@@ -72,11 +72,27 @@ def save(tObj, path):
     mObj.dumpInfo()
 
 class Risset:
-    def __init__(self):
-        pass
+    def __init__(self, resoluton=None):
+        self.resolution = resoluton # ticks per beat
 
-    def remapMidi(self, tobj, tau=None, vLow=-2, vHigh=2, inst=127, fch=None):
-        mObj = MidiObj()
+    def remapMidi(self, mobj, tau=None, vLow=-2, vHigh=2, inst=127, fch=None):
+        if len(mobj.tracks) != 1:
+            print "Can only map single track Midi right now"
+            return
+        res = mobj.resolution
+        if self.resolution != None and res != self.resolution:
+            print "**** CHanging resoluton from %s to %s" % (res, self.resolution)
+            res = self.resolution
+        rmObj = self.remapTrack(mobj.tracks[0], tau, vLow, vHigh, inst, fch)
+        return rmObj
+
+    def remapTrack(self, tobj, tau=None, vLow=-2, vHigh=2, inst=127, fch=None, res=None):
+        if res == None:
+            res = self.resolution
+        if res == None:
+            print "Cannot remap track without resolution"
+            return
+        mObj = MidiObj(resolution=res)
         T = tobj.getMaxTime()
         print "T:", T
         if tau == None:
@@ -95,7 +111,7 @@ class Risset:
             rtObj.trackName = "risset v=%s" % v
             mObj.addTrack(rtObj)
             ch += 1
-        mObj.resolution = rtObj.resolution
+        #mObj.resolution = rtObj.resolution
         mObj.loop = True
         return mObj
 
@@ -126,7 +142,8 @@ class Risset:
         for tv in tvals:
             for ev in tObj.events[tv]:
                 if not isinstance(ev, Note):
-                    print "Skipping non note object"
+                    print "Skipping non note object", ev.__class__.__name__
+                    continue
                 tl = ev.t0
                 dur = ev.dur
                 tes = rmap.get_te(tl, v)
@@ -141,18 +158,17 @@ class Risset:
                     note = Note(ch, ev.pitch, round(te), round(p*ev.velocity), dr)
                     rtObj.addNote(note)
                     nNotes += 1
-        rtObj.resolution = tObj.resolution
+        #rtObj.resolution = tObj.resolution
         rtObj.instruments = [inst]
         rtObj.channels = [ch]
         print "nNotes:", nNotes
         return rtObj
 
-def genTrackBasicBeat():
+def genTrackBasicBeat(resolution):
     t = TrackObj()
-    t.resolution = 600
     numMeasures = 8
-    tpb = t.resolution  # ticks per beat
-    bpm = 4             # beats per measure
+    tpb = resolution  # ticks per beat
+    bpm = 4           # beats per measure
     for m in range(numMeasures):
         b = m*bpm
         t0 = b * tpb
@@ -166,18 +182,35 @@ def genTrackBasicBeat():
     t.setMaxTime(t0 + bpm*tpb)
     return t
 
-def gen():
-    tObj = genTrackBasicBeat()
+def genBasic(resolution=600):
+    tObj = genTrackBasicBeat(resolution)
     print "------------------"
     r = Risset()
     save(tObj, "basicBeat.json")
-    mObj = r.remapMidi(tObj, inst=11, fch=9)
+    mObj = r.remapTrack(tObj, inst=11, fch=9)
     mObj.saveAsJSON("rissetBeat.json")
     mObj.saveAsMidi("rissetBeat.mid", loop=True)
     mObj.dumpInfo()
 
+def gen(mpath):
+    jpath = mpath.replace(".mid", ".json")
+    rpath = mpath.replace(".mid", "_ris.mid")
+    mObj = MidiObj(mpath)
+    mObj.saveAsMidi("check1.mid")
+    mObj.rescaleTime(100)
+    mObj.saveAsMidi("check5.mid")
+    mObj.saveAsJSON(jpath)
+    print "Resolution:", mObj.resolution
+    print "ntracks:", len(mObj.tracks)
+    r = Risset(mObj.resolution * 50)
+    #rmObj = r.remapMidi(mObj, inst=11, fch=9)
+#    t0 = mObj.tracks[0]
+#    t0.resolution = mObj.resolution
+    rmObj = r.remapMidi(mObj, inst=11, fch=9)
+    rmObj.saveAsMidi(rpath, loop=True)
 
 
 if __name__ == '__main__':
-    gen()
+#    genBasic()
+    gen("AYOUB_Jas.mid")
 

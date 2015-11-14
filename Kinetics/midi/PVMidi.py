@@ -31,6 +31,9 @@ class ProgChangeEvent(PVEvent):
         self.channel = ch
         self.instrument = instrument
         
+    def rescaleTime(self, sf):
+        self.t0 *= sf
+
     def getT0(self):
         return self.t0
 
@@ -57,6 +60,9 @@ class TempoEvent(PVEvent):
     def getT0(self):
         return self.t0
 
+    def rescaleTime(self, sf):
+        self.t0 *= sf
+
     def setT0(self, t0):
         self.t0 = t0
 
@@ -80,6 +86,13 @@ class Note(PVEvent):
         self.parts = [[t0,velocity]]
         if dur:
             self.finish(t0+dur)
+
+    def rescaleTime(self, sf):
+        t0 = self.getT0()
+        self.t0 = sf*t0
+        self.dur *= sf
+        for part in self.parts:
+            part[0] = sf*t0
 
     def setT0(self, t0):
         self.t0 = t0
@@ -217,7 +230,7 @@ class TrackObj:
             print "%5d %6.4f %3d -> %3d" % (t, s, note.velocity, v)
             note.setVelocity(v)
 
-    def rescaleTime(self, s0=1, s1=2, maxTime=None):
+    def getRescaleTimeMap(self, s0=1, s1=2, maxTime=None):
         if maxTime == None:
             maxTime = self.getMaxTime()
         maxTime = int(maxTime)
@@ -230,9 +243,9 @@ class TrackObj:
             tmap[i] = int(math.floor(j))
         return tmap
 
-    def rescaleByTime(self, tmap=None):
+    def rescaleByTimeMap(self, tmap=None):
         if tmap == None:
-            tmap = self.rescaleTime()
+            tmap = self.getRescaleTimeMap()
         tobj = TrackObj()
         keys = self.events.keys()
         keys.sort()
@@ -243,6 +256,15 @@ class TrackObj:
                 tobj.addNote(nnote)
         return tobj
 
+    def rescaleTime(self, sf):
+        tMax = self.getMaxTime()
+        self.setMaxTime(sf*tMax)
+        events = self.allEvents()
+        self.events = {}
+        for evt in events:
+            evt.rescaleTime(sf)
+            self.addEvent(evt)
+            
     def allNotes(self):
         notes = []
         for ev in self.events.values():
@@ -354,7 +376,7 @@ class TrackObj:
             elif isinstance(evt, SetTempoEvent):
                 bpm = evt.bpm
                 mpqn = evt.mpqn
-                #print "TempoEvent bpm: %s  mpqn: %s" % (bpm, mpqn)
+                print "TempoEvent bpm: %s  mpqn: %s" % (bpm, mpqn)
                 self.addTempoEvent(TempoEvent(tn, bpm, mpqn))
             elif isinstance(evt, EndOfTrackEvent):
                 print "End of track"
@@ -421,11 +443,11 @@ class TrackObj:
                 break
 
 class MidiObj:
-    def __init__(self, path=None):
+    def __init__(self, path=None, resolution=1000):
         self.tracks = []
         self.instruments = set()
         self.channels = set()
-        self.resolution = 1000 # this is ticksPerBeat
+        self.resolution = resolution # this is ticksPerBeat
         self.bpm = 100
         self.format = 1
         self.loop = False
@@ -437,6 +459,10 @@ class MidiObj:
 
     def setBPM(self, bpm):
         self.bpm = bpm
+
+    def rescaleTime(self, sf):
+        for track in self.tracks:
+            track.rescaleTime(sf)
 
     def getTicksPerSec(self):
         # resolution is ticksPerBeat
