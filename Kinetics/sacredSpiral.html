@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Spiral Dance Animation</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			xbody {
+				font-family: Monospace;
+				background-color: #000;
+				color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				text-align: center;
+				padding: 10px;
+				z-index: 10;
+				width: 100%;
+				position: absolute;
+			}
+
+			a {
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			#stats { position: absolute; top:0; left: 0 }
+			#stats #fps { background: transparent !important }
+			#stats #fps #fpsText { color: #aaa !important }
+			#stats #fps #fpsGraph { display: none }
+		</style>
+	</head>
+
+	<body>
+
+<div id="controls">
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   Controls: <input id="showParams" type="checkbox">
+   &nbsp;
+   <input id="reset" type="button" value="reset">
+   &nbsp;
+   <span id="viewControls"></span id="viewControls">
+   &nbsp;
+   <span id="scriptControls"></span id="scriptControls">
+
+   <div id="params" hidden>
+       <div id="midiControl">
+       </div>
+       <div id="audioControl">
+       </div>
+<p>
+   </div>
+</div>
+
+		<div id="info">Spiral Dance Connecting Earth and Heaven<br/>
+			Toggle:
+                        <a onclick="SKIRT.rotateSkirts = !SKIRT.rotateSkirts;">Rotate Skirt</a> |
+                        <a onclick="rotateCam = !rotateCam;">Rotate Camera</a> |
+			<a onclick="SKIRT.wind = !SKIRT.wind;">Wind</a> |
+		</div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="js/three.js"></script>
+	<script src="js/Detector.js"></script>
+	<script src="js/libs/stats.min.js"></script>
+
+	<script src="GetWebSock.js"></script>
+        <script src="js/PVControls.js"></script>
+ 
+<!-- Beginning of midi scripts -->
+	<!-- shims -->
+	<script src="./wmb/Base64.js"></script>
+	<script src="./wmb/Base64binary.js"></script>
+	<script src="./wmb/WebAudioAPI.js"></script>
+	<!-- midi.js package -->
+	<script src="./wmb/audioDetect.js"></script>
+	<script src="./wmb/gm.js"></script>
+	<script src="./wmb/loader.js"></script>
+	<script src="./wmb/plugin.audiotag.js"></script>
+	<script src="./wmb/plugin.webaudio.js"></script>
+	<script src="./wmb/plugin.webmidi.js"></script>
+	<script src="./wmb/player.js"></script>
+	<!-- utils -->
+	<script src="./wmb/dom_request_xhr.js"></script>
+	<script src="./wmb/dom_request_script.js"></script>
+	<!-- includes -->
+	<script src="./wmb/timer.js"></script>
+<!-- End of midi scripts -->
+<script src="paramsGUI.js"></script>
+<script src="js/ANIM.js"></script>
+<script src="js/ISPIRAL.js"></script>
+<script src="js/SKIRT.js"></script>
+<script src="js/SCRIPT.js"></script>
+<script src="js/AUDIO.js"></script>
+<script src="js/HURRICANE.js"></script>
+<script src="js/PLAYER.js"></script>
+<script src="js/CHAKRA.js"></script>
+<script src="spiralDanceScripts.js"></script>
+<script>
+
+var imageBase = "../imagesPow2";
+imageList = [];
+var numImages = 50;
+for (var i=1; i<=128; i++) {
+    var j = (i % numImages) + 1;
+    imageList.push(imageBase + "/image"+j+".png");
+};
+
+var imageList1 = imageList;
+var imageList2 = imageList;
+var imageList3 = imageList2;
+
+var t0 = 0;
+var angle = 0;
+var prev_a = null;
+//var CRANK_ANGLE = null;
+
+WS = GetWebSock({'motion': handleMotion,
+                 'YEI': handleYEI } );
+
+function handleMotion(msg)
+{
+}
+
+function handleYEI(msg) {
+   //report("msg: "+JSON.stringify(msg));
+   var angles = msg.angles;
+   var a = angles[1];
+
+   var da = 0;
+   if (prev_a == null) {
+      prev_a = a;
+   }
+   else {
+      da = a - prev_a;
+      prev_a = a;
+      if (da > 180)
+         da -= 360;
+      if (da < -180)
+         da += 360;
+   }
+   angle += da;
+  // report("angle: "+angle);
+   SKIRT.CRANK_ANGLE = angle*Math.PI/180;
+   PLAYER.crankAngle = SKIRT.CRANK_ANGLE;
+}
+
+function vec3(x,y,z) { return new THREE.Vector3(x,y,z); }
+
+
+var scene;
+			/* testing cloth simulation */
+
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var container, stats;
+			var camera, renderer;
+
+			var object, arrow;
+
+			var rotateCam = false;
+			var rotateSkirt = false;
+	                var ballSpiral1 = null;
+	                var ballSpiral2 = null;
+
+			init();
+                        PLAYER.scene = scene;
+                        PLAYER.graphicsScale = [100,100,100];
+			animate();
+
+
+			function init() {
+	                        P = {};
+
+                                P.v0 = 0.04;
+                                P.theta0 = 0;
+                                P.xbias = 0;
+                                P.lastTrackedTime = 0;
+                                P.pauseTime = 5;
+	             
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				// scene
+
+				scene = new THREE.Scene();
+
+				scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 ); //NOFOG
+				//scene.fog = new THREE.Fog( 0xcce0ff, 500, 50000 ); //NOFOG
+
+				// camera
+
+				//camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 30000 );
+				camera.position.y = 50;
+				camera.position.z = 1500;
+				scene.add( camera );
+	                        P.camera = camera;
+
+				// lights
+
+				var light, materials;
+
+				scene.add( new THREE.AmbientLight( 0x666666 ) );
+
+	                        var group = new THREE.Scene();
+	                        scene.add(group);
+
+				light = new THREE.DirectionalLight( 0xdfebff, 1.75 );
+				light.position.set( 50, 200, 100 );
+				light.position.multiplyScalar( 1.3 );
+
+				light.castShadow = true;
+				//light.shadowCameraVisible = true;
+
+				light.shadowMapWidth = 1024;
+				light.shadowMapHeight = 1024;
+
+				//var d = 300;
+				var d = 1200;
+
+				light.shadowCameraLeft = -d;
+				light.shadowCameraRight = d;
+				light.shadowCameraTop = d;
+				light.shadowCameraBottom = -d;
+
+				light.shadowCameraFar = 1000;
+				light.shadowDarkness = 0.5;
+
+				scene.add( light );
+
+	                        var chakra = new Chakra(1, {scale: [2.1,.8, 2.1], scene: scene});
+	                        var chakra = new Chakra(2, {scene: scene, spiral: 1});
+	                        var chakra = new Chakra(3, {scene: scene});
+	                        var chakra = new Chakra(4, {scene: scene, spiral: 1});
+	                        var chakra = new Chakra(5, {scene: scene});
+	                        var chakra = new Chakra(6, {scene: scene});
+	                        var chakra = new Chakra(7, {scene: scene,
+	                                                    imageSpiral: {images: imageList1}});
+
+				var skirt = SKIRT.setupSkirt(scene, 'textures/patterns/paisley1.jpg', vec3(   0,  0,  0));
+
+				// ground
+	                        var texLoader = new THREE.TextureLoader();
+				//var groundTexture = texLoader.load( "textures/terrain/grasslight-big.jpg" );
+				//groundTexture.repeat.set( 25, 25 );
+				//var groundTexture = texLoader.load( "textures/terrain/dark_grass.png" );
+				//groundTexture.repeat.set( 15, 15 );
+				var groundTexture = texLoader.load( "textures/terrain/red_earth.png" );
+				groundTexture.repeat.set( 15, 15 );
+				//var groundTexture = texLoader.load( "textures/terrain/BrownLeaves.jpg" );
+				groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+				//groundTexture.repeat.set( 5, 5 );
+				groundTexture.anisotropy = 16;
+				
+				var groundMaterial = new THREE.MeshPhongMaterial( { //color: 0xffffff,
+                                                                                    color: 0x664444,
+	                                                                            specular: 0x111111,
+	                                                                            map: groundTexture } );
+
+				var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
+				mesh.position.y = -250;
+				mesh.rotation.x = - Math.PI / 2;
+				mesh.receiveShadow = true;
+				scene.add( mesh );
+
+				hurricane = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,6000,0));
+		                scene.add(hurricane.group);
+
+	       /*
+	                        imageSpiral1 = new ImageSpiral(imageList, {scale: [4,20,20], position: [0,200,0]});
+	                        images = imageSpiral1.images;
+	                        images.rotation.z = Math.PI/2;
+	                        scene.add(images);
+
+	                        imageSpiral2 = new ImageSpiral(imageList2, {scale: [4,20,20], position: [0,300,0]});
+	                        images = imageSpiral2.images;
+	                        images.rotation.z = Math.PI/2;
+	                        scene.add(images);
+
+	                        imageSpiral3 = new ImageSpiral(imageList3, {scale: [40,200,200], position: [0,800,0]});
+	                        images = imageSpiral3.images;
+	                        images.rotation.z = Math.PI/2;
+	                        scene.add(images);
+	       */
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColor( scene.fog.color ); //NOFOG
+
+				container.appendChild( renderer.domElement );
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+				//renderer.shadowMapEnabled = true;
+				renderer.shadowMap.enabled = true;
+
+				//
+
+				stats = new Stats();
+				container.appendChild( stats.domElement );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+	                        trackball = 1;
+                                if (trackball) {
+                                 //controls = new THREE.TrackballControls( camera, container );
+                                 //controls = new THREE.EditorControls( camera, container );
+                                 //controls = new THREE.OrthographicTrackballControls( camera, container );
+	                         //controls = new THREE.OrbitControls( camera, container );
+	                         controls = new THREE.PVControls( camera, container, scene );
+                                 controls.rotateSpeed = 2.0;
+                                 controls.zoomSpeed = 1.2;
+                                 controls.panSpeed = 0.8;
+
+                                 controls.noZoom = false;
+                                 controls.noPan = false;
+
+                                 controls.staticMoving = true;
+                                 controls.dynamicDampingFactor = 0.3;
+
+                                 controls.keys = [ 65, 83, 68 ];
+                                 //controls.addEventListener( 'change', render );
+                               }
+			}
+
+			//
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			//
+
+			function animate() {
+				requestAnimationFrame( animate );
+				render();
+				var time = Date.now();
+				//arrow.setLength( windMag );
+				//arrow.setDirection( SKIRT.windForce );
+				SKIRT.simulate(time);
+	                        if (PLAYER)
+                                    PLAYER.update();
+	                        var ct = new Date().getTime() / 1000;
+                                adjust = 1;
+	                        if (hurricane) {
+	                            hurricane.update();
+	                        }
+                                if (adjust) {
+                         	      if (ct - P.lastTrackedTime > P.pauseTime)
+                         		  t0 += P.v0;
+      /*
+                                      imageSpiral1.update(t0);
+                                      imageSpiral2.update(2*t0);
+                                      imageSpiral3.update(1.2*t0);
+*/
+                                      if (CHAKRA)
+                                          CHAKRA.update(t0);
+                                      //imageSpiral1.update();
+                                      //imageSpiral2.update();
+                                      //imageSpiral3.update();
+		                      if (ballSpiral1)
+                                          ballSpiral1.update(t0);
+                                      if (ballSpiral2)
+                                          ballSpiral2.update(2.5*t0);
+                                }
+	       
+				renderer.render( scene, camera );
+		                if (ANIM) {
+		                   ANIM.update();
+                                }
+				stats.update();
+			}
+
+
+			function render() {
+				var timer = Date.now() * 0.0002;
+				//sphere.position.copy( ballPosition );
+				if ( rotateCam ) {
+					camera.position.x = Math.cos( timer ) * 1500;
+					camera.position.z = Math.sin( timer ) * 1500;
+				        camera.lookAt( scene.position );
+				}
+				//camera.lookAt( scene.position );
+			}
+
+
+$(document).ready(function() {
+   report("Setting up GUI");
+   setupGUI(["v0", "PLAYER.crankFactor"]);
+   var instrument = "acoustic_grand_piano";
+   //instrument = "choir_aahs";
+   MIDI.loader=new sketch.ui.Timer;
+   PLAYER.loadInstrument(instrument);
+   //script1.run();
+});
+
+		</script>
+	</body>
+</html>
