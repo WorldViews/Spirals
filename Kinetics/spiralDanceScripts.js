@@ -5,24 +5,41 @@ new SCRIPT.Script("Reset", [
         {action: function () { AUDIO.stop();   }},
 ]);
 
-script1 = new SCRIPT.Script("spiralDanceScript1", [
+script1 = new SCRIPT.Script("SacredSpiral", [
+    {t: 0,
+     action: function() { AUDIO.play("Unconditional.mp3");   }},
     {t: 2,
      foo: "bar",
      action: function() {
 	    ANIM.gotoView("Home", 2);	     
 	}},
-    {t: 4, action: function() {
-	     ANIM.gotoView("Closer", 2);
-         }}
-    {t: 8, action: function() {
-	     ANIM.gotoView("Look at 2", 2);
-         }}
-    {t: 12, action: function() {
-	     ANIM.gotoView("2 Looking Out", 2);
-         }}
-    {t: 16, action: function() {
-	     ANIM.gotoView("3 Looking Out", 2);
-         }}
+    {t: 20, action: function() {
+	     ANIM.gotoView("Closer", 6);
+	}},
+    {t: 30, action: function() {
+	     ANIM.gotoView("Look at 2", 8);
+	}},
+    {t: 50, action: function() {
+	     ANIM.gotoView("2 Looking Out", 9);
+	}},
+    {t: 70, action: function() {
+	     ANIM.gotoView("3 Looking Out", 20);
+	}},
+    {t: 130, action: function() { // begin transition
+	     ANIM.gotoView("3 Looking Down", 20);
+	}},
+    {t: 200, action: function() {
+	     ANIM.gotoView("Above Head Looking Down", 20);
+	}},
+    {t: 300, action: function() {
+	     ANIM.gotoView("Above", 20);
+	}},
+    {t: 360, action: function() {
+	     ANIM.gotoView("Hurricane Base", 20);
+	}},
+    {t: 420, action: function() {
+	     ANIM.gotoView("Hurricane", 30);
+	}},
 ]);
 
 
