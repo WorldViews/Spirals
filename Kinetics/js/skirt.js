@@ -465,6 +465,7 @@ SKIRT.setupSkirt = function(scene, texPath, pos) {
     object.position.set( 0, 0, 0 );
     object.castShadow = true;
     object.receiveShadow = true;
+    skirt.mesh = object;
     scene.add( object );
 
     var useShaders = false;
