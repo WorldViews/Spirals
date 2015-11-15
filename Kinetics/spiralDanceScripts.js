@@ -6,26 +6,25 @@ new SCRIPT.Script("Reset", [
 ]);
 
 script1 = new SCRIPT.Script("spiralDanceScript1", [
-    {t: 0, foo: "bar"},
-    {t: 5, foo: "bar"},
-    {t: 10, foo: "bar", action: function() {
-	    ANIM.gotoView("Above", 6);	     
+    {t: 2,
+     foo: "bar",
+     action: function() {
+	    ANIM.gotoView("Home", 2);	     
 	}},
-    {t: 20, foo: "bar", action: function() {
-	     ANIM.gotoView("PhotoHead", 6);
+    {t: 4, action: function() {
+	     ANIM.gotoView("Closer", 2);
+         }}
+    {t: 8, action: function() {
+	     ANIM.gotoView("Look at 2", 2);
+         }}
+    {t: 12, action: function() {
+	     ANIM.gotoView("2 Looking Out", 2);
+         }}
+    {t: 16, action: function() {
+	     ANIM.gotoView("3 Looking Out", 2);
          }}
 ]);
 
-script1 = new SCRIPT.Script("spiralDanceScript1", [
-    {t: 0, foo: "bar"},
-    {t: 5, foo: "bar"},
-    {t: 10, foo: "bar", action: function() {
-	    ANIM.gotoView("Above", 6);	     
-	}},
-    {t: 20, foo: "bar", action: function() {
-	     ANIM.gotoView("PhotoHead", 6);
-         }}
-]);
 
 new SCRIPT.Script("Silk Road", [
     {t: 0, foo: "bar"},
