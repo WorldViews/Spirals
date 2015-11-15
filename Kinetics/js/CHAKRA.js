@@ -15,7 +15,9 @@ function Chakra(num, opts)
     this.spiral = null;
     this.imageSpiral = null;
     this.opts = opts;
-
+    this.speed = 1;
+    if (opts.speed)
+	this.speed = opts.speed;
     this.init = function() {
 	CHAKRA.chakras[this.num] = this;
 	this.y = 100 + this.num*50;
@@ -91,9 +93,9 @@ function Chakra(num, opts)
 
     this.update = function(t) {
 	if (this.spiral)
-	    this.spiral.update(t);
+	    this.spiral.update(this.speed*t);
 	if (this.imageSpiral)
-	    this.imageSpiral.update(t);
+	    this.imageSpiral.update(this.speed*t);
     }
 
     this.init();

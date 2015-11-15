@@ -115,7 +115,10 @@ var imageList3 = imageList2;
 var t0 = 0;
 var angle = 0;
 var prev_a = null;
-//var CRANK_ANGLE = null;
+var CRANK_FACTOR = 4;
+var CRANK_ANGLE = null;
+var PREV_CRANK_ANGLE = null;
+var DELTA_CRANK_ANGLE = 0;
 
 WS = GetWebSock({'motion': handleMotion,
                  'YEI': handleYEI } );
@@ -143,8 +146,14 @@ function handleYEI(msg) {
    }
    angle += da;
   // report("angle: "+angle);
-   SKIRT.CRANK_ANGLE = angle*Math.PI/180;
-   PLAYER.crankAngle = SKIRT.CRANK_ANGLE;
+   CRANK_ANGLE = angle*Math.PI/180;
+   if (PREV_CRANK_ANGLE == null) {
+        PREV_CRANK_ANGLE = CRANK_ANGLE;
+   }
+   DELTA_CRANK_ANGLE = CRANK_ANGLE - PREV_CRANK_ANGLE;
+   PREV_CRANK_ANGLE = CRANK_ANGLE;
+   SKIRT.CRANK_ANGLE = CRANK_ANGLE;
+   PLAYER.crankAngle = CRANK_ANGLE;
 }
 
 function vec3(x,y,z) { return new THREE.Vector3(x,y,z); }
@@ -163,8 +172,6 @@ var scene;
 
 			var rotateCam = false;
 			var rotateSkirt = false;
-	                var ballSpiral1 = null;
-	                var ballSpiral2 = null;
 
 			init();
                         PLAYER.scene = scene;
@@ -233,9 +240,9 @@ var scene;
 				scene.add( light );
 
 	                        var chakra = new Chakra(1, {scale: [2.1,.8, 2.1], scene: scene});
-	                        var chakra = new Chakra(2, {scene: scene, spiral: 1});
+	                        var chakra = new Chakra(2, {scene: scene, speed: 1, spiral: 1});
 	                        var chakra = new Chakra(3, {scene: scene});
-	                        var chakra = new Chakra(4, {scene: scene, spiral: 1});
+	                        var chakra = new Chakra(4, {scene: scene, speed: 2, spiral: 1});
 	                        var chakra = new Chakra(5, {scene: scene});
 	                        var chakra = new Chakra(6, {scene: scene});
 	                        var chakra = new Chakra(7, {scene: scene,
@@ -354,28 +361,19 @@ var scene;
 	                        if (PLAYER)
                                     PLAYER.update();
 	                        var ct = new Date().getTime() / 1000;
-                                adjust = 1;
 	                        if (hurricane) {
 	                            hurricane.update();
 	                        }
-                                if (adjust) {
-                         	      if (ct - P.lastTrackedTime > P.pauseTime)
-                         		  t0 += P.v0;
-      /*
-                                      imageSpiral1.update(t0);
-                                      imageSpiral2.update(2*t0);
-                                      imageSpiral3.update(1.2*t0);
-*/
-                                      if (CHAKRA)
-                                          CHAKRA.update(t0);
-                                      //imageSpiral1.update();
-                                      //imageSpiral2.update();
-                                      //imageSpiral3.update();
-		                      if (ballSpiral1)
-                                          ballSpiral1.update(t0);
-                                      if (ballSpiral2)
-                                          ballSpiral2.update(2.5*t0);
+	                        // Adjust
+	                        if (CRANK_ANGLE) {
+                                    t0 += P.v0 * DELTA_CRANK_ANGLE * CRANK_FACTOR;
                                 }
+                                else {
+	                            if (ct - P.lastTrackedTime > P.pauseTime)
+                                       t0 += P.v0;
+                                }
+                                if (CHAKRA)
+                                          CHAKRA.update(t0);
 	       
 				renderer.render( scene, camera );
 		                if (ANIM) {
