@@ -1,6 +1,6 @@
 
 var P = null;
-var HORIZONTAL = true;
+
 THREE.ImageUtils.crossOrigin = '';
 
 ISPIRAL = {};
@@ -86,6 +86,9 @@ function ImageSpiral(imageList, opts)
       this.boxW = 1.5;
       this.boxH = 0.8;
       this.boxD = 0.1;
+      this.lookAtPos = null;
+      if (opts.lookAtPos)
+	  this.lookAtPos = opts.lookAtPos;
       report("getImageSpiral "+JSON.stringify(opts));
       var imageObjs = [];
       this.imageObjs = imageObjs;
@@ -100,21 +103,40 @@ function ImageSpiral(imageList, opts)
       this.images = images;
       if (opts.scale) {
           report("Setting spiral scale "+opts.scale);
+	  //images.scale.copy(opts.scale);
 	  images.scale.x = opts.scale[0];
 	  images.scale.y = opts.scale[1];
 	  images.scale.z = opts.scale[2];
       }
       if (opts.position) {
           report("Setting spiral position "+opts.position);
+	  images.position.copy(opts.position);
 	  images.position.x = opts.position[0];
 	  images.position.y = opts.position[1];
 	  images.position.z = opts.position[2];
       }
-      function adjust(t0) {
+
+      this.adjust = function(t) {
+	  report("please use update instead of adjust");
+	  this.update(t);
+      }
+
+      function update(t0) {
+	  /*
+	  if (!t) {
+	      t = Date.now()/1000;
+	  }
+	  if (!this.prevT) {
+	      this.prevT = t;
+	  }
+	  var dt = t - this.prevT;
+	  this.prevT = t;
+	  */
 	  ISPIRAL.adjustImageObjs(this, t0);
       }
-      this.adjust = adjust;
-      this.adjust();
+      this.update = update;
+
+      this.update();
 }
 
 function BallSpiral(numItems, opts)
@@ -145,48 +167,21 @@ function BallSpiral(numItems, opts)
 	  group.position.y = opts.position[1];
 	  group.position.z = opts.position[2];
       }
-      function adjust(t0) {
+
+      this.adjust = function(t) {
+	  report("please use update instead of adjust");
+	  this.update(t);
+      }
+
+      this.update = function(t0) {
 	  ISPIRAL.adjustObjs(this, t0);
       }
-      this.adjust = adjust;
-      this.adjust();
+
+      this.update();
 }
 
 
-ISPIRAL.vertical_adjustImageObjs = function(t0)
-{
-    if (!t0)
-	t0 = 0;
-    var z0 = 0;
-    var dy = 0.2;
-    var dt = 1;
-    var omega = 0.2;
-    var t = t0;
-    var r = 3;
-    var zspeed = .005;
-    var N = spiral.imageObjs.length;
-    for (var i=0; i<N; i++) {
-        var s = 20.0/(100 + N - i);
-        r = 7*s;
-        var imageObj = spiral.imageObjs[i];
-        t += dt;
-        var theta = omega*t;
-        var x = r*Math.cos(theta);
-        var y = r*Math.sin(theta);
-        var z = zspeed*i;
-        report("imageObj "+i+"  x: "+x+"  y: "+y+"   z: "+z);
-        imageObj.scale.x = s;
-        imageObj.scale.y = s;
-        imageObj.scale.z = s;
-        imageObj.rotation.y = - theta + Math.PI/2;
-        imageObj.position.x = x;
-        imageObj.position.z = y;
-	imageObj.position.y = z;
-    }
-}
-
-
-ISPIRAL.horizontal_adjustImageObjs = function(spiral, t0)
+ISPIRAL.adjustImageObjs = function(spiral, t0)
 {
     if (!t0)
 	t0 = 0;
@@ -215,10 +210,16 @@ ISPIRAL.horizontal_adjustImageObjs = function(spiral, t0)
         s = s*s*s*s + 0.001; // make sure not zero
 	s = 1.1*s
         var r = 2.9*s;
+	XXX = spiral.imageObjs;
         var obj = spiral.imageObjs[i];
+	//report("N: "+N+" i: "+i+" j: "+j);
+	//report("spiral.imageObjs "+spiral.imageObjs)
+	//report("spiral.imageObjs.length "+spiral.imageObjs.length)
+	//report("obj: "+obj);
         var y = y0 + r*Math.cos(theta);
         var z = z0 + r*Math.sin(theta);
         //report("imageObj "+i+"  x: "+x+"  y: "+y+"   z: "+z+" s: "+s+" theta: "+theta);
+	//report("spiral.imageObjs.length "+spiral.imageOjs.length);
         obj.rotation.x = theta - Math.PI/2;
         obj.position.x = x;
 	obj.position.y = y;
@@ -233,15 +234,9 @@ ISPIRAL.horizontal_adjustImageObjs = function(spiral, t0)
 	    obj.obj.rotation.x = - Math.PI/2;
 	}
 	//obj.lookAt(new THREE.Vector3(10000,0,0));
+	if (spiral.lookAtPos)
+	    obj.lookAt(spiral.lookAtPos);
     }
-}
-
-ISPIRAL.adjustImageObjs = function(spiral, t0)
-{
-    if (HORIZONTAL)
-        return ISPIRAL.horizontal_adjustImageObjs(spiral, t0);
-    else
-        return ISPIRAL.vertical_adjustImageObjs(spiral, t0);
 }
 
 

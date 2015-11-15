@@ -109,15 +109,15 @@
 
 var imageBase = "../imagesPow2";
 imageList = [];
-for (var i=1; i<=49; i++) {
-    imageList.push(imageBase + "/image"+i+".png");
+var numImages = 50;
+for (var i=1; i<=128; i++) {
+    var j = i % numImages;
+    imageList.push(imageBase + "/image"+j+".png");
 };
 
 var imageList2 = imageList;
-var imageList3 = [];
-for (var i=1; i<=49; i++) {
-    imageList3.push(imageBase + "/image"+i+".png");
-};
+var imageList3 = imageList2;
+
 
 var t0 = 0;
 var angle = 0;
@@ -388,13 +388,39 @@ var scene;
 
 			function animate() {
 				requestAnimationFrame( animate );
+				render();
 				var time = Date.now();
 				//arrow.setLength( windMag );
 				//arrow.setDirection( SKIRT.windForce );
 				SKIRT.simulate(time);
-				render();
 	                        if (PLAYER)
                                     PLAYER.update();
+	                        var ct = new Date().getTime() / 1000;
+                                adjust = 1;
+	                        if (hurricane) {
+	                            hurricane.update();
+	                        }
+                                if (adjust) {
+                         	      if (ct - P.lastTrackedTime > P.pauseTime)
+                         		  t0 += P.v0;
+
+                                      imageSpiral1.update(t0);
+                                      imageSpiral2.update(2*t0);
+                                      imageSpiral3.update(1.2*t0);
+
+                                      //imageSpiral1.update();
+                                      //imageSpiral2.update();
+                                      //imageSpiral3.update();
+		                      if (ballSpiral1)
+                                          ballSpiral1.update(t0);
+                                      if (ballSpiral2)
+                                          ballSpiral2.update(2.5*t0);
+                                }
+	       
+				renderer.render( scene, camera );
+		                if (ANIM) {
+		                   ANIM.update();
+                                }
 				stats.update();
 			}
 
@@ -408,28 +434,6 @@ var scene;
 				        camera.lookAt( scene.position );
 				}
 				//camera.lookAt( scene.position );
-
-	                        var ct = new Date().getTime() / 1000;
-                                adjust = 1;
-	                        if (hurricane) {
-	                            hurricane.update();
-	                        }
-                                if (adjust) {
-                         	      if (ct - P.lastTrackedTime > P.pauseTime)
-                         		  t0 += P.v0;
-                                      imageSpiral1.adjust(t0);
-                                      imageSpiral2.adjust(2*t0);
-                                      imageSpiral3.adjust(4*t0);
-		                      if (ballSpiral1)
-                                          ballSpiral1.adjust(t0);
-                                      if (ballSpiral2)
-                                          ballSpiral2.adjust(2.5*t0);
-                                }
-	       
-				renderer.render( scene, camera );
-		                if (ANIM) {
-		                   ANIM.update();
-                                }
 		                /*
                                 if (controls && controls.update) {
                                  //  controls.update();

@@ -51,7 +51,7 @@ def genImagesPow2(inputDir, outputDir):
         opath = os.path.join(outputDir, name)
         genImagePow2(path, opath)
 
-def genImagesPow2Rename(inputDir, outputDir):
+def genImagesPow2Rename(inputDir, outputDir, cornerRad=None):
     verifyDir(outputDir)
     names = os.listdir(inputDir)
     i = 0
@@ -63,11 +63,12 @@ def genImagesPow2Rename(inputDir, outputDir):
         oname = "image%d.png" % i
         path = os.path.join(inputDir, name)
         opath = os.path.join(outputDir, oname)
-        genImagePow2(path, opath)
+        genImagePow2(path, opath, cornerRad)
 
 
 
 if __name__ == '__main__':
     genImagesPow2Rename("../images", "../imagesPow2")
+    genImagesPow2Rename("../images", "../imagesRoundedPow2", cornerRad=200)
 #    genImagePow2("images/clouds.png", "images/cloudsP2.png", 128,128)
 

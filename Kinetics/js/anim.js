@@ -248,6 +248,10 @@ ANIM.handleBookmarks = function(obj)
         //ANIM.viewNames.push(name);
         $("#viewNameSelection").append($('<option>', { value: name, text: name}));
     }
+    if (ANIM.views["Home"]) {
+	report("Going to Home after loading bookmarks");
+	ANIM.gotoView("Home", 1);
+    }
 }
 
 ANIM.uploadBookmarks = function()
