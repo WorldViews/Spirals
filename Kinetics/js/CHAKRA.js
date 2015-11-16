@@ -28,7 +28,7 @@ function Chakra(num, opts)
         this.material = material;
         material.color.setHSL(this.hue, .9, .5);
         material.transparent = true;
-        material.opacity = .8;
+        material.opacity = .2;
         var mesh = new THREE.Mesh( geo, material );
         mesh.position.y = this.y;
         mesh.castShadow = false;

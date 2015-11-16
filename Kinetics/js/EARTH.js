@@ -60,8 +60,8 @@ EARTH.Earth = function(group, radius)
 	lg.rotation.set(phi, theta, 0, "YXZ");
 	*/
 	lg.add(marker);
-	var axisHelper = new THREE.AxisHelper( 10*h );
-	lg.add( axisHelper );
+	//var axisHelper = new THREE.AxisHelper( 10*h );
+	//lg.add( axisHelper );
 	return lg;
     }
 
