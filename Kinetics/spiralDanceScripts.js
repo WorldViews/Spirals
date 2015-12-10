@@ -5,26 +5,93 @@ new SCRIPT.Script("Reset", [
         {action: function () { AUDIO.stop();   }},
 ]);
 
-script1 = new SCRIPT.Script("spiralDanceScript1", [
-    {t: 0, foo: "bar"},
-    {t: 5, foo: "bar"},
-    {t: 10, foo: "bar", action: function() {
-	    ANIM.gotoView("Above", 6);	     
+script1 = new SCRIPT.Script("SacredSpiral", [
+    {t: 0,
+     action: function() {
+	    ANIM.gotoView("Home", 2);	     
 	}},
-    {t: 20, foo: "bar", action: function() {
-	     ANIM.gotoView("PhotoHead", 6);
-         }}
+    {t: 30,
+     action: function() { AUDIO.play("Unconditional.mp3");   }},
+    {t: 31, action: function() {
+	     ANIM.gotoView("Closer", 20);
+	}},
+    {t: 60, action: function() {
+	     ANIM.gotoView("Look at 2", 10);
+	}},
+    {t: 80, action: function() {
+	     ANIM.gotoView("2 Looking Out", 9);
+	}},
+    {t: 100, action: function() {
+	     ANIM.gotoView("3 Looking Out", 20);
+	}},
+    {t: 160, action: function() { // begin transition
+	     ANIM.gotoView("3 Looking Down", 20);
+	}},
+    {t: 200, action: function() {
+	     ANIM.gotoView("Above Head Looking Down", 20);
+	}},
+    {t: 300, action: function() {
+	     ANIM.gotoView("Above", 20);
+	}},
+    {t: 360, action: function() {
+	     ANIM.gotoView("Hurricane Base", 20);
+	}},
+    {t: 420, action: function() {
+	     ANIM.gotoView("Hurricane", 30);
+	}},
 ]);
 
-script1 = new SCRIPT.Script("spiralDanceScript1", [
-    {t: 0, foo: "bar"},
-    {t: 5, foo: "bar"},
-    {t: 10, foo: "bar", action: function() {
-	    ANIM.gotoView("Above", 6);	     
+
+new SCRIPT.Script("SacredSpiralFancy", [
+    {t: 0,
+     action: function() {
+            CHAKRA.chakras[5].hideSpiral();
+            CHAKRA.chakras[6].hideSpiral();
+            CHAKRA.chakras[7].hideSpiral();
+	    ANIM.gotoView("Home", 2);	     
 	}},
-    {t: 20, foo: "bar", action: function() {
-	     ANIM.gotoView("PhotoHead", 6);
-         }}
+    {t: 30,
+     action: function() { AUDIO.play("Unconditional.mp3");   }},
+    {t: 31, action: function() {
+	     ANIM.gotoView("Closer", 20);
+	}},
+    {t: 60, action: function() {
+	     ANIM.gotoView("Look at 2", 10);
+	}},
+    {t: 80, action: function() {
+	     ANIM.gotoView("2 Looking Out", 9);
+	}},
+    {t: 100, action: function() {
+	     ANIM.gotoView("3 Looking Out", 20);
+	}},
+    {t: 160, action: function() { // begin transition
+	     ANIM.gotoView("3 Looking Down", 20);
+            CHAKRA.chakras[5].addSpiral();
+            CHAKRA.chakras[6].addSpiral();
+            CHAKRA.chakras[7].addSpiral();
+	}},
+    {t: 200, action: function() {
+	     ANIM.gotoView("Above Head Looking Down", 20);
+	}},
+    {t: 300, action: function() {
+	     ANIM.gotoView("Above", 20);
+	}},
+    {t: 360, action: function() {
+	     ANIM.gotoView("Hurricane Base", 20);
+	}},
+    {t: 420, action: function() {
+	     ANIM.gotoView("Hurricane", 30);
+	}},
+]);
+
+
+new SCRIPT.Script("SacredSpiralReset", [
+    {t: 0,
+     action: function() {
+            CHAKRA.chakras[5].hideSpiral();
+            CHAKRA.chakras[6].hideSpiral();
+            CHAKRA.chakras[7].hideSpiral();
+	}},
 ]);
 
 new SCRIPT.Script("Silk Road", [

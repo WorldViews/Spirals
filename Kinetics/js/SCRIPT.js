@@ -2,6 +2,7 @@
 SCRIPT = {}
 SCRIPT.scripts = {}
 SCRIPT.currentScript = null;
+SCRIPT.SCRIPT_URL = "spiralDanceScripts.js";
 
 SCRIPT.stopAll = function()
 {
@@ -156,14 +157,22 @@ SCRIPT.toggleScript = function()
     }
 }
 
+SCRIPT.reloadScript = function()
+{
+    report("reloadScripts "+SCRIPT.SCRIPT_URL);
+    $.getScript(SCRIPT.SCRIPT_URL);
+}
+
 SCRIPT.setupButtons = function()
 {
     hstr = '&nbsp;&nbsp;Script ';
     hstr += '<select id="scriptSelect"></select>';
     hstr += '&nbsp;';
     hstr += '<button id="scriptButton" style="width:50px;">Run</button>\n';
+    hstr += '<button id="scriptReload">Reload</button>\n';
     $("#scriptControls").html(hstr);
     $("#scriptButton").click(SCRIPT.toggleScript);
+    $("#scriptReload").click(SCRIPT.reloadScript);
     $("#scriptSelect").change(SCRIPT.scriptSelectionChanged);
 }
 

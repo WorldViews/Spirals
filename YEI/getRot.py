@@ -4,8 +4,8 @@ import threespace_api as ts_api
 
 def getRot(maxTime = None):
     t0 = time.time()
-    #device_list = ts_api.getComPorts(filter=ts_api.TSS_FIND_USB)
-    device_list = ts_api.getComPorts()
+    device_list = ts_api.getComPorts(filter=ts_api.TSS_FIND_USB)
+    #device_list = ts_api.getComPorts()
 
     print "device_list:", device_list
     com_port = device_list[0]
