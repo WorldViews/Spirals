@@ -86,7 +86,7 @@
 <script src="js/ANIM.js"></script>
 <script src="js/HURRICANE.js"></script>
 <script src="js/EARTH.js"></script>
-<script src="js/ESPIRAL.js"></script>
+<script src="js/ISPIRAL.js"></script>
 <!--
 <script src="pvplayer.js"></script>
 -->
@@ -104,8 +104,6 @@ LOCATIONS = {
 
 var egroup = null;
 var earth = null;
-amImageSpiral = null;
-nanaImageSpiral = null;
 
 var imageBase = "../imagesPow2";
 imageList = [];
@@ -184,8 +182,7 @@ var scene;
 	                        egroup = new THREE.Group();
 	                        scene.add(egroup);
 	                        eradius = 50000;
-                                earth = new EARTH.Earth(egroup, eradius, {'name':'Full'});
-                                earth1 = new EARTH.Earth(egroup, 1, {'name': 'Mini'});
+                                earth = new EARTH.Earth(egroup, eradius);
                                 for (loc in LOCATIONS) {
 	                           report("Loc: "+loc);
                                    var latLon = LOCATIONS[loc];
@@ -199,6 +196,9 @@ var scene;
                                     earth.addMarker(45, i);
                                 }
 			        */
+	                        //egroup.rotation.x = 4;
+	                        //egroup.rotation.y = 1.8;
+	                        //egroup.position.y = -(eradius + 100);
 	       
 				//light = new THREE.DirectionalLight( 0xdfebff, 1.75 );
 				light = new THREE.DirectionalLight( 0xffffff, 1.75 );
@@ -226,7 +226,6 @@ var scene;
 
                                 var sfLatLon =   LOCATIONS["SF"];
                                 var sfLoc =      earth.getLocalGroup(sfLatLon[0], sfLatLon[1]);
-                                var sfLoc1 =     earth1.getLocalGroup(sfLatLon[0], sfLatLon[1]);
                                 var amLatLon =   LOCATIONS["Amsterdam"];
                                 var amLoc =      earth.getLocalGroup(amLatLon[0], amLatLon[1]);
 				var nanaLatLon = LOCATIONS["Nanavut"];
@@ -245,14 +244,21 @@ var scene;
 	                        hurricane3.material.opacity = 0.5;
 		                nanaLoc.add(hurricane3.group);
 
-				//var h = 1
-				//sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList, {N: 256, scale: [h,h,h], position: [0,0,0]})
-				sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList,
-						     {N: 128, position: [0,0,0], h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)})
+				var h = 2000
+				sfImageSpiral = new ImageSpiral(sfImageList, {scale: [-6*h,10*h,10*h], position: [0,-25*h,0]})
 				var images = sfImageSpiral.images;
 				images.rotation.z = Math.PI/2;
-			        sfLoc1.add(images)
+			        sfLoc.add(images)
 
+				amImageSpiral = new ImageSpiral(amImageList, {scale: [-6*h,10*h,10*h], position: [0,-25*h,0]})
+				var images = amImageSpiral.images;
+				images.rotation.z = Math.PI/2;
+			        amLoc.add(images)
+
+				nanaImageSpiral = new ImageSpiral(nanaImageList, {scale: [-6*h,10*h,10*h], position: [0,-25*h,0]})
+				var images = nanaImageSpiral.images;
+				images.rotation.z = Math.PI/2;
+			        nanaLoc.add(images)
 				//
 
 				var logDepthBuf = true;
@@ -331,6 +337,13 @@ var scene;
 				if (sfImageSpiral) {
 				   sfImageSpiral.update(t0);
                                 }
+				if (amImageSpiral) {
+				   amImageSpiral.update(t0);
+                                }
+				if (nanaImageSpiral) {
+                                   nanaImageSpiral.update(t0);
+                                }
+
 		                if (ANIM) {
 		                   ANIM.update();
                                 }

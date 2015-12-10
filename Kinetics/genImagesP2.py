@@ -1,6 +1,6 @@
 
 from math import log, pow
-import os
+import os, traceback
 import Image, ImageDraw
 
 def lg(x):
@@ -28,8 +28,10 @@ def add_corners(im, rad):
     return im
 
 def genImagePow2(path, opath, ow=None, oh=None, cornerRad=200):
+    path = path.replace("\\", "/")
     if not (path.endswith(".jpg") or path.endswith(".png")):
         return
+    print "Opening", path, os.path.exists(path)
     im = Image.open(path)
     w,h = im.size
     if not ow:
@@ -49,7 +51,11 @@ def genImagesPow2(inputDir, outputDir):
     for name in names:
         path = os.path.join(inputDir, name)
         opath = os.path.join(outputDir, name)
-        genImagePow2(path, opath)
+        try:
+            genImagePow2(path, opath)
+        except:
+            traceback.print_exc()
+
 
 def genImagesPow2Rename(inputDir, outputDir, cornerRad=None):
     verifyDir(outputDir)
@@ -63,12 +69,21 @@ def genImagesPow2Rename(inputDir, outputDir, cornerRad=None):
         oname = "image%d.png" % i
         path = os.path.join(inputDir, name)
         opath = os.path.join(outputDir, oname)
-        genImagePow2(path, opath, cornerRad)
+        try:
+            genImagePow2(path, opath, cornerRad)
+        except:
+            traceback.print_exc()
 
 
 
 if __name__ == '__main__':
+    """
     genImagesPow2Rename("../images", "../imagesPow2")
     genImagesPow2Rename("../images", "../imagesRoundedPow2", cornerRad=200)
+    """
+    #genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesPow2")
+    #genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesRoundedPow2", cornerRad=200)
+    genImagesPow2Rename("C:/GitHub/WorldViews/Spirals/images/FXPAL/src", "../images/FXPAL/imagesPow2")
+    genImagesPow2Rename("C:/GitHub/WorldViews/Spirals/images/FXPAL/src", "../images/FXPAL/imagesRoundedPow2", cornerRad=200)
 #    genImagePow2("images/clouds.png", "images/cloudsP2.png", 128,128)
 

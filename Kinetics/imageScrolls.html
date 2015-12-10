@@ -28,7 +28,8 @@
 <script src="skyBox.js"></script>
 
 <script>
-wsUrl = "ws://platonia:8100";
+//wsUrl = "ws://platonia:8100";
+wsUrl = "ws://localhost:8100";
 report("using wsUrl: "+wsUrl);
 
 WS = GetWebSock({'motion': handleMotion,
@@ -38,14 +39,16 @@ WS = GetWebSock({'motion': handleMotion,
 
 //HORIZONTAL = false;
 
-var imageBase = "../imagesPow2";
+//var imageBase = "../imagesPow2";
+var imageBase = "../images";
 //imageBase = "https://jumpchat.paldeploy.com/static/physviz/images";
 
 imageList = [];
 for (var i=1; i<=256; i++) {
 //for (var i=1; i<=128; i++) {
 //for (var i=1; i<=4; i++) {
-    imageList.push(imageBase + "/image"+i+".jpg");
+//    imageList.push(imageBase + "/image"+i+".jpg");
+    imageList.push(imageBase + "/FXPAL/imagesPow2/image"+i+".png");
 }
 
 $(document).ready(function() {

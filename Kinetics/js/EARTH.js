@@ -14,11 +14,14 @@ EARTH.latLonToVector3 = function(lat, lon, radius, height) {
     return new THREE.Vector3(x,y,z);
 }
 
-EARTH.Earth = function(group, radius)
+EARTH.Earth = function(group, radius, opts)
 {
     radius = radius || 200;
 
     this.init = function() {
+        this.name = "";
+        if (opts.name)
+	    this.name = opts.name;
 	this.radius = radius;
         this.loaded = false;
 	this.group = group;
@@ -35,6 +38,7 @@ EARTH.Earth = function(group, radius)
     this.latLonToVector3 = function(lat, lng, h) {
 	if (!h)
 	    h = 1;
+        //report(""+this.name+" h: "+h+" r: "+this.radius);
 	return EARTH.latLonToVector3(lat, lng, this.radius, h);
     }
 
