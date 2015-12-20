@@ -70,7 +70,7 @@ def genImagesPow2Rename(inputDir, outputDir, cornerRad=None):
         path = os.path.join(inputDir, name)
         opath = os.path.join(outputDir, oname)
         try:
-            genImagePow2(path, opath, cornerRad)
+            genImagePow2(path, opath, cornerRad=cornerRad)
         except:
             traceback.print_exc()
 
@@ -80,10 +80,13 @@ if __name__ == '__main__':
     """
     genImagesPow2Rename("../images", "../imagesPow2")
     genImagesPow2Rename("../images", "../imagesRoundedPow2", cornerRad=200)
+
+    genImagesPow2Rename("../images/Spirals/src", "../images/Spirals/imagesPow2")
+    genImagesPow2Rename("../images/Spirals/src", "../images/Spirals/imagesRoundedPow2",
+                                                                cornerRad=200)
     """
-    #genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesPow2")
-    #genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesRoundedPow2", cornerRad=200)
-    genImagesPow2Rename("C:/GitHub/WorldViews/Spirals/images/FXPAL/src", "../images/FXPAL/imagesPow2")
-    genImagesPow2Rename("C:/GitHub/WorldViews/Spirals/images/FXPAL/src", "../images/FXPAL/imagesRoundedPow2", cornerRad=200)
-#    genImagePow2("images/clouds.png", "images/cloudsP2.png", 128,128)
+
+    genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesPow2")
+    genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesRoundedPow2",
+                                                                cornerRad=200)
 

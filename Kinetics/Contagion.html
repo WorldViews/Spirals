@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Spiral Dance Animation</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			xbody {
+				font-family: Monospace;
+				background-color: #000;
+				color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				text-align: center;
+				padding: 10px;
+				z-index: 10;
+				width: 100%;
+				position: absolute;
+			}
+
+			a {
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			#stats { position: absolute; top:0; left: 0 }
+			#stats #fps { background: transparent !important }
+			#stats #fps #fpsText { color: #aaa !important }
+			#stats #fps #fpsGraph { display: none }
+		</style>
+	</head>
+
+	<body>
+
+<div id="controls">
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   Controls: <input id="showParams" type="checkbox">
+   &nbsp;
+   <div id="params" hidden>
+   <p>
+   </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/three.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/libs/stats.min.js"></script>
+<script src="js/PVControls.js"></script>
+ 
+<script src="paramsGUI.js"></script>
+<script src="js/simpleScene.js"></script>
+
+<script>
+
+useFog = false;
+useGround = false;
+
+cards = {};
+
+function setup() {
+   report("Adding card...");
+   for (var i=0 ; i<5; i++) {
+      for (var j=0; j<3; j++) {
+          var card = SCENE.getCard(80,80);
+          card.position.copy(vec3(i*200 - 200, j*100, 10));
+          scene.add(card);
+          name = "card_"+i+"_"+j;
+          cards[name] = card;
+      }
+   }
+
+   for (var i=0 ; i<5; i++) {
+      for (var j=0; j<3; j++) {
+	 if (i == j) {
+             name = "card_"+i+"_"+j;
+             cards[name].material.color.setRGB(i/5.0, j/3.0, 1);
+         }
+      }
+   }
+}
+
+start();
+setup();
+
+$(document).ready(function() {
+   report("Setting up GUI");
+//   setupGUI(["v0", "PLAYER.crankFactor"]);
+});
+
+</script>
+</body>
+</html>

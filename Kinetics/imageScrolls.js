@@ -30,8 +30,10 @@ function getImageBox(P, imageUrl)
    //var material = new THREE.MeshPhongMaterial( { color: 0x7733dd } );
    //var material = new THREE.MeshPhongMaterial(
    var material = new THREE.MeshLambertMaterial(
-//      { color: 0xdddddd, map: THREE.ImageUtils.loadTexture(imageUrl) });
-	{ color: 0xdddddd, map: loadTexture(imageUrl) });
+	{ color: 0xdddddd,
+	  map: loadTexture(imageUrl),
+	  transparent: true
+	});
    var geometry = new THREE.BoxGeometry( P.boxW, P.boxH, P.boxD );
    var obj = new THREE.Mesh( geometry, material );
    var box = new THREE.Object3D();
@@ -45,8 +47,10 @@ function getImageBox(P, imageUrl)
 function getImageCard(P, imageUrl)
 {
    var material = new THREE.MeshLambertMaterial(
-   // { color: 0xdddddd, map: THREE.ImageUtils.loadTexture(imageUrl) });
-      { color: 0xdddddd, map: loadTexture(imageUrl) });
+      { color: 0xdddddd,
+	map: loadTexture(imageUrl),
+	transparent: true
+      });
    material.side = THREE.DoubleSide;
    var geometry = new THREE.PlaneGeometry( P.boxW, P.boxH );
    var obj = new THREE.Mesh( geometry, material );
