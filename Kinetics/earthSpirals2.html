@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Spiral Dance Animation</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			xbody {
+				font-family: Monospace;
+				background-color: #000;
+				color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				text-align: center;
+				padding: 10px;
+				z-index: 10;
+				width: 100%;
+				position: absolute;
+			}
+
+			a {
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			#stats { position: absolute; top:0; left: 0 }
+			#stats #fps { background: transparent !important }
+			#stats #fps #fpsText { color: #aaa !important }
+			#stats #fps #fpsGraph { display: none }
+		</style>
+	</head>
+
+	<body>
+
+<div id="controls">
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   Controls: <input id="showParams" type="checkbox">
+   &nbsp;
+   <input id="reset" type="button" value="reset">
+   &nbsp;
+   <span id="viewControls"></span id="viewControls">
+   &nbsp;
+   <span id="scriptControls"></span id="scriptControls">
+
+   <div id="params" hidden>
+       <div id="midiControl">
+       </div>
+       <div id="audioControl">
+       </div>
+<p>
+   </div>
+</div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="js/three.js"></script>
+	<script src="js/Detector.js"></script>
+	<script src="js/libs/stats.min.js"></script>
+
+	<script src="GetWebSock.js"></script>
+
+        <script src="js/PVControls.js"></script>
+ 
+<!-- Beginning of midi scripts -->
+	<!-- shims -->
+<!--
+	<script src="./wmb/Base64.js"></script>
+	<script src="./wmb/Base64binary.js"></script>
+	<script src="./wmb/WebAudioAPI.js"></script>
+	<script src="./wmb/audioDetect.js"></script>
+	<script src="./wmb/gm.js"></script>
+	<script src="./wmb/loader.js"></script>
+	<script src="./wmb/plugin.audiotag.js"></script>
+	<script src="./wmb/plugin.webaudio.js"></script>
+	<script src="./wmb/plugin.webmidi.js"></script>
+	<script src="./wmb/player.js"></script>
+
+	<script src="./wmb/dom_request_xhr.js"></script>
+	<script src="./wmb/dom_request_script.js"></script>
+
+	<script src="./wmb/timer.js"></script>
+-->
+<!-- End of midi scripts -->
+<script src="paramsGUI.js"></script>
+<script src="js/ANIM.js"></script>
+<script src="js/HURRICANE.js"></script>
+<script src="js/EARTH.js"></script>
+<script src="js/ESPIRAL.js"></script>
+<!--
+<script src="pvplayer.js"></script>
+-->
+<script>
+
+
+LOCATIONS = {
+   'SF': [37.7788886,-122.4171666],
+   'Amsterdam': [52.3746951,4.8285747],
+   'London': [51.5285582,-0.241681],
+   'Nanavut': [65.8111387,-95.1454389],
+   'NorthPole': [90.0,0.0],
+   'SouthPole': [-90.0,0.0],
+};
+
+var egroup = null;
+var earth = null;
+amImageSpiral = null;
+nanaImageSpiral = null;
+
+
+var imageBase = "testImages/";
+imageList = [];
+for (var i=1; i<=55; i++) {
+    var k = (i%4) + 1;
+    imageList.push(imageBase + "/image"+k+".png");
+};
+
+
+sfImageList = imageList; // These really should be specialized
+
+var t0 = 0;
+var angle = 0;
+var prev_a = null;
+
+prev_ct = null;
+
+function vec3(x,y,z) { return new THREE.Vector3(x,y,z); }
+
+
+var scene;
+			/* testing cloth simulation */
+
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var container, stats;
+			var camera, renderer;
+
+			var object, arrow;
+
+			var rotateCam = false;
+			var rotateSkirt = false;
+
+			init();
+			animate();
+
+
+			function init() {
+	                        P = {};
+
+                                P.v0 = 0.04;
+                                P.theta0 = 0;
+                                P.xbias = 0;
+                                P.lastTrackedTime = 0;
+                                P.pauseTime = 5;
+	             
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				// scene
+
+				scene = new THREE.Scene();
+
+				//scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 ); //NOFOG
+				//scene.fog = new THREE.Fog( 0xcce0ff, 500, 50000 ); //NOFOG
+
+				// camera
+
+				//camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+				//camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 200000 );
+		                NEAR = 1;
+                                FAR = 1000000;
+				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, NEAR, FAR );
+				camera.position.y = 50;
+				camera.position.z = 1500;
+				scene.add( camera );
+	                        P.camera = camera;
+
+				// lights
+
+				var light, materials;
+
+				scene.add( new THREE.AmbientLight( 0x666666 ) );
+
+	                        egroup = new THREE.Group();
+	                        scene.add(egroup);
+	                        eradius = 50000;
+                                earth = new EARTH.Earth(egroup, eradius, {'name':'Full'});
+                                earth1 = new EARTH.Earth(egroup, 1, {'name': 'Mini'});
+                                for (loc in LOCATIONS) {
+	                           report("Loc: "+loc);
+                                   var latLon = LOCATIONS[loc];
+                                   earth.addMarker(latLon[0], latLon[1]);
+                                }
+		                /*
+	                        for (var i=0; i<360; i+= 45) {
+                                    earth.addMarker(80, i);
+                                }
+	                        for (var i=0; i<360; i+= 45) {
+                                    earth.addMarker(45, i);
+                                }
+			        */
+	       
+				//light = new THREE.DirectionalLight( 0xdfebff, 1.75 );
+				light = new THREE.DirectionalLight( 0xffffff, 1.75 );
+				light.position.set( 50, 20000, 100 );
+				light.position.multiplyScalar( 1.3 );
+
+				light.castShadow = true;
+				//light.shadowCameraVisible = true;
+
+				light.shadowMapWidth = 1024;
+				light.shadowMapHeight = 1024;
+
+				//var d = 300;
+				var d = 1200;
+
+				light.shadowCameraLeft = -d;
+				light.shadowCameraRight = d;
+				light.shadowCameraTop = d;
+				light.shadowCameraBottom = -d;
+
+				light.shadowCameraFar = 1000;
+				light.shadowDarkness = 0.5;
+
+				scene.add( light );
+
+                                var sfLatLon =   LOCATIONS["SF"];
+                                var sfLoc =      earth.getLocalGroup(sfLatLon[0], sfLatLon[1]);
+                                var sfLoc1 =     earth1.getLocalGroup(sfLatLon[0], sfLatLon[1]);
+                                var amLatLon =   LOCATIONS["Amsterdam"];
+                                var amLoc =      earth.getLocalGroup(amLatLon[0], amLatLon[1]);
+				var nanaLatLon = LOCATIONS["Nanavut"];
+				var nanaLoc = earth.getLocalGroup(nanaLatLon[0], nanaLatLon[1]);
+/*
+				hurricane1 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
+	                        hurricane1.material.opacity = 0.5;
+		                sfLoc.add(hurricane1.group);
+
+				hurricane2 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
+	                        hurricane2.material.opacity = 0.5;
+		                amLoc.add(hurricane2.group);
+
+
+				hurricane3 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
+	                        hurricane3.material.opacity = 0.5;
+		                nanaLoc.add(hurricane3.group);
+*/
+				//var h = 1
+				//sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList, {N: 256, scale: [h,h,h], position: [0,0,0]})
+				sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList,
+						     {N: 128, position: [0,0,0], h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)})
+				var images = sfImageSpiral.images;
+				images.rotation.z = Math.PI/2;
+			        sfLoc1.add(images)
+
+				//
+
+				var logDepthBuf = true;
+				renderer = new THREE.WebGLRenderer( { antialias: true, logarithmicDepthBuffer: logDepthBuf } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				//renderer.setClearColor( scene.fog.color ); //NOFOG
+
+				container.appendChild( renderer.domElement );
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+				//renderer.shadowMapEnabled = true;
+				renderer.shadowMap.enabled = true;
+
+				//
+
+				stats = new Stats();
+				container.appendChild( stats.domElement );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+	                        trackball = 1;
+                                if (trackball) {
+                                 //controls = new THREE.TrackballControls( camera, container );
+                                 //controls = new THREE.EditorControls( camera, container );
+                                 //controls = new THREE.OrthographicTrackballControls( camera, container );
+	                         //controls = new THREE.OrbitControls( camera, container );
+	                         controls = new THREE.PVControls( camera, container, scene );
+                                 controls.rotateSpeed = 2.0;
+                                 controls.zoomSpeed = 1.2;
+                                 controls.panSpeed = 0.8;
+
+                                 controls.noZoom = false;
+                                 controls.noPan = false;
+
+                                 controls.staticMoving = true;
+                                 controls.dynamicDampingFactor = 0.3;
+
+                                 controls.keys = [ 65, 83, 68 ];
+                                 //controls.addEventListener( 'change', render );
+                               }
+			}
+
+			//
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			//
+
+			function animate() {
+				requestAnimationFrame( animate );
+				var time = Date.now();
+				//arrow.setLength( windMag );
+				render();
+	                        var ct = new Date().getTime() / 1000;
+	                        if (!prev_ct)
+	                            prev_ct = ct;
+                                var dt = ct-prev_ct;
+                                prev_ct = ct;
+	                        //egroup.rotation.y += Math.PI*dt/30;
+/*						     
+	                        if (hurricane1) {
+	                            hurricane1.update();
+	                        }
+	                        if (hurricane2) {
+	                            hurricane2.update();
+	                        }
+*/
+                                if (ct - P.lastTrackedTime > P.pauseTime)
+                                   t0 += P.v0;
+				if (sfImageSpiral) {
+				   sfImageSpiral.update(t0);
+                                }
+		                if (ANIM) {
+		                   ANIM.update();
+                                }
+				stats.update();
+			}
+
+
+			function render() {
+				var timer = Date.now() * 0.0002;
+				//sphere.position.copy( ballPosition );
+				if ( rotateCam ) {
+					camera.position.x = Math.cos( timer ) * 1500;
+					camera.position.z = Math.sin( timer ) * 1500;
+				        camera.lookAt( scene.position );
+				}
+				//camera.lookAt( scene.position );
+				renderer.render( scene, camera );
+			}
+
+report("Bookmarks URL: "+ANIM.bookmarksURL);
+ANIM.setBookmarksName("hurricane");
+report("Bookmarks URL: "+ANIM.bookmarksURL);
+
+$(document).ready(function() {
+   report("Setting up GUI");
+   setupGUI(["v0"]);
+});
+
+		</script>
+	</body>
+</html>
