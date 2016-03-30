@@ -20,7 +20,7 @@ EARTH.Earth = function(group, radius, opts)
 
     this.init = function() {
         this.name = "";
-        if (opts.name)
+        if (opts && opts.name)
 	    this.name = opts.name;
 	this.radius = radius;
         this.loaded = false;

@@ -58,9 +58,7 @@
 useFog = false;
 useGround = false;
 
-var numSteps = 0;
-cardVec = [];
-cardMap = {};
+cards = {};
 
 function setup() {
    report("Adding card...");
@@ -70,8 +68,7 @@ function setup() {
           card.position.copy(vec3(i*200 - 200, j*100, 10));
           scene.add(card);
           name = "card_"+i+"_"+j;
-          cardMap[name] = card;
-	  cardVec.push(card);
+          cards[name] = card;
       }
    }
 
@@ -79,33 +76,10 @@ function setup() {
       for (var j=0; j<3; j++) {
 	 if (i == j) {
              name = "card_"+i+"_"+j;
-             cardMap[name].material.color.setRGB(i/5.0, j/3.0, 1);
+             cards[name].material.color.setRGB(i/5.0, j/3.0, 1);
          }
       }
    }
-}
-
-
-function tweak() {
-   numSteps += 1;
-   report("tweak "+numSteps);
-   for (var i=0 ; i<5; i++) {
-      for (var j=0; j<3; j++) {
-         name = "card_"+i+"_"+j;
-	 if (i - j + numSteps % 2 == 0) {
-             cardMap[name].material.color.setRGB(i/5.0, j/3.0, 1);
-         }
-         else {
-             cardMap[name].material.color.setRGB(j/3.0, i/10.0, 1);
-         }
-      }
-   }
-
-}
-
-function update() {
-    report("update");
-    tweak();
 }
 
 start();
@@ -114,7 +88,6 @@ setup();
 $(document).ready(function() {
    report("Setting up GUI");
 //   setupGUI(["v0", "PLAYER.crankFactor"]);
-   setInterval(update, 1000);
 });
 
 </script>
