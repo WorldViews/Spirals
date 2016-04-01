@@ -7,19 +7,23 @@ class ImageTweets:
     def __init__(self):
         self.dir = IMAGE_DIR
     
-    def get(self, maxNum=None):
+    def get(self, maxNum=None, startTime=None, prevEndNum=None):
         t0 = time.time()
         objs = []
         paths = glob.glob(self.dir+"/*.json")
         n = 0
         for path in paths:
             path = path.replace("\\", "/")
-            n += 1
             if maxNum and n > maxNum:
-                return
+                break
             #print path
             id = path[path.rfind("/")+1: -len(".json")]
+            idn = int(id)
+            if prevEndNum != None and idn <= prevEndNum:
+                #print "rejecting %s < %s" % (idn, prevEndNum)
+                continue
             #print id
+            n += 1
             obj = json.load(file(path))
             coord = obj['coordinates']
             coord = coord['coordinates']

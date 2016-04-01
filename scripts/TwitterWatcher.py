@@ -21,9 +21,9 @@ print "ckey", ckey
 print "csecret", csecret
 
     
-def saveImage(url, n):
-    path = "%s/%s.jpg" % (IMAGE_DIR, n)
-    pow2path = "%s/%s_p2.jpg" % (IMAGE_DIR, n)
+def saveImage(url, id):
+    path = "%s/%s.jpg" % (IMAGE_DIR, id)
+    pow2path = "%s/%s_p2.jpg" % (IMAGE_DIR, id)
     print "Saving to", path
     try:
         uos = urllib2.urlopen(url)
@@ -67,9 +67,10 @@ class listener(StreamListener):
             print "media_urls", media_urls
             self.n += 1
             url = media_urls[0]
-            path = saveImage(url, self.n)
+            id = "%07d" % self.n
+            path = saveImage(url, id)
             if path:
-                jsonPath = "%s/%s.json" % (IMAGE_DIR, self.n)
+                jsonPath = "%s/%s.json" % (IMAGE_DIR, id)
                 json.dump(obj, file(jsonPath, "w"))
             print
         return True

@@ -4,6 +4,7 @@ upload requests from PhysViz apps.  Particularly, saving bookmarks.
 """
 import SimpleHTTPServer
 import SocketServer
+import urlparse
 import shutil
 import json
 import sys, time
@@ -12,6 +13,12 @@ import ImageTweets
 ImageTweets.IMAGE_DIR = "images/twitter_images"
 
 PORT = 8001
+
+def getQuery(path):
+    i = path.rfind("?")
+    if i < 0:
+        return {}
+    return urlparse.parse_qs(path[i+1:])
 
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -24,14 +31,6 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if self.path.startswith("/update/"):
             return self.handleUpdate()
         SimpleHTTPServer.SimpleHTTPRequestHandler.do_POST(self)
-
-    def handleGetImageTweets(self):
-        it = ImageTweets.ImageTweets()
-        images = it.get()
-        obj = {'images': images}
-        jObj = json.dumps(obj, sort_keys=True, indent=4)
-        #print jObj
-        self.send_data(jObj, "application/json")
 
     def send_data(self, str, ctype):
         self.send_response(200)
@@ -53,6 +52,23 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         except:
             pass
         json.dump(obj, file(path, "w"), indent=3)
+
+    def handleGetImageTweets(self):
+        print "path:", self.path
+        q = getQuery(self.path)
+        print "q:", q
+        it = ImageTweets.ImageTweets()
+        prevEndNum = None
+        if 'prevEndNum' in q:
+            prevEndNum = int(q['prevEndNum'][0])
+        maxNum = None
+        if 'maxNum' in q:
+            maxNum = int(q['maxNum'][0])
+        images = it.get(maxNum=maxNum, prevEndNum=prevEndNum)
+        obj = {'images': images}
+        jObj = json.dumps(obj, sort_keys=True, indent=4)
+        #print jObj
+        self.send_data(jObj, "application/json")
 
 
 

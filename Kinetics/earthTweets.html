@@ -86,10 +86,13 @@ var earth = null;
 var earth1 = null;
 imageList = [];
 var imageBase = "../images/twitter_images";
+var prevEndId = null;
 
 function getImages()
 {
-    var url = "/imageTweets/";
+    var url = "/imageTweets/?maxNum=5";
+    if (prevEndId)
+        url += "&prevEndNum="+prevEndId;
     report("downloadImageRes "+url);
     $.getJSON(url, handleImageRecs)
 }
@@ -102,7 +105,9 @@ function handleImageRecs(data)
     for (var i=0; i<imageList.length; i++) {
         var ispec = imageList[i];
         report(" i: "+i+"  "+JSON.stringify(ispec));
-        ispec.url = imageBase+"/"+ispec.id+"_p2.jpg";
+	var id = ispec.id;
+        prevEndId = id;
+        ispec.url = imageBase+"/"+id+"_p2.jpg";
         var lon = ispec.lonlat[0];
         var lat = ispec.lonlat[1];
         var imageView_ = new IMVIEWS.ImageView(earth, ispec, {h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)});
@@ -111,6 +116,7 @@ function handleImageRecs(data)
         //earth.addObject(imageView, lat, lon);
         //loc.add(imageView)
     }
+    setTimeout(getImages, 2000);
 }
 
 var t0 = 0;
