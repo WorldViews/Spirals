@@ -53,18 +53,18 @@
 <p>
    </div>
 </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="js/three.js"></script>
-	<script src="js/Detector.js"></script>
-	<script src="js/libs/stats.min.js"></script>
-	<script src="GetWebSock.js"></script>
-        <script src="js/PVControls.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/three.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/libs/stats.min.js"></script>
+<script src="GetWebSock.js"></script>
+<script src="js/PVControls.js"></script>
  
 <script src="paramsGUI.js"></script>
 <script src="js/ANIM.js"></script>
-<script src="js/HURRICANE.js"></script>
 <script src="js/EARTH.js"></script>
-<script src="js/ESPIRAL.js"></script>
+<script src="js/IMVIEWS.js"></script>
 <!--
 <script src="pvplayer.js"></script>
 -->
@@ -81,19 +81,38 @@ LOCATIONS = {
 };
 
 var egroup = null;
+var eradius = 50000;
 var earth = null;
-amImageSpiral = null;
-nanaImageSpiral = null;
-
-var imageBase = "../imagesPow2";
+var earth1 = null;
+imageSpiral = null;
 imageList = [];
-for (var i=1; i<=55; i++) {
-    imageList.push(imageBase + "/image"+i+".png");
-};
+var imageBase = "../images/twitter_images";
 
-sfImageList = imageList; // These really should be specialized
-amImageList = imageList; // These really should be specialized
-nanaImageList = imageList; // These really should be specialized
+function getImages()
+{
+    var url = "/imageTweets/";
+    report("downloadImageRes "+url);
+    $.getJSON(url, handleImageRecs)
+}
+
+function handleImageRecs(data)
+{
+    report("handleImageRecs");
+//    data.images = data.images.slice(0,100);
+    var imageList = data.images;
+    for (var i=0; i<imageList.length; i++) {
+        var ispec = imageList[i];
+        report(" i: "+i+"  "+JSON.stringify(ispec));
+        ispec.url = imageBase+"/"+ispec.id+".jpg";
+        var lon = ispec.lonlat[0];
+        var lat = ispec.lonlat[1];
+        var imageView_ = new IMVIEWS.ImageView(earth, ispec, {h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)});
+        var imageView = imageView_.imageView;
+        //imageView.rotation.z = Math.PI/2;
+        //earth.addObject(imageView, lat, lon);
+        //loc.add(imageView)
+    }
+}
 
 var t0 = 0;
 var angle = 0;
@@ -102,7 +121,6 @@ var prev_a = null;
 prev_ct = null;
 
 function vec3(x,y,z) { return new THREE.Vector3(x,y,z); }
-
 
 var scene;
 			/* testing cloth simulation */
@@ -161,7 +179,6 @@ var scene;
 
 	                        egroup = new THREE.Group();
 	                        scene.add(egroup);
-	                        eradius = 50000;
                                 earth = new EARTH.Earth(egroup, eradius, {'name':'Full'});
                                 earth1 = new EARTH.Earth(egroup, 1, {'name': 'Mini'});
                                 for (loc in LOCATIONS) {
@@ -170,12 +187,6 @@ var scene;
                                    earth.addMarker(latLon[0], latLon[1]);
                                 }
 		                /*
-	                        for (var i=0; i<360; i+= 45) {
-                                    earth.addMarker(80, i);
-                                }
-	                        for (var i=0; i<360; i+= 45) {
-                                    earth.addMarker(45, i);
-                                }
 			        */
 	       
 				//light = new THREE.DirectionalLight( 0xdfebff, 1.75 );
@@ -201,37 +212,6 @@ var scene;
 				light.shadowDarkness = 0.5;
 
 				scene.add( light );
-
-                                var sfLatLon =   LOCATIONS["SF"];
-                                var sfLoc =      earth.getLocalGroup(sfLatLon[0], sfLatLon[1]);
-                                var sfLoc1 =     earth1.getLocalGroup(sfLatLon[0], sfLatLon[1]);
-                                var amLatLon =   LOCATIONS["Amsterdam"];
-                                var amLoc =      earth.getLocalGroup(amLatLon[0], amLatLon[1]);
-				var nanaLatLon = LOCATIONS["Nanavut"];
-				var nanaLoc = earth.getLocalGroup(nanaLatLon[0], nanaLatLon[1]);
-
-				hurricane1 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
-	                        hurricane1.material.opacity = 0.5;
-		                sfLoc.add(hurricane1.group);
-
-				hurricane2 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
-	                        hurricane2.material.opacity = 0.5;
-		                amLoc.add(hurricane2.group);
-
-
-				hurricane3 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
-	                        hurricane3.material.opacity = 0.5;
-		                nanaLoc.add(hurricane3.group);
-
-				//var h = 1
-				//sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList, {N: 256, scale: [h,h,h], position: [0,0,0]})
-				sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList,
-						     {N: 128, position: [0,0,0], h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)})
-				var images = sfImageSpiral.images;
-				images.rotation.z = Math.PI/2;
-			        sfLoc1.add(images)
-
-				//
 
 				var logDepthBuf = true;
 				renderer = new THREE.WebGLRenderer( { antialias: true, logarithmicDepthBuffer: logDepthBuf } );
@@ -298,16 +278,10 @@ var scene;
                                 var dt = ct-prev_ct;
                                 prev_ct = ct;
 	                        //egroup.rotation.y += Math.PI*dt/30;
-	                        if (hurricane1) {
-	                            hurricane1.update();
-	                        }
-	                        if (hurricane2) {
-	                            hurricane2.update();
-	                        }
                                 if (ct - P.lastTrackedTime > P.pauseTime)
                                    t0 += P.v0;
-				if (sfImageSpiral) {
-				   sfImageSpiral.update(t0);
+				if (imageSpiral) {
+				   imageSpiral.update(t0);
                                 }
 		                if (ANIM) {
 		                   ANIM.update();
@@ -335,6 +309,7 @@ report("Bookmarks URL: "+ANIM.bookmarksURL);
 $(document).ready(function() {
    report("Setting up GUI");
    setupGUI(["v0"]);
+   getImages();
 });
 
 		</script>

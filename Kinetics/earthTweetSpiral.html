@@ -62,7 +62,6 @@
  
 <script src="paramsGUI.js"></script>
 <script src="js/ANIM.js"></script>
-<script src="js/HURRICANE.js"></script>
 <script src="js/EARTH.js"></script>
 <script src="js/ESPIRAL.js"></script>
 <!--
@@ -85,15 +84,14 @@ var earth = null;
 amImageSpiral = null;
 nanaImageSpiral = null;
 
-var imageBase = "../imagesPow2";
+var imageBase = "../images/twitter_images";
 imageList = [];
 for (var i=1; i<=55; i++) {
-    imageList.push(imageBase + "/image"+i+".png");
+    //imageList.push(imageBase + "/image"+i+".png");
+    imageList.push(imageBase + "/"+i+".jpg");
 };
 
 sfImageList = imageList; // These really should be specialized
-amImageList = imageList; // These really should be specialized
-nanaImageList = imageList; // These really should be specialized
 
 var t0 = 0;
 var angle = 0;
@@ -205,29 +203,13 @@ var scene;
                                 var sfLatLon =   LOCATIONS["SF"];
                                 var sfLoc =      earth.getLocalGroup(sfLatLon[0], sfLatLon[1]);
                                 var sfLoc1 =     earth1.getLocalGroup(sfLatLon[0], sfLatLon[1]);
-                                var amLatLon =   LOCATIONS["Amsterdam"];
-                                var amLoc =      earth.getLocalGroup(amLatLon[0], amLatLon[1]);
-				var nanaLatLon = LOCATIONS["Nanavut"];
-				var nanaLoc = earth.getLocalGroup(nanaLatLon[0], nanaLatLon[1]);
 
-				hurricane1 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
-	                        hurricane1.material.opacity = 0.5;
-		                sfLoc.add(hurricane1.group);
-
-				hurricane2 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
-	                        hurricane2.material.opacity = 0.5;
-		                amLoc.add(hurricane2.group);
-
-
-				hurricane3 = new HURRICANE.Hurricane(scene, new THREE.Vector3(0,100,0));
-	                        hurricane3.material.opacity = 0.5;
-		                nanaLoc.add(hurricane3.group);
 
 				//var h = 1
-				//sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList, {N: 256, scale: [h,h,h], position: [0,0,0]})
-				sfImageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList,
+				//imageSpiral = new ISPIRAL.ImageSpiral(earth1, sfImageList, {N: 256, scale: [h,h,h], position: [0,0,0]})
+				imageSpiral = new ISPIRAL.ImageSpiral(earth1, imageList,
 						     {N: 128, position: [0,0,0], h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)})
-				var images = sfImageSpiral.images;
+				var images = imageSpiral.images;
 				images.rotation.z = Math.PI/2;
 			        sfLoc1.add(images)
 
@@ -298,12 +280,6 @@ var scene;
                                 var dt = ct-prev_ct;
                                 prev_ct = ct;
 	                        //egroup.rotation.y += Math.PI*dt/30;
-	                        if (hurricane1) {
-	                            hurricane1.update();
-	                        }
-	                        if (hurricane2) {
-	                            hurricane2.update();
-	                        }
                                 if (ct - P.lastTrackedTime > P.pauseTime)
                                    t0 += P.v0;
 				if (sfImageSpiral) {

@@ -61,22 +61,23 @@ def message_received(client, server, message):
 #    msgBuf = json.dumps(msg)
 #    server.send_message_to_all(msgBuf)
 
-def getServer():
+def getServer(port=PORT):
 #    server = WebsocketServer(PORT)
-    server = WSServer(PORT, HOST)
+    print "Getting WebSocket server on port", port
+    server = WSServer(port, HOST)
     server.set_fn_new_client(new_client)
     server.set_fn_client_left(client_left)
     server.set_fn_message_received(message_received)
     return server
 
-def runServer(server=None):
+def runServer(server=None, port=None):
     if server == None:
-        server = getServer()
+        server = getServer(port)
     server.run_forever()
 
-def runInThread():
-    print "*** runServer started in thread"
-    server = getServer()
+def runInThread(port=None):
+    print "Running WebSocket server in thread"
+    server = getServer(port)
     thread = threading.Thread(target=runServer,args=(server,))
     thread.setDaemon(1)
     thread.start()

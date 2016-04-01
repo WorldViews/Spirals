@@ -8,9 +8,9 @@ EARTH.latLonToVector3 = function(lat, lon, radius, height) {
     var theta = (lon-180)*Math.PI/180;
  
     var x = -(radius+height) * Math.cos(phi) * Math.cos(theta);
-    var y = (radius+height) * Math.sin(phi);
-    var z = (radius+height) * Math.cos(phi) * Math.sin(theta);
- 
+    var y =  (radius+height) * Math.sin(phi);
+    var z =  (radius+height) * Math.cos(phi) * Math.sin(theta);
+
     return new THREE.Vector3(x,y,z);
 }
 
@@ -52,11 +52,20 @@ EARTH.Earth = function(group, radius, opts)
 	return localGroup;
     }
 
+    this.addObject = function(obj, lat, lon, h) {
+        if (!h)
+	    h = 0.02*this.radius;
+	var lg = this.getLocalGroup(lat, lon, h);
+	lg.add(obj);
+	return lg;
+    }
+
     this.addMarker = function(lat, lon) {
-        var h = 0.01*this.radius;
+        var h = 0.004*this.radius;
         var geometry = new THREE.SphereGeometry( h, 20, 20 );
         var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
         var marker = new THREE.Mesh( geometry, material );
+        return this.addObject(marker, lat, lon, h);
 	var lg = this.getLocalGroup(lat, lon, h);
 	/*
 	var phi = (90-lat)*Math.PI/180;
