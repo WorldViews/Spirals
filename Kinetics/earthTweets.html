@@ -70,7 +70,7 @@
 -->
 <script>
 
-
+/*
 LOCATIONS = {
    'SF': [37.7788886,-122.4171666],
    'Amsterdam': [52.3746951,4.8285747],
@@ -79,12 +79,11 @@ LOCATIONS = {
    'NorthPole': [90.0,0.0],
    'SouthPole': [-90.0,0.0],
 };
-
+*/
 var egroup = null;
 var eradius = 50000;
 var earth = null;
 var earth1 = null;
-imageSpiral = null;
 imageList = [];
 var imageBase = "../images/twitter_images";
 
@@ -98,12 +97,12 @@ function getImages()
 function handleImageRecs(data)
 {
     report("handleImageRecs");
-//    data.images = data.images.slice(0,100);
+    data.images = data.images.slice(0,100);
     var imageList = data.images;
     for (var i=0; i<imageList.length; i++) {
         var ispec = imageList[i];
         report(" i: "+i+"  "+JSON.stringify(ispec));
-        ispec.url = imageBase+"/"+ispec.id+".jpg";
+        ispec.url = imageBase+"/"+ispec.id+"_p2.jpg";
         var lon = ispec.lonlat[0];
         var lat = ispec.lonlat[1];
         var imageView_ = new IMVIEWS.ImageView(earth, ispec, {h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)});
@@ -181,12 +180,12 @@ var scene;
 	                        scene.add(egroup);
                                 earth = new EARTH.Earth(egroup, eradius, {'name':'Full'});
                                 earth1 = new EARTH.Earth(egroup, 1, {'name': 'Mini'});
+		                /*
                                 for (loc in LOCATIONS) {
 	                           report("Loc: "+loc);
                                    var latLon = LOCATIONS[loc];
                                    earth.addMarker(latLon[0], latLon[1]);
                                 }
-		                /*
 			        */
 	       
 				//light = new THREE.DirectionalLight( 0xdfebff, 1.75 );
@@ -280,9 +279,6 @@ var scene;
 	                        //egroup.rotation.y += Math.PI*dt/30;
                                 if (ct - P.lastTrackedTime > P.pauseTime)
                                    t0 += P.v0;
-				if (imageSpiral) {
-				   imageSpiral.update(t0);
-                                }
 		                if (ANIM) {
 		                   ANIM.update();
                                 }

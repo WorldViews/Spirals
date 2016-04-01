@@ -2,6 +2,7 @@ from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 import os, urllib2, json
+import ImageResizer
 
 #IMAGE_DIR = "C:/kimber/WorldViews/twitter_images"
 IMAGE_DIR = "../images/twitter_images"
@@ -19,8 +20,10 @@ asecret = config['asecret']
 print "ckey", ckey
 print "csecret", csecret
 
+    
 def saveImage(url, n):
     path = "%s/%s.jpg" % (IMAGE_DIR, n)
+    pow2path = "%s/%s_p2.jpg" % (IMAGE_DIR, n)
     print "Saving to", path
     try:
         uos = urllib2.urlopen(url)
@@ -29,10 +32,11 @@ def saveImage(url, n):
         return None
     try:
         file(path, "wb").write(uos.read())
-        return path
     except:
         print "Couldn't save", path
         return None
+    ImageResizer.resizePow2(path, pow2path)
+    return path
     
 
 class listener(StreamListener):
@@ -86,7 +90,6 @@ class TwitterWatcher:
         auth.set_access_token(atoken, asecret)
         self.twitterStream = Stream(auth, listener())
         verifyDir(IMAGE_DIR)
-            
 
     def run(self):
         self.twitterStream.filter(locations=[-180.0, -90.0, 180.0, 90.0])
