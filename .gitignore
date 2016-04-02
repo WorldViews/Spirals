@@ -2,6 +2,8 @@
 ## Eclipse
 #################
 
+scripts/TBD_data/
+
 *.pydevproject
 .project
 .metadata
