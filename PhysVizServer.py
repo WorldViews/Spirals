@@ -32,8 +32,14 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             return self.handleUpdate()
         SimpleHTTPServer.SimpleHTTPRequestHandler.do_POST(self)
 
+    def end_headers(self):
+        #print "sending CORS header"
+        self.send_header("Access-Control-Allow-Origin", "*")
+        SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
+
     def send_data(self, str, ctype):
         self.send_response(200)
+        #self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-type", ctype)
         self.send_header("Content-Length", len(str))
         self.end_headers()

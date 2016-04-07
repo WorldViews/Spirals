@@ -30,6 +30,7 @@ EARTH.Earth = function(group, radius, opts)
             var geometry = new THREE.SphereGeometry( radius, 30, 30 );
             var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
             this.mesh = new THREE.Mesh( geometry, material );
+	    this.mesh.name = "Earth";
             group.add(this.mesh);
             this.loaded = true;
        });

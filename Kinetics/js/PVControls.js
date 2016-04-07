@@ -136,8 +136,8 @@ THREE.PVControls = function ( object, domElement, scene ) {
 	var startEvent = { type: 'start' };
 	var endEvent = { type: 'end' };
 
-	this.raycaster = null;
-	//this.raycaster = new THREE.Raycaster();
+	//this.raycaster = null;
+	this.raycaster = new THREE.Raycaster();
 
 	this.rotateLeft = function ( angle ) {
 
@@ -165,24 +165,39 @@ THREE.PVControls = function ( object, domElement, scene ) {
 
 	this.recomputeTarget = function()
 	{
-	    report("recomputeTarget");
+	    //report("recomputeTarget");
 	    var cam = scope.object;
 	    var d = cam.position.distanceTo(scope.target);
 	    var coords = new THREE.Vector2(0,0);
-	    if (scope.scene && scope.raycaster) {
-		report("scene: "+scope.scene);
+	    this.isect = null;
+	    if (!scope.scene) {
+		report("No scene");
+	    }
+	    else if (!scope.raycaster) {
+		report("No raycaster");
+	    }
+	    else {
+            //if (scope.scene && scope.raycaster) {
+		//report("scene: "+scope.scene);
 		scope.raycaster.setFromCamera(coords, cam);
 		var isects = scope.raycaster.intersectObject(scope.scene, true);
-		report("isects: "+isects+" num: "+isects.length);
+		//report("isects: "+isects+" num: "+isects.length);
 		//for (var i=0; i<isects.length; i++) { report(i+": "+JSON.stringify(isects[i])); }
 		if (isects.length) {
 		    var isect = isects[0];
+		    this.isect = isect;
+		    this.pickedObject = isect.object;
+		    var obj = this.pickedObject;
+                    report("******** isect: "+this.isect+" name: "+ obj.name);
+		    if (obj._onClick) {
+			obj._onClick(obj.name);
+		    }
 		    d = isect.distance;
 		}
 	    }
-	    else {
-		report("no scene or raycaster");
-	    }
+	    //else {
+	    //	report("no scene or raycaster");
+	    //}
 	    var v = cam.getWorldDirection();
 	    v.multiplyScalar(d);
 	    report("d: "+d+"  v: "+JSON.stringify(v));
@@ -241,7 +256,7 @@ THREE.PVControls = function ( object, domElement, scene ) {
 			var targetDistance = offset.length();
 
 			var kludge = 1;
-			report("perspective cam pan kludge: "+kludge);
+			//report("perspective cam pan kludge: "+kludge);
 			// half of the fov is center to top of screen
 			targetDistance *= Math.tan( ( scope.object.fov / 2 ) * Math.PI / 180.0 );
 
@@ -368,7 +383,7 @@ THREE.PVControls = function ( object, domElement, scene ) {
 
 		position.copy( this.target ).add( offset );
 
-		report("******** PVManipulator lookAt");
+		//report("******** PVManipulator lookAt");
 		this.object.lookAt( this.target );
 
 		thetaDelta = 0;
@@ -439,7 +454,7 @@ THREE.PVControls = function ( object, domElement, scene ) {
 
 		scope.recomputeTarget();
 
-                report("onMouseDown event.button: "+event.button+"  scope.mouseButtons.PAN: "+scope.mouseButtons.PAN);
+                //report("onMouseDown event.button: "+event.button+"  scope.mouseButtons.PAN: "+scope.mouseButtons.PAN);
 		//report("event: "+JSON.stringify(event));
 
 		if ( event.shiftKey && event.button === scope.mouseButtons.ORBIT ) {
@@ -463,7 +478,7 @@ THREE.PVControls = function ( object, domElement, scene ) {
 			dollyStart.set( event.clientX, event.clientY );
 
 		} else if ( event.button === scope.mouseButtons.PAN ) {
-                        report("state = STATE.PAN    scope.noPan: "+scope.noPan);
+		        //report("state = STATE.PAN    scope.noPan: "+scope.noPan);
 
 			if ( scope.noPan === true ) return;
 

@@ -54,12 +54,14 @@ IMVIEWS.ImageView = function(earth, imageSpec, opts)
       this.boxW = 1.5;
       this.boxH = 0.8;
       this.boxD = 0.1;
-      var h = 5000;  // extra height above earth
+      var h = opts.h;
+      if (h == null)
+	  h = 5000;  // extra height above earth
       var s = 2500;  // scale sets size of pictures
       this.lookAtPos = null;
       if (opts.lookAtPos)
 	  this.lookAtPos = opts.lookAtPos;
-      report("getImageView "+JSON.stringify(opts));
+      //report("getImageView "+JSON.stringify(opts));
       var imageObjs = [];
       this.imageObjs = imageObjs;
       var imageView = new THREE.Object3D();
@@ -70,19 +72,24 @@ IMVIEWS.ImageView = function(earth, imageSpec, opts)
       imageObj.url = imageUrl;
       var lon = ispec.lonlat[0];
       var lat = ispec.lonlat[1];
-      report(" lat: "+lat+"   lon: "+lon);
+      //report(" lat: "+lat+"   lon: "+lon);
       imageView.add(imageObj);
       earth.addMarker(lat, lon);
       var v3 = vec3(0,h,0);
-      report("v3: "+JSON.stringify(v3));
+      //report("v3: "+JSON.stringify(v3));
       this.imageView = imageView;
+      this.obj = imageObj.obj;
+      if (imageSpec.id)
+	  this.obj.name = imageSpec.id;
+      if (imageSpec.onClick)
+	  this.obj._onClick = imageSpec.onClick;
       imageView.scale.x = s;
       imageView.scale.y = s;
       imageView.scale.z = s;
       imageView.position.copy(v3);
       earth.addObject(imageView, lat, lon);
       if (opts.lookAtPos) {
-	  report("lookAt "+JSON.stringify(opts.lookAtPos));
+	  //report("lookAt "+JSON.stringify(opts.lookAtPos));
 	  imageView.lookAt(opts.lookAtPos);
       }
 

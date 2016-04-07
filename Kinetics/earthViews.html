@@ -85,14 +85,51 @@ var eradius = 50000;
 var earth = null;
 var earth1 = null;
 imageList = [];
+var imageBase0 = "../images/";
 var imageBase = "../images/twitter_images";
 var prevEndId = null;
+var ORIGIN = new THREE.Vector3(0,0,0);
+var DRONE_OBJS = {};
 
-function getDrones()
+function getDroneData()
 {
     var url = "/scripts/TBD_data.json";
     report("getDroneData "+url);
     $.getJSON(url, handleDroneData)
+}
+
+function handleDroneData(data)
+{
+    report("handleDroneData");
+    var opts = {h: eradius*0.2, lookAtPos: ORIGIN};
+    var objs = data;
+    var k = 0;
+    for (var i=0; i<objs.length; i++) {
+        var obj = objs[i];
+        if (!obj.yahooId)
+           continue;
+        //report(" i: "+i+"  "+JSON.stringify(obj));
+	var id = "tbd_"+i;
+        var ispec = {lonlat: [obj.lon,obj.lat], id: id};
+	DRONE_OBJS[id] = obj;
+        ispec.url = imageBase0+"/drone.png";
+	ispec.onClick = function(oid) {
+             report("****----***** drone click "+oid);
+             showDroneVideo(oid);
+        }
+        var imageView_ = new IMVIEWS.ImageView(earth, ispec, opts);
+        var imageView = imageView_.imageView;
+	//imageView_._id = "id"+i;
+	//imageView._id = "id"+i;
+    }
+}
+
+function showDroneVideo(oid)
+{
+    var obj = DRONE_OBJS[oid];
+    //var url = "https://www.youtube.com/watch?v=RCXGpEmFbOw"
+    var url = "https://www.youtube.com/watch?v="+obj.yahooId;
+    window.open(url, "DroneView");
 }
 
 function getImages()
@@ -109,15 +146,16 @@ function handleImageRecs(data)
     report("handleImageRecs");
     data.images = data.images.slice(0,100);
     var imageList = data.images;
+    var opts = {h: eradius*0.1, lookAtPos: ORIGIN};
     for (var i=0; i<imageList.length; i++) {
         var ispec = imageList[i];
-        report(" i: "+i+"  "+JSON.stringify(ispec));
+        //report(" i: "+i+"  "+JSON.stringify(ispec));
 	var id = ispec.id;
         prevEndId = id;
         ispec.url = imageBase+"/"+id+"_p2.jpg";
         var lon = ispec.lonlat[0];
         var lat = ispec.lonlat[1];
-        var imageView_ = new IMVIEWS.ImageView(earth, ispec, {h: eradius*1.1, lookAtPos: new THREE.Vector3(0,0,0)});
+        var imageView_ = new IMVIEWS.ImageView(earth, ispec, opts);
         var imageView = imageView_.imageView;
         //imageView.rotation.z = Math.PI/2;
         //earth.addObject(imageView, lat, lon);
@@ -192,7 +230,9 @@ var scene;
 	                        egroup = new THREE.Group();
 	                        scene.add(egroup);
                                 earth = new EARTH.Earth(egroup, eradius, {'name':'Full'});
+				earth._id = "earth";
                                 earth1 = new EARTH.Earth(egroup, 1, {'name': 'Mini'});
+				earth1._id = "earth1";
 		                /*
                                 for (loc in LOCATIONS) {
 	                           report("Loc: "+loc);
@@ -318,7 +358,8 @@ report("Bookmarks URL: "+ANIM.bookmarksURL);
 $(document).ready(function() {
    report("Setting up GUI");
    setupGUI(["v0"]);
-   getImages();
+//   getImages();
+   getDroneData();
 });
 
 		</script>
