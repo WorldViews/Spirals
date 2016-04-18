@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>Hello Drones!</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="../Cesium/Cesium/Cesium.js"></script>
+  <style>
+      @import url(../Cesium/Cesium/Widgets/widgets.css);
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+<script>
+
+var keepSending = true;
+var prevEndId = null;
+//prevEndId = "0000140";
+var imageServer = "http://localhost:8000/";
+var numObjects = 0;
+var numBillboards = 0;
+var handler = null;
+var bbScaleUnselected = 0.08;
+var bbScaleSelected = 0.12;
+var DRONE_RECS = {};
+var BILLBOARDS = {};
+var currentBillboard = null;
+
+function report(str)
+{
+    console.log(str);
+}
+
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+    }),
+    baseLayerPicker : false
+});
+
+var scene = viewer.scene;				 
+scene.globe.depthTestAgainstTerrain = true;
+var billboards = scene.primitives.add(new Cesium.BillboardCollection());
+
+function addBillboard(lat, lon, imgUrl, id, scale)
+{
+    numBillboards++;
+    report("Adding billboard "+numBillboards);
+    // Example 1:  Add a billboard, specifying all the default values.
+    if (!imgUrl)
+       imgUrl = MONACAT_URL;
+    if (!scale)
+       scale = bbScaleUnselected;
+    var b = billboards.add({
+       show : true,
+       position : Cesium.Cartesian3.fromDegrees(lon, lat, 1000000),
+       pixelOffset : Cesium.Cartesian2.ZERO,
+       eyeOffset : Cesium.Cartesian3.ZERO,
+       horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+       verticalOrigin : Cesium.VerticalOrigin.CENTER,
+       'scale' : scale,
+       image : imgUrl,
+       color : Cesium.Color.WHITE,
+       id : id
+    });
+    bb = b;//to make debugging easier..
+    return b;
+}
+
+function getDroneVids(url)
+{
+    report("getDroneRecs "+url);
+    $.getJSON(url, handleDroneRecs)
+}
+
+function handleDroneRecs(data)
+{
+    report("handleDroneRecs");
+    var recs = data;
+    for (var i=0; i<recs.length; i++) {
+        var rec = recs[i];
+	if (!rec.yahooId) {
+            report("skipping recs with no yahoo video");
+        }
+        report("rec "+i+" "+JSON.stringify(rec));
+        if (!rec.yahooId)
+            continue;
+        numObjects++;
+        if (numObjects > 30)
+            return;
+        var imageUrl = "drone.png";
+        var lon = rec.lon;
+        var lat = rec.lat;
+        id = "tbd_"+rec.id;
+        DRONE_RECS[id] = rec;
+        var b = addBillboard(lat, lon, imageUrl, id);
+        BILLBOARDS[id] = b;
+    }
+}
+
+function setupCesium()
+{
+    // If the mouse is over the billboard, change its scale and color
+    handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+    handler.setInputAction(function(movement) {
+        var pickedObject = scene.pick(movement.endPosition);
+	if (!Cesium.defined(pickedObject)) {
+            if (currentBillboard)
+                currentBillboard.scale = bbScaleUnselected;
+            currentBillboard = null;
+            return;
+        }
+        mpo = pickedObject;
+        var id = pickedObject.id;
+        report("move over id "+id);
+        var b = BILLBOARDS[id];
+        if (currentBillboard && b != currentBillboard) {
+            currentBillboard.scale = bbScaleUnselected;
+        }
+        currentBillboard = b;
+        report("b.scale "+b.scale);
+        b.scale = bbScaleSelected;
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    handler.setInputAction(function(e) {
+        report("click.....");
+        var pickedObject = scene.pick(e.position);
+	if (!Cesium.defined(pickedObject)) {
+            return;
+        }
+        cpo = pickedObject;
+        var id = pickedObject.id;
+        report("click picked..... pickedObject._id "+id);
+        var rec = DRONE_RECS[id];
+        playVid(rec);
+    }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+}
+
+function playVid(rec)
+{
+    var yahooId = rec.yahooId;
+    var url = "https://www.youtube.com/watch?v="+yahooId;
+    setTimeout(function() {
+        window.open(url, "DroneVidioView");
+    }, 200);
+}
+
+
+$(document).ready(function() {
+   report("Starting...");
+   setupCesium();
+   getDroneVids("tbd_data.json");
+});
+
+</script>
+</body>
+</html>

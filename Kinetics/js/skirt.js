@@ -23,14 +23,20 @@ SKIRT.DRAG = 1 - SKIRT.DAMPING;
 SKIRT.MASS = 0.1;
 SKIRT.useDiagonals = false;
 SKIRT.restDistance = 25;
-SKIRT.clothRotationSpeed = 0.2; // revolutions per second
+SKIRT.clothRotationSpeed = 0.15; // revolutions per second
 
 SKIRT.rotateSkirts = false;
 
+/*
 SKIRT.xSegs = 12; //
 SKIRT.ySegs = 12; //
 //SKIRT.ySegs = 6; //
 SKIRT.flare = 1.9;
+*/
+SKIRT.xSegs = 12; //
+SKIRT.ySegs = 12; //
+//SKIRT.ySegs = 6; //
+SKIRT.flare = 4.0;
 SKIRT.numRotations = 1.0; // how many rotations of fabric to set up.
 
 SKIRT.GRAVITY = 981 * 1.4; // 
@@ -377,7 +383,7 @@ function Skirt(w, h, x0, y0) {
 	    if (SKIRT.rotateSkirts) {
 		//report("rotateSkirt "+time);
 		var dt = time - SKIRT.lastTime;
-		var rs = this.rotSpeed * Math.sin(time / (20*1000));
+		var rs = this.rotSpeed * Math.sin(time / (15*1000));
                 //this.theta0 = this.rotSpeed*2*Math.PI*dt/1000;
 		this.theta0 = rs*2*Math.PI*dt/1000;
 		if (SKIRT.CRANK_ANGLE != null) {

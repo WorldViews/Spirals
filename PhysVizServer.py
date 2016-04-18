@@ -22,6 +22,8 @@ def getQuery(path):
 
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
+        if self.path.startswith("/getData"):
+            return self.handleGetData()
         if self.path.startswith("/imageTweets"):
             return self.handleGetImageTweets()
         SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
@@ -76,6 +78,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         #print jObj
         self.send_data(jObj, "application/json")
 
+    def getData(self):
+        return self.handleGetImageTweets()
 
 
 def run(port=PORT):
