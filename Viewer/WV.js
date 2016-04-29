@@ -165,7 +165,7 @@ function handleImageRecs(data)
         var imageUrl = ispec.imageUrl;
         if (!imageUrl)
             imageUrl = WV.imageServer+"images/twitter_images/"+id+"_p2.jpg";
-        imageUrl = "image1.jpg";
+        //imageUrl = "image1.jpg";
         var lon = ispec.lonlat[0];
         var lat = ispec.lonlat[1];
         var b = addBillboard(twitterBillboards, lat, lon, imageUrl, id);
