@@ -1,22 +1,67 @@
 
 var WV = {};
 
-WV.imageServer = "http://localhost:8001/";
+WV.LAYER_DATA =
+{
+    "layers": [
+       {
+          'name': 'drones',
+          'description': 'drone videos',
+	  'maxNum': 30,
+       },
+       {
+          'name': 'photos',
+          'description': 'recently tweeted images',
+	  'maxNum': 30,
+	  'imageServer': 'http://localhost:8001/'
+       }
+    ]
+};
+
+WV.screenSpaceEventHandler = null;
 WV.prevEndId = null;
-WV.numDrones = 0;
-WV.MAX_NUM_DRONES = 30;
-WV.numPhotos = 0;
-WV.MAX_NUM_PHOTOS = 30;
 WV.numBillboards = 0;
-WV.handler = null;
 WV.bbScaleUnselected = 0.08;
 WV.bbScaleSelected = 0.12;
 WV.currentBillboard = null;
 WV.keepSending = true;
-WV.LAYERS = ["drone", "photos"];
-WV.DRONE_RECS = null;
-WV.DRONE_BILLBOARDS = {};
-WV.PHOTO_BILLBOARDS = null;
+WV.layers = {};
+
+function WVLayer(spec)
+{
+    var name = spec.name;
+    for (var key in spec) {
+	this[key] = spec[key];
+    }
+    this.spec = spec;
+    this.numObjs = 0;
+    this.recs = null;
+    this.billboards = null;
+    this.bbCollection = null;
+    WV.layers[name] = this;
+
+    this.loaderFun = function() {
+	if (this.name == "photos")
+	    getTwitterImages();
+	if (this.name == "drones")
+	    getDroneVids("tbd_data.json");
+    }
+
+    this.setVisibility = function(visible) {
+	report("setVisibility "+this.name+" "+visible);
+	if (visible) {
+	    if (this.billboards == null) {
+		this.loaderFun();
+	    }
+	    else {
+		setObjsAttr(this.billboards, "show", true);
+	    }
+	}
+	else {
+	    setObjsAttr(this.billboards, "show", false);
+	}
+    }
+}
 
 function report(str)
 {
@@ -32,11 +77,8 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 
 var scene = viewer.scene;				 
 scene.globe.depthTestAgainstTerrain = true;
-//var billboards = scene.primitives.add(new Cesium.BillboardCollection());
 var droneBillboards = null;
 var twitterBillboards = null;
-//var billboards = new Cesium.BillboardCollection();
-//scene.primitives.add(billboards);
 
 function addBillboard(bbCollection, lat, lon, imgUrl, id, scale)
 {
@@ -72,10 +114,11 @@ function getDroneVids(url)
 function handleDroneRecs(data)
 {
     report("handleDroneRecs");
-    WV.DRONE_RECS = {};
-    WV.DRONE_BILLBOARDS = {};
-    droneBillboards = new Cesium.BillboardCollection();
-    scene.primitives.add(droneBillboards);
+    var layer = WV.layers["drones"];
+    layer.recs = {};
+    layer.billboards = {};
+    layer.bbCollection = new Cesium.BillboardCollection();
+    scene.primitives.add(layer.bbCollection);
     var recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
@@ -85,16 +128,16 @@ function handleDroneRecs(data)
         report("rec "+i+" "+JSON.stringify(rec));
         if (!rec.yahooId)
             continue;
-        WV.numDrones++;
-        if (WV.numDrones > WV.MAX_NUM_DRONES)
+        layer.numObjs++;
+        if (layer.numObjs > layer.maxNum)
             return;
         var imageUrl = "drone.png";
         var lon = rec.lon;
         var lat = rec.lat;
         id = "tbd_"+rec.id;
-        WV.DRONE_RECS[id] = rec;
-        var b = addBillboard(droneBillboards, lat, lon, imageUrl, id);
-        WV.DRONE_BILLBOARDS[id] = b;
+        layer.recs[id] = rec;
+        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id);
+        layer.billboards[id] = b;
     }
 }
 
@@ -107,44 +150,22 @@ function setObjsAttr(objs, attr, val)
     }
 }
 
-function setDroneVisibility(visible)
-{
-    if (visible) {
-	if (WV.DRONE_RECS == null) {
-	    getDroneVids("tbd_data.json");
-	}
-	else {
-	    setObjsAttr(WV.DRONE_BILLBOARDS, "show", true);
-	}
-    }
-    else {
-	setObjsAttr(WV.DRONE_BILLBOARDS, "show", false);
-	/*
-	scene.primitives.remove(droneBillboards);
-        WV.DRONE_RECS = null;
-	droneBillboards = null;
-	*/
-	//billboards = new Cesium.BillboardCollection();
-	//scene.primitives.add(billboards);
-    }
-}
-
-
 
 function getTwitterImages(url)
 {
+    var layer = WV.layers["photos"];
     if (url) {
         WV.keepSending = false;
     }
     else {
-        url = WV.imageServer+"imageTweets/?maxNum=10";
+        url = layer.imageServer+"imageTweets/?maxNum=10";
         if (WV.prevEndId)
             url += "&prevEndNum="+WV.prevEndId;
     }
-    if (WV.PHOTO_BILLBOARDS == null)
-	WV.PHOTO_BILLBOARDS = {};
-    twitterBillboards = new Cesium.BillboardCollection();
-    scene.primitives.add(twitterBillboards);
+    if (layer.billboards == null)
+	layer.billboards = {};
+    layer.bbCollection = new Cesium.BillboardCollection();
+    scene.primitives.add(layer.bbCollection);
     report("downloadImageRecs "+url);
     $.getJSON(url, handleImageRecs)
 }
@@ -152,11 +173,12 @@ function getTwitterImages(url)
 function handleImageRecs(data)
 {
     report("handleImageRecs");
+    var layer = WV.layers["photos"];
     data.images = data.images.slice(0,100);
     var imageList = data.images;
     for (var i=0; i<imageList.length; i++) {
-        WV.numPhotos++;
-        if (WV.numPhotos > WV.MAX_NUM_PHOTOS)
+        layer.numObjs++;
+        if (layer.numObjs > layer.maxNum)
             return;
         var ispec = imageList[i];
         //report(" i: "+i+"  "+JSON.stringify(ispec));
@@ -164,12 +186,12 @@ function handleImageRecs(data)
         WV.prevEndId = id;
         var imageUrl = ispec.imageUrl;
         if (!imageUrl)
-            imageUrl = WV.imageServer+"images/twitter_images/"+id+"_p2.jpg";
+            imageUrl = layer.imageServer+"images/twitter_images/"+id+"_p2.jpg";
         //imageUrl = "image1.jpg";
         var lon = ispec.lonlat[0];
         var lat = ispec.lonlat[1];
-        var b = addBillboard(twitterBillboards, lat, lon, imageUrl, id);
-        WV.PHOTO_BILLBOARDS[id] = b;
+        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id);
+        layer.billboards[id] = b;
 	b._wvid = id;
 	report("ispec: "+JSON.stringify(ispec));
     }
@@ -177,28 +199,15 @@ function handleImageRecs(data)
         setTimeout(getTwitterImages, 1000);
 }
 
-function setPhotoVisibility(visible)
-{
-    report("setPhotoVisibility "+visible);
-    if (visible) {
-	if (WV.PHOTO_BILLBOARDS == null) {
-	    getTwitterImages();
-	}
-	else {
-	    setObjsAttr(WV.PHOTO_BILLBOARDS, "show", true);
-	}
-    }
-    else {
-	setObjsAttr(WV.PHOTO_BILLBOARDS, "show", false);
-    }
-}
-
 
 function setupCesium()
 {
     // If the mouse is over the billboard, change its scale and color
-    WV.handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-    WV.handler.setInputAction(function(movement) {
+    var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+    WV.screenSpaceEventHandler = handler;
+    var layerName = "drones";
+    //var layerName = "photos";
+    handler.setInputAction(function(movement) {
         var pickedObject = scene.pick(movement.endPosition);
 	if (!Cesium.defined(pickedObject)) {
             if (WV.currentBillboard)
@@ -206,10 +215,11 @@ function setupCesium()
             WV.currentBillboard = null;
             return;
         }
+	var layer = WV.layers[layerName];
         mpo = pickedObject;
         var id = pickedObject.id;
         report("move over id "+id);
-        var b = WV.DRONE_BILLBOARDS[id];
+        var b = layer.billboards[id];
         if (WV.currentBillboard && b != WV.currentBillboard) {
             WV.currentBillboard.scale = WV.bbScaleUnselected;
         }
@@ -217,7 +227,7 @@ function setupCesium()
         report("b.scale "+b.scale);
         b.scale = WV.bbScaleSelected;
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-    WV.handler.setInputAction(function(e) {
+    handler.setInputAction(function(e) {
         report("click.....");
         var pickedObject = scene.pick(e.position);
 	if (!Cesium.defined(pickedObject)) {
@@ -225,8 +235,9 @@ function setupCesium()
         }
         cpo = pickedObject;
         var id = pickedObject.id;
+	var layer = WV.layers[layerName];
         report("click picked..... pickedObject._id "+id);
-        var rec = WV.DRONE_RECS[id];
+        var rec = layer.recs[id];
         playVid(rec);
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 }
@@ -240,15 +251,20 @@ function playVid(rec)
     }, 200);
 }
 
-
-function setupLayers()
+function getLayers()
 {
-    var layers = WV.LAYERS;
+    setupLayers(WV.LAYER_DATA);
+}
+
+function setupLayers(layerData)
+{
+    var layers = layerData.layers;
     var cbList = $("#cbListDiv");
     for (var i=0; i<layers.length; i++) {
-        var layer = layers[i];
-        var id = "cb_"+layer;
-        var desc = "View "+layer;
+        var layer = new WVLayer(layers[i]);
+	var name = layer.name;
+        var id = "cb_"+layer.name;
+        var desc = "View "+layer.description;
         $('<input />',
             { type: 'checkbox', id: id, value: desc,
 	      click: toggleLayerCB}).appendTo(cbList);
@@ -266,20 +282,18 @@ function toggleLayerCB(e)
     toggleLayer(layer);
 }
 
-function toggleLayer(layer)
+function toggleLayer(layerName)
 {
-    report("toggleLayer "+layer);
-    var id = "cb_"+layer;
+    report("toggleLayer "+layerName);
+    var layer = WV.layers[layerName];
+    var id = "cb_"+layerName;
     var checked = $("#"+id).is(":checked");
     report(" checked: "+checked);
-    if (layer == "drone")
-	setDroneVisibility(checked);
-    if (layer == "photos")
-	setPhotoVisibility(checked);
+    layer.setVisibility(checked);
 }
 
 $(document).ready(function() {
    report("Starting...");
+   getLayers();
    setupCesium();
-   setupLayers();
 });
