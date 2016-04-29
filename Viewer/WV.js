@@ -33,6 +33,7 @@ WV.keepSending = true;
 WV.layers = {};
 WV.viewer = null;
 WV.scene = null;
+WV.thisPersonData = null;
 
 WV.viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
@@ -61,11 +62,12 @@ WV.handleLocation = function(position) {
     ourPos = [lat,lon];
     report("lat: " + lat + "lon: " + lon);
     report("pos: "+JSON.stringify(position));
-    var bbCollection = new Cesium.BillboardCollection();
-    WV.scene.primitives.add(bbCollection);
-    var imageUrl = "person0.png";
-    var id = "person0";
-    var b = addBillboard(bbCollection, lat, lon, imageUrl, id, 0.5, 100000);
+    //var bbCollection = new Cesium.BillboardCollection();
+    //WV.scene.primitives.add(bbCollection);
+    //var imageUrl = "person0.png";
+    //var id = "person0";
+    WV.thisPersonData = { 'id': 'person0', 'lat': lat, 'lon': lon };
+	//var b = addBillboard(bbCollection, lat, lon, imageUrl, id, 0.5, 100000);
     //layer.billboards[id] = b;
 }
 
@@ -179,11 +181,14 @@ function getPeopleData()
 {
     var data = [
        {
-          'id': 'person0', 
+          'id': 'person1', 
 	  'lat': 0,
 	  'lon': 0,
        }
     ]
+    if (WV.thisPersonData) {
+        data.push(WV.thisPersonData);
+    }
     handlePeopleData(data);
 }
 
@@ -332,7 +337,10 @@ function getLayers()
 function setupLayers(layerData)
 {
     var layers = layerData.layers;
-    var cbList = $("#cbListDiv");
+    var layersDiv = $("#layersDiv");
+    var cbList = $('<div />', { type: 'div', id: 'cbListDiv'}
+                   ).appendTo(layersDiv);
+    //var cbList = $("#cbListDiv");
     for (var i=0; i<layers.length; i++) {
         var layer = new WVLayer(layers[i]);
 	var name = layer.name;
@@ -345,6 +353,19 @@ function setupLayers(layerData)
             { 'for': id, text: desc, style: "color:white" }).appendTo(cbList);
         $('<br />').appendTo(cbList);
     }
+    $("#layersLabel").click(function(e) {
+	    report("******** click *******");
+            var txt = $("#layersLabel").html();
+            report("txt: "+txt);
+	    if (txt == "Hide Layers") {
+		$("#layersLabel").html("Show Layers");
+		cbList.hide();
+	    }
+	    else {
+		$("#layersLabel").html("Hide Layers");
+		cbList.show();
+	    }
+	});
 }
 
 function toggleLayerCB(e)
