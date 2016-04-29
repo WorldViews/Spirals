@@ -12,8 +12,13 @@ WV.LAYER_DATA =
        {
           'name': 'photos',
           'description': 'recently tweeted images',
-	  'maxNum': 30,
+	  'maxNum': 100,
 	  'imageServer': 'http://localhost:8001/'
+       },
+       {
+          'name': 'people',
+          'description': 'people watching now',
+	  'maxNum': 100,
        }
     ]
 };
@@ -26,6 +31,43 @@ WV.bbScaleSelected = 0.12;
 WV.currentBillboard = null;
 WV.keepSending = true;
 WV.layers = {};
+WV.viewer = null;
+WV.scene = null;
+
+WV.viewer = new Cesium.Viewer('cesiumContainer', {
+    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+    }),
+    baseLayerPicker : false
+});
+
+WV.scene = WV.viewer.scene;				 
+WV.scene.globe.depthTestAgainstTerrain = true;
+
+
+
+WV.getLocation = function() {
+    if (navigator.geolocation) {
+        var ret = navigator.geolocation.getCurrentPosition(WV.handleLocation);
+        report("ret: "+ret);
+    } else {
+        report("Geolocation is not supported by this browser.");
+    }
+}
+
+WV.handleLocation = function(position) {
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    ourPos = [lat,lon];
+    report("lat: " + lat + "lon: " + lon);
+    report("pos: "+JSON.stringify(position));
+    var bbCollection = new Cesium.BillboardCollection();
+    WV.scene.primitives.add(bbCollection);
+    var imageUrl = "person0.png";
+    var id = "person0";
+    var b = addBillboard(bbCollection, lat, lon, imageUrl, id, 0.5, 100000);
+    //layer.billboards[id] = b;
+}
 
 function WVLayer(spec)
 {
@@ -45,6 +87,8 @@ function WVLayer(spec)
 	    getTwitterImages();
 	if (this.name == "drones")
 	    getDroneVids("tbd_data.json");
+	if (this.name == "people")
+	    getPeopleData();
     }
 
     this.setVisibility = function(visible) {
@@ -68,19 +112,7 @@ function report(str)
     console.log(str);
 }
 
-var viewer = new Cesium.Viewer('cesiumContainer', {
-    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
-        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
-    }),
-    baseLayerPicker : false
-});
-
-var scene = viewer.scene;				 
-scene.globe.depthTestAgainstTerrain = true;
-var droneBillboards = null;
-var twitterBillboards = null;
-
-function addBillboard(bbCollection, lat, lon, imgUrl, id, scale)
+function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
 {
     WV.numBillboards++;
     report("Adding billboard "+WV.numBillboards);
@@ -89,9 +121,11 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale)
        imgUrl = MONACAT_URL;
     if (!scale)
        scale = WV.bbScaleUnselected;
+    if (!height)
+       height = 1000000;
     var b = bbCollection.add({
        show : true,
-       position : Cesium.Cartesian3.fromDegrees(lon, lat, 1000000),
+       position : Cesium.Cartesian3.fromDegrees(lon, lat, height),
        pixelOffset : Cesium.Cartesian2.ZERO,
        eyeOffset : Cesium.Cartesian3.ZERO,
        horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
@@ -118,7 +152,7 @@ function handleDroneRecs(data)
     layer.recs = {};
     layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
-    scene.primitives.add(layer.bbCollection);
+    WV.scene.primitives.add(layer.bbCollection);
     var recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
@@ -137,6 +171,45 @@ function handleDroneRecs(data)
         id = "tbd_"+rec.id;
         layer.recs[id] = rec;
         var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id);
+        layer.billboards[id] = b;
+    }
+}
+
+function getPeopleData()
+{
+    var data = [
+       {
+          'id': 'person0', 
+	  'lat': 0,
+	  'lon': 0,
+       }
+    ]
+    handlePeopleData(data);
+}
+
+function handlePeopleData(data)
+{
+    report("handlePeopleData");
+    var layer = WV.layers["people"];
+    layer.recs = {};
+    layer.billboards = {};
+    layer.bbCollection = new Cesium.BillboardCollection();
+    WV.scene.primitives.add(layer.bbCollection);
+    var recs = data;
+    for (var i=0; i<recs.length; i++) {
+        var rec = recs[i];
+        report("rec "+i+" "+JSON.stringify(rec));
+        layer.numObjs++;
+        if (layer.numObjs > layer.maxNum)
+            return;
+        var imageUrl = "person0.png";
+        var lon = rec.lon;
+        var lat = rec.lat;
+        var id = "person_"+rec.id;
+        layer.recs[id] = rec;
+	var scale = 0.25;
+	var height = 300000;
+        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, height);
         layer.billboards[id] = b;
     }
 }
@@ -165,7 +238,7 @@ function getTwitterImages(url)
     if (layer.billboards == null)
 	layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
-    scene.primitives.add(layer.bbCollection);
+    WV.scene.primitives.add(layer.bbCollection);
     report("downloadImageRecs "+url);
     $.getJSON(url, handleImageRecs)
 }
@@ -203,12 +276,12 @@ function handleImageRecs(data)
 function setupCesium()
 {
     // If the mouse is over the billboard, change its scale and color
-    var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+    var handler = new Cesium.ScreenSpaceEventHandler(WV.scene.canvas);
     WV.screenSpaceEventHandler = handler;
     var layerName = "drones";
     //var layerName = "photos";
     handler.setInputAction(function(movement) {
-        var pickedObject = scene.pick(movement.endPosition);
+        var pickedObject = WV.scene.pick(movement.endPosition);
 	if (!Cesium.defined(pickedObject)) {
             if (WV.currentBillboard)
                 WV.currentBillboard.scale = WV.bbScaleUnselected;
@@ -229,7 +302,7 @@ function setupCesium()
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     handler.setInputAction(function(e) {
         report("click.....");
-        var pickedObject = scene.pick(e.position);
+        var pickedObject = WV.scene.pick(e.position);
 	if (!Cesium.defined(pickedObject)) {
             return;
         }
@@ -264,7 +337,7 @@ function setupLayers(layerData)
         var layer = new WVLayer(layers[i]);
 	var name = layer.name;
         var id = "cb_"+layer.name;
-        var desc = "View "+layer.description;
+        var desc = layer.description;
         $('<input />',
             { type: 'checkbox', id: id, value: desc,
 	      click: toggleLayerCB}).appendTo(cbList);
@@ -296,4 +369,6 @@ $(document).ready(function() {
    report("Starting...");
    getLayers();
    setupCesium();
+   loc = WV.getLocation();
+   report("loc: "+JSON.stringify(loc));
 });
