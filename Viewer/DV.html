@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>Hello Drones!</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="../Cesium/Cesium/Cesium.js"></script>
+  <style>
+      @import url(../Cesium/Cesium/Widgets/widgets.css);
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+<script>
+
+var keepSending = true;
+var prevEndId = null;
+//prevEndId = "0000140";
+var imageServer = "http://localhost:8000/";
+var numObjects = 0;
+var numBillboards = 0;
+var handler = null;
+var bbScaleUnselected = 0.08;
+var bbScaleSelected = 0.12;
+var DRONE_RECS = {};
+var BILLBOARDS = {};
+var currentBillboard = null;
+
+function report(str)
+{
+    console.log(str);
+}
+
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+    }),
+    baseLayerPicker : false
+});
+
+var scene = viewer.scene;				 
+scene.globe.depthTestAgainstTerrain = true;
+var billboards = scene.primitives.add(new Cesium.BillboardCollection());
+
+function addBillboard(lat, lon, imgUrl, id, scale)
+{
+    numBillboards++;
+    report("Adding billboard "+numBillboards);
+    // Example 1:  Add a billboard, specifying all the default values.
+    if (!imgUrl)
+       imgUrl = MONACAT_URL;
+    if (!scale)
+       scale = bbScaleUnselected;
+    var b = billboards.add({
+       show : true,
+       position : Cesium.Cartesian3.fromDegrees(lon, lat, 1000000),
+       pixelOffset : Cesium.Cartesian2.ZERO,
+       eyeOffset : Cesium.Cartesian3.ZERO,
+       horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+       verticalOrigin : Cesium.VerticalOrigin.CENTER,
+       'scale' : scale,
+       image : imgUrl,
+       color : Cesium.Color.WHITE,
+       id : id
+    });
+    bb = b;//to make debugging easier..
+    return b;
+}
+
+function getDroneVids(url)
+{
+    report("getDroneRecs "+url);
+    $.getJSON(url, handleDroneRecs)
+}
+
+function handleDroneRecs(data)
+{
+    report("handleDroneRecs");
+    var recs = data;
+    for (var i=0; i<recs.length; i++) {
+        var rec = recs[i];
+	if (!rec.yahooId) {
+            report("skipping recs with no yahoo video");
+        }
+        report("rec "+i+" "+JSON.stringify(rec));
+        if (!rec.yahooId)
+            continue;
+        numObjects++;
+        if (numObjects > 30)
+            return;
+        var imageUrl = "drone.png";
+        var lon = rec.lon;
+        var lat = rec.lat;
+        id = "tbd_"+rec.id;
+        DRONE_RECS[id] = rec;
+        var b = addBillboard(lat, lon, imageUrl, id);
+        BILLBOARDS[id] = b;
+    }
+}
+
+function setupDroneCesiumStuff()
+{
+    // If the mouse is over the billboard, change its scale and color
+    handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+    handler.setInputAction(function(movement) {
+        var pickedObject = scene.pick(movement.endPosition);
+	if (!Cesium.defined(pickedObject)) {
+            if (currentBillboard)
+                currentBillboard.scale = bbScaleUnselected;
+            currentBillboard = null;
+            return;
+        }
+        mpo = pickedObject;
+        var id = pickedObject.id;
+        report("move over id "+id);
+        var b = BILLBOARDS[id];
+        if (currentBillboard && b != currentBillboard) {
+            currentBillboard.scale = bbScaleUnselected;
+        }
+        currentBillboard = b;
+        report("b.scale "+b.scale);
+        b.scale = bbScaleSelected;
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    handler.setInputAction(function(e) {
+        report("click.....");
+        var pickedObject = scene.pick(e.position);
+	if (!Cesium.defined(pickedObject)) {
+            return;
+        }
+        cpo = pickedObject;
+        var id = pickedObject.id;
+        report("click picked..... pickedObject._id "+id);
+        var rec = DRONE_RECS[id];
+        playVid(rec);
+    }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+}
+
+function playVid(rec)
+{
+    var yahooId = rec.yahooId;
+    var url = "https://www.youtube.com/watch?v="+yahooId;
+    setTimeout(function() {
+        window.open(url, "DroneVidioView");
+    }, 200);
+}
+
+
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    baseLayerPicker : false
+});
+var imageryLayers = viewer.imageryLayers;
+
+var viewModel = {
+    layers : [],
+    baseLayers : [],
+    upLayer : null,
+    downLayer : null,
+    selectedLayer : null,
+    isSelectableLayer : function(layer) {
+        return baseLayers.indexOf(layer) >= 0;
+    },
+    raise : function(layer, index) {
+        imageryLayers.raise(layer);
+        viewModel.upLayer = layer;
+        viewModel.downLayer = viewModel.layers[Math.max(0, index - 1)];
+        updateLayerList();
+        window.setTimeout(function() { viewModel.upLayer = viewModel.downLayer = null; }, 10);
+    },
+    lower : function(layer, index) {
+        imageryLayers.lower(layer);
+        viewModel.upLayer = viewModel.layers[Math.min(viewModel.layers.length - 1, index + 1)];
+        viewModel.downLayer = layer;
+        updateLayerList();
+        window.setTimeout(function() { viewModel.upLayer = viewModel.downLayer = null; }, 10);
+    },
+    canRaise : function(layerIndex) {
+        return layerIndex > 0;
+    },
+    canLower : function(layerIndex) {
+        return layerIndex >= 0 && layerIndex < imageryLayers.length - 1;
+    }
+};
+
+Cesium.knockout.track(viewModel);
+
+var baseLayers = viewModel.baseLayers;
+
+function setupLayers() {
+    // Create all the base layers that this example will support.
+    // These base layers aren't really special.  It's possible to have multiple of them
+    // enabled at once, just like the other layers, but it doesn't make much sense because
+    // all of these layers cover the entire globe and are opaque.
+    addBaseLayerOption(
+            'Bing Maps Aerial',
+            undefined); // the current base layer
+    addBaseLayerOption(
+            'Bing Maps Road',
+            new Cesium.BingMapsImageryProvider({
+                url : 'https://dev.virtualearth.net',
+                mapStyle: Cesium.BingMapsStyle.ROAD
+            }));
+    addBaseLayerOption(
+            'ArcGIS World Street Maps',
+            new Cesium.ArcGisMapServerImageryProvider({
+                url : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+            }));
+/*
+    addBaseLayerOption(
+            'OpenStreetMaps',
+            Cesium.createOpenStreetMapImageryProvider());
+    addBaseLayerOption(
+            'MapQuest OpenStreetMaps',
+            Cesium.createOpenStreetMapImageryProvider({
+                url : 'https://otile1-s.mqcdn.com/tiles/1.0.0/osm/'
+            }));
+    addBaseLayerOption(
+            'Stamen Maps',
+            Cesium.createOpenStreetMapImageryProvider({
+                url : 'https://stamen-tiles.a.ssl.fastly.net/watercolor/',
+                fileExtension: 'jpg',
+                credit: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'
+            }));
+    addBaseLayerOption(
+            'Natural Earth II (local)',
+            Cesium.createTileMapServiceImageryProvider({
+                url : require.toUrl('Assets/Textures/NaturalEarthII')
+            }));
+*/
+/*
+    addBaseLayerOption(
+            'USGS Shaded Relief (via WMTS)',
+            new Cesium.WebMapTileServiceImageryProvider({
+                url : 'http://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer/WMTS',
+                layer : 'USGSShadedReliefOnly',
+                style : 'default',
+                format : 'image/jpeg',
+                tileMatrixSetID : 'default028mm',
+                maximumLevel: 19,
+                credit : new Cesium.Credit('U. S. Geological Survey')
+            }));
+
+    // Create the additional layers
+    addAdditionalLayerOption(
+            'United States GOES Infrared',
+            new Cesium.WebMapServiceImageryProvider({
+                url : 'https://mesonet.agron.iastate.edu/cgi-bin/wms/goes/conus_ir.cgi?',
+                layers : 'goes_conus_ir',
+                credit : 'Infrared data courtesy Iowa Environmental Mesonet',
+                parameters : {
+                    transparent : 'true',
+                    format : 'image/png'
+                },
+                proxy : new Cesium.DefaultProxy('/proxy/')
+            }));
+    addAdditionalLayerOption(
+            'United States Weather Radar',
+            new Cesium.WebMapServiceImageryProvider({
+                url : 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?',
+                layers : 'nexrad-n0r',
+                credit : 'Radar data courtesy Iowa Environmental Mesonet',
+                parameters : {
+                    transparent : 'true',
+                    format : 'image/png'
+                },
+                proxy : new Cesium.DefaultProxy('/proxy/')
+            }));
+    addAdditionalLayerOption(
+            'TileMapService Image',
+            Cesium.createTileMapServiceImageryProvider({
+                url : '../images/cesium_maptiler/Cesium_Logo_Color'
+            }),
+            0.2);
+    addAdditionalLayerOption(
+            'Single Image',
+            new Cesium.SingleTileImageryProvider({
+                url : '../images/Cesium_Logo_overlay.png',
+                rectangle : Cesium.Rectangle.fromDegrees(-115.0, 38.0, -107, 39.75)
+            }),
+            1.0);
+    addAdditionalLayerOption(
+            'Grid',
+            new Cesium.GridImageryProvider(), 1.0, false);
+    addAdditionalLayerOption(
+            'Tile Coordinates',
+            new Cesium.TileCoordinatesImageryProvider(), 1.0, false);
+*/
+}
+
+function addBaseLayerOption(name, imageryProvider) {
+    var layer;
+    if (typeof imageryProvider === 'undefined') {
+        layer = imageryLayers.get(0);
+        viewModel.selectedLayer = layer;
+    } else {
+        layer = new Cesium.ImageryLayer(imageryProvider);
+    }
+
+    layer.name = name;
+    baseLayers.push(layer);
+}
+
+function addAdditionalLayerOption(name, imageryProvider, alpha, show) {
+    var layer = imageryLayers.addImageryProvider(imageryProvider);
+    layer.alpha = Cesium.defaultValue(alpha, 0.5);
+    layer.show = Cesium.defaultValue(show, true);
+    layer.name = name;
+    Cesium.knockout.track(layer, ['alpha', 'show', 'name']);
+}
+
+function updateLayerList() {
+    var numLayers = imageryLayers.length;
+    viewModel.layers.splice(0, viewModel.layers.length);
+    for (var i = numLayers - 1; i >= 0; --i) {
+        viewModel.layers.push(imageryLayers.get(i));
+    }
+}
+
+function setupCesiumStuffFromSample()
+{
+setupLayers();
+updateLayerList();
+
+//Bind the viewModel to the DOM elements of the UI that call for it.
+var toolbar = document.getElementById('toolbar');
+report("*********");
+Cesium.knockout.applyBindings(viewModel, toolbar);
+return;
+
+Cesium.knockout.getObservable(viewModel, 'selectedLayer').subscribe(function(baseLayer) {
+    // Handle changes to the drop-down base layer selector.
+    var activeLayerIndex = 0;
+    var numLayers = viewModel.layers.length;
+    for (var i = 0; i < numLayers; ++i) {
+        if (viewModel.isSelectableLayer(viewModel.layers[i])) {
+            activeLayerIndex = i;
+            break;
+        }
+    }
+    var activeLayer = viewModel.layers[activeLayerIndex];
+    var show = activeLayer.show;
+    var alpha = activeLayer.alpha;
+    imageryLayers.remove(activeLayer, false);
+    imageryLayers.add(baseLayer, numLayers - activeLayerIndex - 1);
+    baseLayer.show = show;
+    baseLayer.alpha = alpha;
+    updateLayerList();
+});
+}
+
+
+$(document).ready(function() {
+   report("Starting...");
+   setupCesiumStuffFromSample();
+   //setupDroneCesiumStuff();
+   getDroneVids("tbd_data.json");
+});
+
+</script>
+</body>
+</html>
