@@ -12,6 +12,7 @@ sys.path.append("scripts")
 import ImageTweets
 ImageTweets.IMAGE_DIR = "images/twitter_images"
 
+REG = {}
 PORT = 8001
 
 def getQuery(path):
@@ -51,10 +52,20 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         
     def handleRegister(self):
         #print "POST headers:", self.headers
+        global REG
         content_len = int(self.headers.getheader('content-length', 0))
         body = self.rfile.read(content_len)
         obj = json.loads(body)
         print obj
+        try:
+            dtype = obj['type']
+            id = obj['id']
+            if dtype not in REG:
+                REG[dtype] = {}
+            REG[dtype][id] = obj
+            print "REG:", REG
+        except KeyError:
+            print "Don't have all fields"
         self.send_data("Ok", "text/plain")
 
     def handleUpdate(self):
@@ -83,7 +94,15 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if 'maxNum' in q:
             maxNum = int(q['maxNum'][0])
         images = it.get(maxNum=maxNum, prevEndNum=prevEndNum)
-        obj = {'images': images}
+        obj = {'recs': images}
+        jObj = json.dumps(obj, sort_keys=True, indent=4)
+        #print jObj
+        self.send_data(jObj, "application/json")
+
+    def handleGetPeople(self):
+        print "path:", self.path
+        q = getQuery(self.path)
+        print "q:", q
         jObj = json.dumps(obj, sort_keys=True, indent=4)
         #print jObj
         self.send_data(jObj, "application/json")
@@ -97,7 +116,11 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if dtype == 'photos':
             return self.handleGetImageTweets()
         else:
-            print "Unsupported data type", q['type']
+            data = REG[dtype]
+            obj = {'recs': data.values()}
+            jObj = json.dumps(obj, sort_keys=True, indent=4)
+            #print jObj
+            self.send_data(jObj, "application/json")
         self.send_data("Ok", "text/plain")
 
 

@@ -36,9 +36,13 @@ WV.Watcher.prototype.pollRequest = function()
 
 WV.Watcher.prototype.pollHandler = function(data)
 {
-    report("WV.Wacher.pollHandler got data evType: "+this.evType);
+    report("WV.Watcher.pollHandler got data evType: "+this.evType);
     var inst = this;
-    var recs = data.images.slice(0,100);
+    //var recs = data.images.slice(0,100);
+    //report("data: "+JSON.stringify(data));
+    var recs = data.recs;
+    if (recs.length > 100)
+	recs = recs.slice(0,100);
     for (var i=0; i<recs.length; i++) {
 	var rec = recs[i];
 	if (rec.id)

@@ -12,7 +12,8 @@ WV.layers = {};
 WV.viewer = null;
 WV.scene = null;
 WV.thisPersonData = null;
-WV.origin = []
+WV.origin = [0,0];
+WV.curPos = null;
 WV.myId = "_anon_"+new Date().getTime();
 WV.numPolls = 0;
 var wvCom = null;
@@ -35,7 +36,7 @@ WV.LAYER_DATA =
           'name': 'drones',
           'description': 'drone videos',
 	  'maxNum': 100,
-	  'visible': true,
+	  'visible': false,
        },
        {
           'name': 'photos',
@@ -68,11 +69,10 @@ WV.getLocation = function() {
 WV.handleLocation = function(position) {
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
-    ourPos = [lat,lon];
-    WV.origin = ourPos;
+    WV.origin = [lat,lon];
     report("lat: " + lat + "lon: " + lon);
     report("pos: "+JSON.stringify(position));
-    WV.thisPersonData = { 'op': 'create', 'id': 'person0', 'lat': lat, 'lon': lon };
+    WV.thisPersonData = { 'op': 'create', 'id': 'person0', 'origin': WV.origin };
 }
 
 function WVLayer(spec)
@@ -191,8 +191,8 @@ function watchPeople()
        {
 	   'op': 'create',
 	   'id': 'person1', 
-	   'lat': 0,
-	   'lon': 0,
+	   'origin': [0, 0],
+	   'curPos': [0, 0, 1000000]
        }
     ]
     if (WV.thisPersonData)
@@ -205,26 +205,79 @@ function handlePeopleData(data)
 {
     report("handlePeopleData");
     var layer = WV.layers["people"];
-    layer.recs = {};
-    layer.billboards = {};
-    layer.bbCollection = new Cesium.BillboardCollection();
-    WV.scene.primitives.add(layer.bbCollection);
+    if (layer.recs == null) {
+	report("initing PeopleData layer");
+	layer.recs = {};
+	layer.tethers = {};
+	layer.originBillboards = {};
+	layer.curPosBillboards = {};
+	layer.bbCollection = new Cesium.BillboardCollection();
+	WV.scene.primitives.add(layer.bbCollection);
+    }
+    var originImageUrl = "person0.png";
+    var curPosImageUrl = "eagle1.png";
     var recs = data;
+    var t = getClockTime();
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
-        report("rec "+i+" "+JSON.stringify(rec));
+        //report("rec "+i+" "+JSON.stringify(rec));
         layer.numObjs++;
-        if (layer.numObjs > layer.maxNum)
-            return;
-        var imageUrl = "person0.png";
-        var lon = rec.lon;
-        var lat = rec.lat;
+	if (rec.origin == null) {
+	    report("no origin");
+	    continue;
+	}
+	if (rec.curPos == null) {
+	    report("no curPos");
+	    continue;
+	}
+	var dt = t - rec.t;
+	if (dt > 30) {
+	    report("ignoring view that is too old...");
+	    continue;
+	}
+        var lat0 =   rec.origin[0];
+        var lon0 =   rec.origin[1];
+	var height0 = 30000;
+        var lat =    rec.curPos[0];
+        var lon =    rec.curPos[1];
+	var height = rec.curPos[2];
         var id = "person_"+rec.id;
+        //var id = "person_"+layer.numObjs;
         layer.recs[id] = rec;
 	var scale = 0.25;
-	var height = 300000;
-        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, height);
-        layer.billboards[id] = b;
+	//var height = 300000;
+	var positions = [Cesium.Cartesian3.fromDegrees(lat0,lon0,height0),
+			 //Cesium.Cartesian3.fromDegrees(lat,lon,height)];
+			 Cesium.Cartesian3.fromDegrees(lat,lon,height)];
+	var b = layer.originBillboards[id];
+	if (b == null) {
+	    report("add origin"+lat0+" "+lon0+" "+originImageUrl+" "+id+" "+scale+" "+height0);
+	    var ob = addBillboard(layer.bbCollection, lat0, lon0, originImageUrl, id, scale, height0);
+	    layer.originBillboards[id] = ob;
+	    report("add curPos"+lat+" "+lon+" "+curPosImageUrl+" "+id+" "+scale+" "+height);
+	    var cb = addBillboard(layer.bbCollection, lat, lon, curPosImageUrl, id, scale, height);
+	    layer.curPosBillboards[id] = cb;
+	    /*
+	    var tether = WV.entities.add({
+		    polyline : {
+			positions : positions,
+			    width : 5.0,
+			    material : new Cesium.PolylineGlowMaterialProperty({
+				    color : Cesium.Color.DEEPSKYBLUE,
+					glowPower : 0.25
+					})
+			    }
+		});
+	    layer.tethers[id] = tether;
+	    */
+	}
+	else {
+	    report("billboard exists "+id);
+	    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, height);
+	    report("set position "+pos);
+	    layer.curPosBillboards[id].position = pos;
+	    //layer.tethers[id].positions = positions;
+	}
     }
 }
 
@@ -473,13 +526,14 @@ function reporter()
     var cpos = WV.viewer.camera.positionCartographic;
     var clat = toDegrees(cpos.latitude);
     var clon = toDegrees(cpos.longitude);
-    var curPos = [clat, clon, cpos.height];
+    WV.curPos = [clat, clon, cpos.height];
     var t = getClockTime();
     WV.numPolls++;
     var status = {
+	'type': 'people',
 	'id': WV.myId,
 	'origin': WV.origin,
-	'curPos': curPos,
+	'curPos': WV.curPos,
 	't': t,
 	'n': WV.numPolls};
     wvCom.sendStatus(status);
