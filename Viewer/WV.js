@@ -8,6 +8,7 @@ WV.LAYER_DATA =
           'name': 'drones',
           'description': 'drone videos',
 	  'maxNum': 30,
+	  'visible': true,
        },
        {
           'name': 'photos',
@@ -19,6 +20,10 @@ WV.LAYER_DATA =
           'name': 'people',
           'description': 'people watching now',
 	  'maxNum': 100,
+       },
+       {
+          'name': 'indoorMaps',
+          'description': 'indoor maps',
        }
     ]
 };
@@ -34,6 +39,9 @@ WV.layers = {};
 WV.viewer = null;
 WV.scene = null;
 WV.thisPersonData = null;
+WV.origin = []
+WV.myId = "_anon_"+new Date().getTime();
+WV.numPolls = 0;
 
 WV.viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
@@ -41,7 +49,7 @@ WV.viewer = new Cesium.Viewer('cesiumContainer', {
     }),
     baseLayerPicker : false
 });
-
+WV.entities = WV.viewer.entities;
 WV.scene = WV.viewer.scene;				 
 WV.scene.globe.depthTestAgainstTerrain = true;
 
@@ -60,15 +68,10 @@ WV.handleLocation = function(position) {
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
     ourPos = [lat,lon];
+    WV.origin = ourPos;
     report("lat: " + lat + "lon: " + lon);
     report("pos: "+JSON.stringify(position));
-    //var bbCollection = new Cesium.BillboardCollection();
-    //WV.scene.primitives.add(bbCollection);
-    //var imageUrl = "person0.png";
-    //var id = "person0";
     WV.thisPersonData = { 'id': 'person0', 'lat': lat, 'lon': lon };
-	//var b = addBillboard(bbCollection, lat, lon, imageUrl, id, 0.5, 100000);
-    //layer.billboards[id] = b;
 }
 
 function WVLayer(spec)
@@ -91,9 +94,12 @@ function WVLayer(spec)
 	    getDroneVids("tbd_data.json");
 	if (this.name == "people")
 	    getPeopleData();
+	if (this.name == "indoorMaps")
+	    getIndoorMapData();
     }
 
     this.setVisibility = function(visible) {
+	this.visible = visible;
 	report("setVisibility "+this.name+" "+visible);
 	if (visible) {
 	    if (this.billboards == null) {
@@ -106,6 +112,12 @@ function WVLayer(spec)
 	else {
 	    setObjsAttr(this.billboards, "show", false);
 	}
+        var id = "cb_"+this.name;
+	$("#"+id).prop('checked', this.visible);
+    }
+
+    if (this.visible) {
+	this.setVisibility(true);
     }
 }
 
@@ -219,11 +231,70 @@ function handlePeopleData(data)
     }
 }
 
+function getIndoorMapData()
+{
+    var data = [
+       {
+          'id': 'map1', 
+	  'latRange': [-115.0, -107],
+	  'lonRange': [38.0,     39.75],
+          'url': 'PorterFloorPlan.png',
+	  'width': 100000,
+	  'height': 100000,
+       },
+       {
+          'id': 'map2', 
+	  'latRange': [-105.0, -100],
+	  'lonRange': [35.0,     38.0],
+          'url': 'PorterFloorPlan.png',
+	  'width': 100000,
+	  'height': 100000,
+       }
+
+    ]
+    handleIndoorMapData(data);
+}
+
+function handleIndoorMapData(data)
+{
+    report("handleIndoorMapData");
+    var layer = WV.layers["indoorMaps"];
+    var imageryLayers = WV.viewer.imageryLayers;
+    layer.recs = {};
+    layer.billboards = {};
+    layer.ilayers = {};
+    layer.bbCollection = new Cesium.BillboardCollection();
+    var recs = data;
+    for (var i=0; i<recs.length; i++) {
+        var rec = recs[i];
+        report("rec "+i+" "+JSON.stringify(rec));
+        var imageUrl = "person0.png";
+        var lonLow = rec.lonRange[0];
+        var lonHigh = rec.lonRange[1];
+        var latLow = rec.latRange[0];
+        var latHigh = rec.latRange[1];
+        var id = rec.id;
+        layer.recs[id] = rec;
+
+        var provider = new Cesium.SingleTileImageryProvider({
+	        //url : 'PorterFloorPlan.png',
+	        url : rec.url,
+                //rectangle : Cesium.Rectangle.fromDegrees(-115.0, 38.0, -107, 39.75)
+                rectangle : Cesium.Rectangle.fromDegrees(latLow, lonLow, latHigh, lonHigh)
+	});
+        var ilayer = imageryLayers.addImageryProvider(provider);
+        ilayer.alpha = 1.0;
+        ilayer.show = true;
+        ilayer.name = name;
+        layer.ilayers[id] = ilayer;
+    }
+}
+
 function setObjsAttr(objs, attr, val)
 {
     report("setObjsAttr "+attr+" "+val+" objs: "+objs);
     for (id in objs) {
-	report("set objs["+id+"]."+attr+" = "+val);
+	//report("set objs["+id+"]."+attr+" = "+val);
 	objs[id][attr] = val;
     }
 }
@@ -326,7 +397,7 @@ function playVid(rec)
     var url = "https://www.youtube.com/watch?v="+yahooId;
     setTimeout(function() {
         window.open(url, "DroneVidioView");
-    }, 200);
+    }, 400);
 }
 
 function getLayers()
@@ -386,10 +457,43 @@ function toggleLayer(layerName)
     layer.setVisibility(checked);
 }
 
+function getClockTime()
+{
+    return new Date().getTime()/1000.0;
+}
+
+function toDegrees(r)
+{
+    return r*180/Math.PI;
+}
+
+function reporter()
+{
+//    report("reporter");
+    var cpos = WV.viewer.camera.positionCartographic;
+    var clat = toDegrees(cpos.latitude);
+    var clon = toDegrees(cpos.longitude);
+    var curPos = [clat, clon, cpos.height];
+    var t = getClockTime();
+    WV.numPolls++;
+    var status = {
+	'id': WV.myId,
+	'origin': WV.origin,
+	'curPos': curPos,
+	't': t,
+	'n': WV.numPolls};
+    var sStr = JSON.stringify(status);
+    report("sStr: "+sStr);
+    jQuery.post("/register/", sStr, function() {
+	    report("registered");
+	}, "json");
+    setTimeout(reporter, 1000);
+}
+
 $(document).ready(function() {
-   report("Starting...");
-   getLayers();
-   setupCesium();
-   loc = WV.getLocation();
-   report("loc: "+JSON.stringify(loc));
+    report("Starting...");
+    getLayers();
+    setupCesium();
+    WV.getLocation();
+    setTimeout(reporter, 1000);
 });

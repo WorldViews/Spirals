@@ -32,6 +32,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         print "POST path:", self.path
         if self.path.startswith("/update/"):
             return self.handleUpdate()
+        if self.path.startswith("/register/"):
+            return self.handleRegister()
         SimpleHTTPServer.SimpleHTTPRequestHandler.do_POST(self)
 
     def end_headers(self):
@@ -47,6 +49,14 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(str)
         
+    def handleRegister(self):
+        #print "POST headers:", self.headers
+        content_len = int(self.headers.getheader('content-length', 0))
+        body = self.rfile.read(content_len)
+        obj = json.loads(body)
+        print obj
+        self.send_data("Ok", "text/plain")
+
     def handleUpdate(self):
         print "POST headers:", self.headers
         content_len = int(self.headers.getheader('content-length', 0))
