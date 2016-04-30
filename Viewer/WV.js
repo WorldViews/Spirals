@@ -1,13 +1,40 @@
 
 var WV = {};
 
+WV.screenSpaceEventHandler = null;
+WV.prevEndId = null;
+WV.numBillboards = 0;
+WV.bbScaleUnselected = 0.08;
+WV.bbScaleSelected = 0.12;
+WV.currentBillboard = null;
+WV.keepSending = true;
+WV.layers = {};
+WV.viewer = null;
+WV.scene = null;
+WV.thisPersonData = null;
+WV.origin = []
+WV.myId = "_anon_"+new Date().getTime();
+WV.numPolls = 0;
+var wvCom = null;
+
+WV.viewer = new Cesium.Viewer('cesiumContainer', {
+    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+    }),
+    baseLayerPicker : false
+});
+WV.entities = WV.viewer.entities;
+WV.scene = WV.viewer.scene;				 
+WV.scene.globe.depthTestAgainstTerrain = true;
+
+
 WV.LAYER_DATA =
 {
     "layers": [
        {
           'name': 'drones',
           'description': 'drone videos',
-	  'maxNum': 30,
+	  'maxNum': 100,
 	  'visible': true,
        },
        {
@@ -28,32 +55,6 @@ WV.LAYER_DATA =
     ]
 };
 
-WV.screenSpaceEventHandler = null;
-WV.prevEndId = null;
-WV.numBillboards = 0;
-WV.bbScaleUnselected = 0.08;
-WV.bbScaleSelected = 0.12;
-WV.currentBillboard = null;
-WV.keepSending = true;
-WV.layers = {};
-WV.viewer = null;
-WV.scene = null;
-WV.thisPersonData = null;
-WV.origin = []
-WV.myId = "_anon_"+new Date().getTime();
-WV.numPolls = 0;
-
-WV.viewer = new Cesium.Viewer('cesiumContainer', {
-    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
-        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
-    }),
-    baseLayerPicker : false
-});
-WV.entities = WV.viewer.entities;
-WV.scene = WV.viewer.scene;				 
-WV.scene.globe.depthTestAgainstTerrain = true;
-
-
 
 WV.getLocation = function() {
     if (navigator.geolocation) {
@@ -71,7 +72,7 @@ WV.handleLocation = function(position) {
     WV.origin = ourPos;
     report("lat: " + lat + "lon: " + lon);
     report("pos: "+JSON.stringify(position));
-    WV.thisPersonData = { 'id': 'person0', 'lat': lat, 'lon': lon };
+    WV.thisPersonData = { 'op': 'create', 'id': 'person0', 'lat': lat, 'lon': lon };
 }
 
 function WVLayer(spec)
@@ -91,9 +92,9 @@ function WVLayer(spec)
 	if (this.name == "photos")
 	    getTwitterImages();
 	if (this.name == "drones")
-	    getDroneVids("tbd_data.json");
+	    wvCom.subscribe("drones", handleDroneRecs);
 	if (this.name == "people")
-	    getPeopleData();
+	    watchPeople();
 	if (this.name == "indoorMaps")
 	    getIndoorMapData();
     }
@@ -153,11 +154,6 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
     return b;
 }
 
-function getDroneVids(url)
-{
-    report("getDroneRecs "+url);
-    $.getJSON(url, handleDroneRecs)
-}
 
 function handleDroneRecs(data)
 {
@@ -173,7 +169,7 @@ function handleDroneRecs(data)
 	if (!rec.yahooId) {
             report("skipping recs with no yahoo video");
         }
-        report("rec "+i+" "+JSON.stringify(rec));
+        //report("rec "+i+" "+JSON.stringify(rec));
         if (!rec.yahooId)
             continue;
         layer.numObjs++;
@@ -189,19 +185,20 @@ function handleDroneRecs(data)
     }
 }
 
-function getPeopleData()
+function watchPeople()
 {
     var data = [
        {
-          'id': 'person1', 
-	  'lat': 0,
-	  'lon': 0,
+	   'op': 'create',
+	   'id': 'person1', 
+	   'lat': 0,
+	   'lon': 0,
        }
     ]
-    if (WV.thisPersonData) {
-        data.push(WV.thisPersonData);
-    }
+    if (WV.thisPersonData)
+	data.push(WV.thisPersonData);
     handlePeopleData(data);
+    wvCom.subscribe("people", handlePeopleData);
 }
 
 function handlePeopleData(data)
@@ -267,7 +264,7 @@ function handleIndoorMapData(data)
     var recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
-        report("rec "+i+" "+JSON.stringify(rec));
+        //report("rec "+i+" "+JSON.stringify(rec));
         var imageUrl = "person0.png";
         var lonLow = rec.lonRange[0];
         var lonHigh = rec.lonRange[1];
@@ -315,16 +312,19 @@ function getTwitterImages(url)
 	layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
     WV.scene.primitives.add(layer.bbCollection);
-    report("downloadImageRecs "+url);
-    $.getJSON(url, handleImageRecs)
+    wvCom.subscribe("photos", handleImageRecs);
+    //    report("downloadImageRecs "+url);
+    //    $.getJSON(url, handleImageRecs)
 }
 
-function handleImageRecs(data)
+//function handleImageRecs(data)
+function handleImageRecs(recs)
 {
     report("handleImageRecs");
     var layer = WV.layers["photos"];
-    data.images = data.images.slice(0,100);
-    var imageList = data.images;
+    //data.images = data.images.slice(0,100);
+    //var imageList = data.images;
+    var imageList = recs;
     for (var i=0; i<imageList.length; i++) {
         layer.numObjs++;
         if (layer.numObjs > layer.maxNum)
@@ -344,8 +344,8 @@ function handleImageRecs(data)
 	b._wvid = id;
 	report("ispec: "+JSON.stringify(ispec));
     }
-    if (WV.keepSending)				      
-        setTimeout(getTwitterImages, 1000);
+    //    if (WV.keepSending)				      
+    //        setTimeout(getTwitterImages, 1000);
 }
 
 
@@ -482,16 +482,13 @@ function reporter()
 	'curPos': curPos,
 	't': t,
 	'n': WV.numPolls};
-    var sStr = JSON.stringify(status);
-    report("sStr: "+sStr);
-    jQuery.post("/register/", sStr, function() {
-	    report("registered");
-	}, "json");
+    wvCom.sendStatus(status);
     setTimeout(reporter, 1000);
 }
 
 $(document).ready(function() {
     report("Starting...");
+    wvCom = new WV.WVCom();
     getLayers();
     setupCesium();
     WV.getLocation();

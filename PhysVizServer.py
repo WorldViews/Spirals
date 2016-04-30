@@ -22,7 +22,7 @@ def getQuery(path):
 
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
-        if self.path.startswith("/getData"):
+        if self.path.startswith("/wvgetdata"):
             return self.handleGetData()
         if self.path.startswith("/imageTweets"):
             return self.handleGetImageTweets()
@@ -88,8 +88,17 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         #print jObj
         self.send_data(jObj, "application/json")
 
-    def getData(self):
-        return self.handleGetImageTweets()
+    def handleGetData(self):
+        print "path:", self.path
+        q = getQuery(self.path)
+        dtype = None
+        if 'type' in q:
+            dtype = q['type'][0];
+        if dtype == 'photos':
+            return self.handleGetImageTweets()
+        else:
+            print "Unsupported data type", q['type']
+        self.send_data("Ok", "text/plain")
 
 
 def run(port=PORT):
