@@ -16,6 +16,7 @@ WV.origin = [0,0];
 WV.curPos = null;
 WV.myId = "_anon_"+new Date().getTime();
 WV.numPolls = 0;
+WV.recs = {};
 var wvCom = null;
 
 WV.viewer = new Cesium.Viewer('cesiumContainer', {
@@ -37,6 +38,18 @@ WV.LAYER_DATA =
           'description': 'drone videos',
 	  'maxNum': 100,
 	  'visible': false,
+	  'iconUrl': "drone.png",
+	  'mediaType': 'youtube',
+	  'dataFile': 'tbd_data.json'
+       },
+       {
+          'name': 'climbing',
+          'description': 'rock climbing',
+	  'maxNum': 100,
+	  'visible': false,
+	  'iconUrl': "climber.png",
+	  'mediaType': 'youtube',
+	  'dataFile': 'climbing_data.json'
        },
        {
           'name': 'photos',
@@ -89,13 +102,18 @@ function WVLayer(spec)
     WV.layers[name] = this;
 
     this.loaderFun = function() {
-	if (this.name == "photos")
+	var layer = WV.layers[this.name];
+	var name = this.name;
+	if (layer.mediaType == "youtube") {
+	    wvCom.subscribe(name,
+			    handleVideoRecs,
+			    {dataFile: layer.dataFile});
+	}
+	if (name == "photos")
 	    getTwitterImages();
-	if (this.name == "drones")
-	    wvCom.subscribe("drones", handleDroneRecs);
-	if (this.name == "people")
+	if (name == "people")
 	    watchPeople();
-	if (this.name == "indoorMaps")
+	if (name == "indoorMaps")
 	    getIndoorMapData();
     }
 
@@ -154,11 +172,10 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
     return b;
 }
 
-
-function handleDroneRecs(data)
+function handleVideoRecs(data, layerName)
 {
-    report("handleDroneRecs");
-    var layer = WV.layers["drones"];
+    report("handleVideoRecs "+layerName);
+    var layer = WV.layers[layerName];
     layer.recs = {};
     layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
@@ -166,20 +183,21 @@ function handleDroneRecs(data)
     var recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
+	rec.layerName = layerName;
 	if (!rec.yahooId) {
             report("skipping recs with no yahoo video");
         }
-        //report("rec "+i+" "+JSON.stringify(rec));
         if (!rec.yahooId)
             continue;
         layer.numObjs++;
         if (layer.numObjs > layer.maxNum)
             return;
-        var imageUrl = "drone.png";
+        var imageUrl = layer.iconUrl;
         var lon = rec.lon;
         var lat = rec.lat;
-        id = "tbd_"+rec.id;
+        id = layerName+"_"+rec.id;
         layer.recs[id] = rec;
+	WV.recs[id] = rec;
         var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id);
         layer.billboards[id] = b;
     }
@@ -417,9 +435,10 @@ function setupCesium()
             WV.currentBillboard = null;
             return;
         }
-	var layer = WV.layers[layerName];
         mpo = pickedObject;
         var id = pickedObject.id;
+	var layerName = WV.recs[id].layerName;
+	var layer = WV.layers[layerName];
         report("move over id "+id);
         var b = layer.billboards[id];
         if (WV.currentBillboard && b != WV.currentBillboard) {
@@ -437,6 +456,7 @@ function setupCesium()
         }
         cpo = pickedObject;
         var id = pickedObject.id;
+	var layerName = WV.recs[id].layerName;
 	var layer = WV.layers[layerName];
         report("click picked..... pickedObject._id "+id);
         var rec = layer.recs[id];
@@ -520,9 +540,9 @@ function toDegrees(r)
     return r*180/Math.PI;
 }
 
-function reporter()
+function statusReporter()
 {
-//    report("reporter");
+//    report("statusReporter");
     var cpos = WV.viewer.camera.positionCartographic;
     var clat = toDegrees(cpos.latitude);
     var clon = toDegrees(cpos.longitude);
@@ -537,7 +557,7 @@ function reporter()
 	't': t,
 	'n': WV.numPolls};
     wvCom.sendStatus(status);
-    setTimeout(reporter, 1000);
+    setTimeout(statusReporter, 1000);
 }
 
 $(document).ready(function() {
@@ -546,5 +566,5 @@ $(document).ready(function() {
     getLayers();
     setupCesium();
     WV.getLocation();
-    setTimeout(reporter, 1000);
+    setTimeout(statusReporter, 1000);
 });

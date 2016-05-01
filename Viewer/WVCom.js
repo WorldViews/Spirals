@@ -31,7 +31,9 @@ WV.Watcher.prototype.pollRequest = function()
 	url += "&prevEndNum="+this.prevMaxId;
     report(" url: "+url);
     var inst = this;
-    $.getJSON(url, function(data) { inst.pollHandler(data); });
+    $.getJSON(url, function(data) {
+	    inst.pollHandler(data);
+	});
 }
 
 WV.Watcher.prototype.pollHandler = function(data)
@@ -49,8 +51,9 @@ WV.Watcher.prototype.pollHandler = function(data)
 	    this.prevMaxId = rec.id;
     }
     var typeObj = this.wvCom.types[this.evType];
-    if (typeObj.handler)
-	typeObj.handler(recs);
+    if (typeObj.handler) {
+	typeObj.handler(recs, this.evType);
+    }
     setTimeout(function() { inst.pollRequest()}, 1000);
 }
 
@@ -63,9 +66,10 @@ WV.WVCom.prototype.subscribe = function(evType, handler, opts)
     var typeObj = {'eventType': evType}
     typeObj.handler = handler;
     this.types[evType] = typeObj;
-    if (evType == "drones") {
-	var url = "tbd_data.json";
-        $.getJSON(url, handler);
+    if (opts.dataFile) {
+	var url = opts.dataFile;
+        $.getJSON(url, function(data) {
+		handler(data, evType)});
     }
     else
 	typeObj.watcher = new WV.Watcher(this, evType);
