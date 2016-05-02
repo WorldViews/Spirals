@@ -46,7 +46,7 @@ WV.LAYER_DATA =
           'name': 'climbing',
           'description': 'rock climbing',
 	  'maxNum': 100,
-	  'visible': false,
+	  'visible': true,
 	  'iconUrl': "climber.png",
 	  'mediaType': 'youtube',
 	  'dataFile': 'climbing_data.json'
@@ -55,12 +55,14 @@ WV.LAYER_DATA =
           'name': 'photos',
           'description': 'recently tweeted images',
 	  'maxNum': 100,
-	  'imageServer': 'http://localhost:8001/'
+	  // 'imageServer': 'http://localhost:8001/'
+	  'imageServer': '/'
        },
        {
           'name': 'people',
           'description': 'people watching now',
 	  'maxNum': 100,
+	  'visible': true,
        },
        {
           'name': 'indoorMaps',
@@ -83,9 +85,13 @@ WV.handleLocation = function(position) {
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
     WV.origin = [lat,lon];
+    WV.curPos = [lat,lon, 1000000];
     report("lat: " + lat + "lon: " + lon);
     report("pos: "+JSON.stringify(position));
-    WV.thisPersonData = { 'op': 'create', 'id': 'person0', 'origin': WV.origin };
+    WV.thisPersonData = { 'op': 'create',
+			  'id': 'person0',
+			  't': getClockTime(),
+			  'origin': WV.origin };
 }
 
 function WVLayer(spec)
@@ -112,9 +118,9 @@ function WVLayer(spec)
 	if (name == "photos")
 	    getTwitterImages();
 	if (name == "people")
-	    watchPeople();
+	    WV.watchPeople();
 	if (name == "indoorMaps")
-	    getIndoorMapData();
+	    WV.getIndoorMapData();
     }
 
     this.setVisibility = function(visible) {
@@ -133,10 +139,6 @@ function WVLayer(spec)
 	}
         var id = "cb_"+this.name;
 	$("#"+id).prop('checked', this.visible);
-    }
-
-    if (this.visible) {
-	this.setVisibility(true);
     }
 }
 
@@ -203,160 +205,6 @@ function handleVideoRecs(data, layerName)
     }
 }
 
-function watchPeople()
-{
-    var data = [
-       {
-	   'op': 'create',
-	   'id': 'person1', 
-	   'origin': [0, 0],
-	   'curPos': [0, 0, 1000000]
-       }
-    ]
-    if (WV.thisPersonData)
-	data.push(WV.thisPersonData);
-    handlePeopleData(data);
-    wvCom.subscribe("people", handlePeopleData);
-}
-
-function handlePeopleData(data)
-{
-    report("handlePeopleData");
-    var layer = WV.layers["people"];
-    if (layer.recs == null) {
-	report("initing PeopleData layer");
-	layer.recs = {};
-	layer.tethers = {};
-	layer.originBillboards = {};
-	layer.curPosBillboards = {};
-	layer.bbCollection = new Cesium.BillboardCollection();
-	WV.scene.primitives.add(layer.bbCollection);
-    }
-    var originImageUrl = "person0.png";
-    var curPosImageUrl = "eagle1.png";
-    var recs = data;
-    var t = getClockTime();
-    for (var i=0; i<recs.length; i++) {
-        var rec = recs[i];
-        //report("rec "+i+" "+JSON.stringify(rec));
-        layer.numObjs++;
-	if (rec.origin == null) {
-	    report("no origin");
-	    continue;
-	}
-	if (rec.curPos == null) {
-	    report("no curPos");
-	    continue;
-	}
-	var dt = t - rec.t;
-	if (dt > 30) {
-	    report("ignoring view that is too old...");
-	    continue;
-	}
-        var lat0 =   rec.origin[0];
-        var lon0 =   rec.origin[1];
-	var height0 = 30000;
-        var lat =    rec.curPos[0];
-        var lon =    rec.curPos[1];
-	var height = rec.curPos[2];
-        var id = "person_"+rec.id;
-        //var id = "person_"+layer.numObjs;
-        layer.recs[id] = rec;
-	var scale = 0.25;
-	//var height = 300000;
-	var positions = [Cesium.Cartesian3.fromDegrees(lat0,lon0,height0),
-			 //Cesium.Cartesian3.fromDegrees(lat,lon,height)];
-			 Cesium.Cartesian3.fromDegrees(lat,lon,height)];
-	var b = layer.originBillboards[id];
-	if (b == null) {
-	    report("add origin"+lat0+" "+lon0+" "+originImageUrl+" "+id+" "+scale+" "+height0);
-	    var ob = addBillboard(layer.bbCollection, lat0, lon0, originImageUrl, id, scale, height0);
-	    layer.originBillboards[id] = ob;
-	    report("add curPos"+lat+" "+lon+" "+curPosImageUrl+" "+id+" "+scale+" "+height);
-	    var cb = addBillboard(layer.bbCollection, lat, lon, curPosImageUrl, id, scale, height);
-	    layer.curPosBillboards[id] = cb;
-	    /*
-	    var tether = WV.entities.add({
-		    polyline : {
-			positions : positions,
-			    width : 5.0,
-			    material : new Cesium.PolylineGlowMaterialProperty({
-				    color : Cesium.Color.DEEPSKYBLUE,
-					glowPower : 0.25
-					})
-			    }
-		});
-	    layer.tethers[id] = tether;
-	    */
-	}
-	else {
-	    report("billboard exists "+id);
-	    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, height);
-	    report("set position "+pos);
-	    layer.curPosBillboards[id].position = pos;
-	    //layer.tethers[id].positions = positions;
-	}
-    }
-}
-
-function getIndoorMapData()
-{
-    var data = [
-       {
-          'id': 'map1', 
-	  'latRange': [-115.0, -107],
-	  'lonRange': [38.0,     39.75],
-          'url': 'PorterFloorPlan.png',
-	  'width': 100000,
-	  'height': 100000,
-       },
-       {
-          'id': 'map2', 
-	  'latRange': [-105.0, -100],
-	  'lonRange': [35.0,     38.0],
-          'url': 'PorterFloorPlan.png',
-	  'width': 100000,
-	  'height': 100000,
-       }
-
-    ]
-    handleIndoorMapData(data);
-}
-
-function handleIndoorMapData(data)
-{
-    report("handleIndoorMapData");
-    var layer = WV.layers["indoorMaps"];
-    var imageryLayers = WV.viewer.imageryLayers;
-    layer.recs = {};
-    layer.billboards = {};
-    layer.ilayers = {};
-    layer.bbCollection = new Cesium.BillboardCollection();
-    var recs = data;
-    for (var i=0; i<recs.length; i++) {
-        var rec = recs[i];
-        //report("rec "+i+" "+JSON.stringify(rec));
-        var imageUrl = "person0.png";
-        var lonLow = rec.lonRange[0];
-        var lonHigh = rec.lonRange[1];
-        var latLow = rec.latRange[0];
-        var latHigh = rec.latRange[1];
-        var id = rec.id;
-        layer.recs[id] = rec;
-
-        var provider = new Cesium.SingleTileImageryProvider({
-	        //url : 'PorterFloorPlan.png',
-	        url : rec.url,
-                //rectangle : Cesium.Rectangle.fromDegrees(-115.0, 38.0, -107, 39.75)
-                rectangle : Cesium.Rectangle.fromDegrees(latLow, lonLow, latHigh, lonHigh)
-	});
-        var ilayer = imageryLayers.addImageryProvider(provider);
-        ilayer.alpha = 1.0;
-        ilayer.show = true;
-        ilayer.name = name;
-        layer.ilayers[id] = ilayer;
-    }
-}
 
 function setObjsAttr(objs, attr, val)
 {
@@ -384,8 +232,6 @@ function getTwitterImages(url)
     layer.bbCollection = new Cesium.BillboardCollection();
     WV.scene.primitives.add(layer.bbCollection);
     wvCom.subscribe("photos", handleImageRecs);
-    //    report("downloadImageRecs "+url);
-    //    $.getJSON(url, handleImageRecs)
 }
 
 //function handleImageRecs(data)
@@ -393,8 +239,6 @@ function handleImageRecs(recs)
 {
     report("handleImageRecs");
     var layer = WV.layers["photos"];
-    //data.images = data.images.slice(0,100);
-    //var imageList = data.images;
     var imageList = recs;
     for (var i=0; i<imageList.length; i++) {
         layer.numObjs++;
@@ -415,8 +259,6 @@ function handleImageRecs(recs)
 	b._wvid = id;
 	report("ispec: "+JSON.stringify(ispec));
     }
-    //    if (WV.keepSending)				      
-    //        setTimeout(getTwitterImages, 1000);
 }
 
 
@@ -473,11 +315,20 @@ function playVid(rec)
     }, 400);
 }
 
+/*
+  This loads the layer information, and then sets up the GUI
+  to show those layers.  For now the layer information is hard
+  coded into this program, but could be loaded from the server
+  and user specific.
+ */
 function getLayers()
 {
     setupLayers(WV.LAYER_DATA);
 }
 
+/*
+  This creates the Jquery UI for showing layers with checkboxes.
+ */
 function setupLayers(layerData)
 {
     var layers = layerData.layers;
@@ -510,6 +361,13 @@ function setupLayers(layerData)
 		cbList.show();
 	    }
 	});
+
+    for (var i=0; i<layers.length; i++) {
+        var layer = WV.layers[layers[i].name];
+	if (layer.visible) {
+	    layer.setVisibility(true);
+	}
+    }
 }
 
 function toggleLayerCB(e)
@@ -540,9 +398,14 @@ function toDegrees(r)
     return r*180/Math.PI;
 }
 
-function statusReporter()
+function toRadians(d)
 {
-//    report("statusReporter");
+    return d*Math.PI/180;
+}
+
+function reportStatus()
+{
+//    report("reportStatus");
     var cpos = WV.viewer.camera.positionCartographic;
     var clat = toDegrees(cpos.latitude);
     var clon = toDegrees(cpos.longitude);
@@ -557,7 +420,7 @@ function statusReporter()
 	't': t,
 	'n': WV.numPolls};
     wvCom.sendStatus(status);
-    setTimeout(statusReporter, 1000);
+    setTimeout(reportStatus, 1000);
 }
 
 $(document).ready(function() {
@@ -566,5 +429,5 @@ $(document).ready(function() {
     getLayers();
     setupCesium();
     WV.getLocation();
-    setTimeout(statusReporter, 1000);
+    setTimeout(reportStatus, 1000);
 });

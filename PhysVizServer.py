@@ -13,7 +13,8 @@ import ImageTweets
 ImageTweets.IMAGE_DIR = "images/twitter_images"
 
 REG = {}
-PORT = 8001
+#PORT = 8001
+PORT = 8000
 
 def getQuery(path):
     i = path.rfind("?")
