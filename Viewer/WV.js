@@ -141,7 +141,7 @@ function WVLayer(spec)
 	report("setVisibility "+this.name+" "+visible);
 	if (visible) {
 	    if (this.showFun) {
-		report("calling showFun for "+this.name);
+		//report("calling showFun for "+this.name);
 		this.showFun();
 	    }
 	    if (this.billboards == null) {

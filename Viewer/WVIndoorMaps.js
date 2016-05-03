@@ -2,7 +2,7 @@
 
 WV.getIndoorMapData = function()
 {
-    report(">>>> WV.getIndoorMapData");
+    report("WV.getIndoorMapData");
     var data = [
        {
           'id': 'map1', 
@@ -19,29 +19,40 @@ WV.getIndoorMapData = function()
           'url': 'PorterFloorPlan.png',
 	  'width': 100000,
 	  'height': 100000,
+       },
+       {
+          'id': 'map3', 
+	  'latRange': [-122.21, -122.20], 
+          'lonRange': [37.41, 37.42],
+          'url': 'PorterFloorPlan.png',
+	  'width': 100000,
+	  'height': 100000,
        }
-
     ]
-    WV.handleIndoorMapData(data);
+    url = "indoormaps_data.json";
+    report("url: "+url);
+    $.getJSON(url, function(data) {
+	    WV.handleIndoorMapData(data, "indoorMaps");
+	});
+    //WV.handleIndoorMapData(data);
 }
 
 WV.handleIndoorMapData = function(data, name)
 {
     report("handleIndoorMapData");
     var layer = WV.layers["indoorMaps"];
+    layer.showFun = WV.getIndoorMapData;
     layer.visible = true;
     var imageryLayers = WV.viewer.imageryLayers;
-    report("1111111111111111 layer.recs: "+layer.recs);
     if (layer.recs != null) {
-	WV.setIndoorMapsVisibility(true);
-	report("*****>>>>>>-------->>>> quick dips....");
-	return;
+	//WV.setIndoorMapsVisibility(true);
+	//return;
     }
     if (layer.recs == null) {
 	layer.recs = {};
 	layer.billboards = {};
 	layer.ilayers = {};
-	layer.showFun = WV.showIndoorMaps;
+	//layer.showFun = WV.showIndoorMaps;
 	layer.hideFun = WV.hideIndoorMaps;
 	layer.bbCollection = new Cesium.BillboardCollection();
     }
@@ -56,8 +67,8 @@ WV.handleIndoorMapData = function(data, name)
         var latHigh = rec.latRange[1];
         var id = rec.id;
 	if (layer.ilayers[id]) {
-	    report("Skipping map we already have...");
-	    continue;
+	    report("************* Hiding map we already have...");
+	    layer.ilayers[id].show = false;
 	}
         layer.recs[id] = rec;
 

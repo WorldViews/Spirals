@@ -1,0 +1,26 @@
+[
+       {
+          "id": "map1", 
+	  "latRange": [-115.0, -108],
+	  "lonRange": [38.0,     39.75],
+          "url": "PorterFloorPlan.png",
+	  "width": 100000,
+	  "height": 100000
+       },
+       {
+          "id": "map2", 
+	  "latRange": [-105.0, -100],
+	  "lonRange": [35.0,     38.0],
+          "url": "PorterFloorPlan.png",
+	  "width": 100000,
+	  "height": 100000
+       },
+       {
+          "id": "map3", 
+	  "latRange": [-122.21, -122.20], 
+          "lonRange": [37.41, 37.42],
+          "url": "PorterFloorPlan.png",
+	  "width": 100000,
+	  "height": 100000
+       }
+]
