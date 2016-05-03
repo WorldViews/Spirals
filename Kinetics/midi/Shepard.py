@@ -17,10 +17,16 @@ def getDur(s):
     c = s[-1]
     if c in noteTypes:
         dur = noteTypes[c]
-        n = int(s[:-1])
+        if s[0] == 'r':
+            n = 'r'
+        else:
+            n = int(s[:-1])
     else:
         dur = 32
-        n = int(s)
+        if s[0] == 'r':
+            n = 'r'
+        else:
+            n = int(s)
     dur = dur/32.0
     return (n,dur)
 
@@ -36,7 +42,7 @@ class Shepard:
         self.base = base
         self.t = 0
         self.dur = 10
-        self.ticksPerBeat = 1000
+        self.ticksPerBeat = 800
 
     def getChord(self, pitch, dur=None, t=None):
         if dur == None:
@@ -64,7 +70,6 @@ class Shepard:
                 continue
             note = Note(0, p, t, v, ndur*self.ticksPerBeat)
             notes.append(note)
-        self.t = t + dur*self.ticksPerBeat
         return notes
 
     def gen(self, path, nnotes=200, motif=None):
@@ -76,13 +81,16 @@ class Shepard:
         tobj = TrackObj(trackName="Track1")
         for i in range(nnotes):
             dur = 1
-            
             if motif:
                 j,dur = motif[i % len(motif)]
+                if j == 'r':
+                    self.t += dur*self.ticksPerBeat
+                    continue
             else:
                 j = i % 12
             #print i, j
             notes = self.getChord(j, dur)
+            self.t += dur*self.ticksPerBeat
             for note in notes:
                 tobj.addNote(note)
 
@@ -123,6 +131,29 @@ def run():
 12e 1e 2e 3h""")
     os.system("Shepard/shepard6.mid")
 #    playMelody("shepard4")
+
+def run():
+    s = Shepard()
+    s.gen("Shepard/xxx.json", motif="""
+2q 1q 2q 4q 6q 4q 6q 7q 9q 6q 9q 11q 1q 9q 11q 1q
+""")
+    s.gen("Shepard/xxx.json", motif="""
+2q 1q 2q 4q 6q 4q 6q 7q 9q 6q 9q 11q 1q 9q 11q 1q 2q rw rw rw
+""")
+    s.gen("Shepard/xxx.json", motif="""
+2q 1q 2q 4q 6q 4q 6q 7q 9q 6q 9q 11q 1q 9q 11q 1q 2q 1q 2q 4q rw rw rw
+""")
+    s.gen("Shepard/x1.json", motif="""
+2q 1q 2q 4q 6q 4q 6q 7q 9q 6q 9q 11q 1q 9q 11q 1q 
+""")
+    s.gen("Shepard/x2.json", motif="""
+1 2 3 2 3 4 3 4 5 4 5 6 5 6 7 6 7 8 7 8 9 8 9 10 9 10 11 10 11 1 11 1 2
+""")
+    s.gen("Shepard/x2_cmajor.json", motif="""
+1 3 5 3 5 6 5 6 8 6 8 10 8 10 12 10 12 1 12 1 3
+""")
+
+    os.system("Shepard/xxx.mid")
 
 if __name__ == '__main__':
     run()
