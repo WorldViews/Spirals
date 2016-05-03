@@ -1,6 +1,9 @@
 
 WV.tetherPolylines = null;
 
+WV.shownUserTimeout = 30; // How recently a user must have
+                          // posted to be shown here
+
 /*
 xlines = null;
 
@@ -66,16 +69,20 @@ WV.watchPeople = function()
     //	data.push(WV.thisPersonData);
     WV.handlePeopleData(data, "people");
     var layer = WV.layers["people"];
+    layer.visible = true;
+    layer.hideFun = WV.hidePeople;
     //layer.polylines = new Cesium.PolylineCollection();
     wvCom.subscribe("people", WV.handlePeopleData);
 }
+
 
 WV.getTetherPoints = function(lat0, lon0, h0, lat1, lon1, h1)
 {
     report("lat,lon 0: "+lat0+" "+lon0);
     report("lat,lon 1: "+lat1+" "+lon1);
     var positions = [Cesium.Cartesian3.fromDegrees(lon0, lat0, 0),
-		     Cesium.Cartesian3.fromDegrees(lon1, lat1, h1)];
+		     Cesium.Cartesian3.fromDegrees(lon1, lat1, h1),
+		     Cesium.Cartesian3.fromDegrees(lon1, lat1, 0)];
     return positions;
 }
 
@@ -84,6 +91,12 @@ WV.handlePeopleData = function(data, name)
     report("handlePeopleData");
     var showOriginBillboards = false;
     var layer = WV.layers["people"];
+    if (!layer.visible) {
+	return;
+    }
+    WV.setPeopleVisibility(true);
+    //    WV.setTethersVisibility(true);
+    //    WV.setPeopleBillboardsVisibility(true);
     if (layer.recs == null) {
 	report("initing PeopleData layer");
 	layer.recs = {};
@@ -94,7 +107,8 @@ WV.handlePeopleData = function(data, name)
 	WV.scene.primitives.add(layer.bbCollection);
     }
     var originImageUrl = "person0.png";
-    var curPosImageUrl = "eagle1.png";
+    //var curPosImageUrl = "eagle1.png";
+    var curPosImageUrl = "eye3.png";
     var recs = data;
     var t = getClockTime();
     for (var i=0; i<recs.length; i++) {
@@ -114,7 +128,7 @@ WV.handlePeopleData = function(data, name)
 	    continue;
 	}
 	var dt = t - rec.t;
-	if (dt > 30) {
+	if (dt > WV.shownUserTimeout) {
 	    report("ignoring view that is too old...");
 	    continue;
 	}
@@ -129,22 +143,24 @@ WV.handlePeopleData = function(data, name)
         var lon =    rec.curPos[1];
 	var height = rec.curPos[2];
         var id = "person_"+rec.id;
+	var h1 = 0.1*height;
         //var id = "person_"+layer.numObjs;
         layer.recs[id] = rec;
 	WV.recs[id] = rec;
-	var scale = 0.25;
+	var originScale = 0.25;
+	var curPosScale = 0.1;
 	//var height = 300000;
-	var points = WV.getTetherPoints(lat0, lon0, height0, lat, lon, height);
+	var points = WV.getTetherPoints(lat0, lon0, height0, lat, lon, h1);
 	var b = layer.originBillboards[id];
 	if (showOriginBillboards && b == null) {
 	    var ob = addBillboard(layer.bbCollection, lat0, lon0,
-				    originImageUrl, id, scale, height0);
+				    originImageUrl, id, originScale, height0);
 	    layer.originBillboards[id] = ob;
 	}
 	var cb = layer.curPosBillboards[id];
 	if (cb == null) {
 	    cb = addBillboard(layer.bbCollection, lat, lon,
-			      curPosImageUrl, id, scale, height);
+			      curPosImageUrl, id, curPosScale, h1);
 	    layer.curPosBillboards[id] = cb;
 	    var tetherId = "tether_"+rec.id;
 	    var material = new Cesium.PolylineGlowMaterialProperty({
@@ -163,12 +179,25 @@ WV.handlePeopleData = function(data, name)
 	}
 	else {
 	    report("billboard exists "+id);
-	    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, height);
+	    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h1);
 	    layer.curPosBillboards[id].position = pos;
+	    layer.curPosBillboards[id].show = true;
 	    var tether = layer.tethers[id];
 	    if (tether)
 		tether.positions = points;
 	}
     }
+}
+
+WV.hidePeople = function()
+{
+    WV.setPeopleVisibility(false);
+}
+
+WV.setPeopleVisibility = function(v)
+{
+    var layer = WV.layers["people"];
+    setObjsAttr(layer.tethers, "show", v);
+    setObjsAttr(layer.curPosBillboards, "show", v);
 }
 

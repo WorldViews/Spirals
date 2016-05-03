@@ -2,6 +2,7 @@
 
 WV.getIndoorMapData = function()
 {
+    report(">>>> WV.getIndoorMapData");
     var data = [
        {
           'id': 'map1', 
@@ -28,11 +29,22 @@ WV.handleIndoorMapData = function(data, name)
 {
     report("handleIndoorMapData");
     var layer = WV.layers["indoorMaps"];
+    layer.visible = true;
     var imageryLayers = WV.viewer.imageryLayers;
-    layer.recs = {};
-    layer.billboards = {};
-    layer.ilayers = {};
-    layer.bbCollection = new Cesium.BillboardCollection();
+    report("1111111111111111 layer.recs: "+layer.recs);
+    if (layer.recs != null) {
+	WV.setIndoorMapsVisibility(true);
+	report("*****>>>>>>-------->>>> quick dips....");
+	return;
+    }
+    if (layer.recs == null) {
+	layer.recs = {};
+	layer.billboards = {};
+	layer.ilayers = {};
+	layer.showFun = WV.showIndoorMaps;
+	layer.hideFun = WV.hideIndoorMaps;
+	layer.bbCollection = new Cesium.BillboardCollection();
+    }
     var recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
@@ -43,6 +55,10 @@ WV.handleIndoorMapData = function(data, name)
         var latLow = rec.latRange[0];
         var latHigh = rec.latRange[1];
         var id = rec.id;
+	if (layer.ilayers[id]) {
+	    report("Skipping map we already have...");
+	    continue;
+	}
         layer.recs[id] = rec;
 
         var provider = new Cesium.SingleTileImageryProvider({
@@ -59,3 +75,22 @@ WV.handleIndoorMapData = function(data, name)
     }
 }
 
+WV.showIndoorMaps = function()
+{
+    WV.setIndoorMapsVisibility(true);
+}
+
+WV.hideIndoorMaps = function()
+{
+    WV.setIndoorMapsVisibility(false);
+}
+
+WV.setIndoorMapsVisibility = function(v)
+{
+    var layer = WV.layers["indoorMaps"];
+    setObjsAttr(layer.ilayers, "show", v);
+    //if (v)
+    //	setObjsAttr(layer.ilayers, "alpha", 1);
+    //else
+    //  setObjsAttr(layer.ilayers, "alpha", 0.2);
+}

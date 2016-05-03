@@ -57,7 +57,7 @@ WV.LAYER_DATA =
           'name': 'surfing',
           'description': 'surfing videos',
 	  'maxNum': 100,
-	  'visible': true,
+	  'visible': false,
 	  'iconUrl': "surfing.png",
 	  'mediaType': 'youtube',
 	  'dataFile': 'surfing_data.json'
@@ -107,9 +107,12 @@ WV.handleLocation = function(position) {
 function WVLayer(spec)
 {
     var name = spec.name;
+    this.visible = false;
     for (var key in spec) {
 	this[key] = spec[key];
     }
+    this.showFun = null;
+    this.hideFun = null;
     this.spec = spec;
     this.numObjs = 0;
     this.recs = null;
@@ -137,6 +140,10 @@ function WVLayer(spec)
 	this.visible = visible;
 	report("setVisibility "+this.name+" "+visible);
 	if (visible) {
+	    if (this.showFun) {
+		report("calling showFun for "+this.name);
+		this.showFun();
+	    }
 	    if (this.billboards == null) {
 		this.loaderFun();
 	    }
@@ -145,6 +152,10 @@ function WVLayer(spec)
 	    }
 	}
 	else {
+	    if (this.hideFun) {
+		report("calling hideFun for "+this.name);
+		this.hideFun();
+	    }
 	    setObjsAttr(this.billboards, "show", false);
 	}
         var id = "cb_"+this.name;
