@@ -54,6 +54,15 @@ WV.LAYER_DATA =
 	  'dataFile': 'climbing_data.json'
        },
        {
+          'name': 'surfing',
+          'description': 'surfing videos',
+	  'maxNum': 100,
+	  'visible': true,
+	  'iconUrl': "surfing.png",
+	  'mediaType': 'youtube',
+	  'dataFile': 'surfing_data.json'
+       },
+       {
           'name': 'photos',
           'description': 'recently tweeted images',
 	  'maxNum': 100,

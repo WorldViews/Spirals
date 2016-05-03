@@ -3,6 +3,7 @@
 #################
 
 scripts/TBD_data/
+scripts/YOUTUBE_DEV_KEY.txt
 
 *.pydevproject
 .project
