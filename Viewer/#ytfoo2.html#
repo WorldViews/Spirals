@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div id="ytplayer"></div>
+
+<script src="WVYT.js"></script>
+<script>
+//WVYT.start();
+
+function p2() {
+   report ("now called p2");
+   var id = '3F41wcWmB5Y';
+   WVYT.playVideo(id);
+}
+
+setTimeout(p2, 9000);
+</script>
+  </body>
+</html>

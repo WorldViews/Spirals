@@ -52,7 +52,12 @@ WV.Watcher.prototype.pollHandler = function(data)
     }
     var typeObj = this.wvCom.types[this.evType];
     if (typeObj.handler) {
-	typeObj.handler(recs, this.evType);
+	try {
+	    typeObj.handler(recs, this.evType);
+	}
+	catch (err) {
+	    report(""+err);
+	}
     }
     setTimeout(function() { inst.pollRequest()}, 1000);
 }

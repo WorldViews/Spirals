@@ -2,6 +2,8 @@
 var WV = {};
 
 WV.screenSpaceEventHandler = null;
+//WV.playInPopup = false;
+WV.playInPopup = true;
 WV.prevEndId = null;
 WV.numBillboards = 0;
 WV.bbScaleUnselected = 0.08;
@@ -62,7 +64,7 @@ WV.LAYER_DATA =
           'name': 'people',
           'description': 'people watching now',
 	  'maxNum': 100,
-	  'visible': true,
+	  'visible': false,
        },
        {
           'name': 'indoorMaps',
@@ -74,8 +76,7 @@ WV.LAYER_DATA =
 
 WV.getLocation = function() {
     if (navigator.geolocation) {
-        var ret = navigator.geolocation.getCurrentPosition(WV.handleLocation);
-        report("ret: "+ret);
+        navigator.geolocation.getCurrentPosition(WV.handleLocation);
     } else {
         report("Geolocation is not supported by this browser.");
     }
@@ -186,10 +187,10 @@ function handleVideoRecs(data, layerName)
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	rec.layerName = layerName;
-	if (!rec.yahooId) {
-            report("skipping recs with no yahoo video");
+	if (!rec.youtubeId) {
+            report("skipping recs with no youtube video");
         }
-        if (!rec.yahooId)
+        if (!rec.youtubeId)
             continue;
         layer.numObjs++;
         if (layer.numObjs > layer.maxNum)
@@ -279,6 +280,11 @@ function setupCesium()
         }
         mpo = pickedObject;
         var id = pickedObject.id;
+	var rec = WV.recs[id];
+	if (rec == null) {
+	    report("***** setupCesium no rec for id: "+id);
+	    return;
+	}
 	var layerName = WV.recs[id].layerName;
 	var layer = WV.layers[layerName];
         report("move over id "+id);
@@ -306,14 +312,35 @@ function setupCesium()
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 }
 
-function playVid(rec)
+function playVidInPopup(rec)
 {
-    var yahooId = rec.yahooId;
-    var url = "https://www.youtube.com/watch?v="+yahooId;
+    var youtubeId = rec.youtubeId;
+    var url = "https://www.youtube.com/watch?v="+youtubeId;
     setTimeout(function() {
         window.open(url, "DroneVidioView");
     }, 400);
 }
+
+function playVidInIFrame(rec)
+{
+    var youtubeId = rec.youtubeId;
+    WVYT.playVideo(youtubeId);
+    /*
+    var url = "https://www.youtube.com/watch?v="+youtubeId;
+    setTimeout(function() {
+        window.open(url, "DroneVidioView");
+    }, 400);
+    */
+}
+
+function playVid(rec)
+{
+    if (WV.playInPopup)
+	playVidInPopup(rec);
+    else
+	playVidInIFrame(rec);
+}
+
 
 /*
   This loads the layer information, and then sets up the GUI

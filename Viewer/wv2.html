@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>WorldViews Viewer</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="../Cesium/Cesium/Cesium.js"></script>
+  <style>
+      @import url(../Cesium/Cesium/Widgets/widgets.css);
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+
+      .toolbar-left {
+          display: block;
+          position: absolute;
+          top: 5px;
+          left: 5px;
+      }
+
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <div class="toolbar-left" id="layersDiv" style="color:white;">
+     <span id="layersLabel">Hide Layers</span>
+  </div>
+
+<script src="WV.js"></script>
+<script src="WVCom.js"></script>
+<script src="WVLiveUsers.js"></script>
+<script src="WVIndoorMaps.js"></script>
+<script>
+
+report("------------------------------------------------------------");
+
+var numCupcakes = 0;
+function addBB(str, lon, lat, h, desc) {
+    var viewer = WV.viewer;
+    var canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 300;
+    numCupcakes++;
+    var id = 'Cupcake_'+numCupcakes;
+    var svgString = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
+       '<foreignObject width="100%" height="100%">' +
+       '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:40px; color: #FF0">' +
+         '<span style="color:red; text-shadow:0 0 2px blue;">STR</span>' +
+       '</div>' +
+       '</foreignObject>' +
+       '</svg>';
+
+    svgString = svgString.replace("STR", str);
+    var image = new Image();
+    image.src = 'data:image/svg+xml;base64,' + window.btoa(svgString);
+
+    //Need to wait for image to load before proceeding to draw
+    image.onload = function() {
+       report("================================");
+       report(" id: "+id+"  lon,lat: "+lon+" "+lat+"  h: "+h);
+       canvas.getContext('2d').drawImage(image, 0, 0);
+       var opts = { id: id,
+                    position: Cesium.Cartesian3.fromDegrees(lon, lat, h),
+                    billboard: {
+                       image: canvas
+                    }};
+       if (desc)
+           opts.description = desc;
+       viewer.entities.add(opts);
+    };
+}
+
+addBB("Cupcakes", -75.59777, 40.03883, 1000000, "Many Cals");
+addBB("pies", -50.59777, 20.03883, 1000000, "Medium");
+
+</script>
+
+</body>
+</html>

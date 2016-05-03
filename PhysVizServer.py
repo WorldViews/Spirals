@@ -128,7 +128,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 def run(port=PORT):
     print "PhysVizServer HTTP on port", port
     time.sleep(0.5)
-    httpd = SocketServer.TCPServer(("", port), MyHandler)
+#    httpd = SocketServer.TCPServer(("", port), MyHandler)
+    httpd = SocketServer.ThreadingTCPServer(("", port), MyHandler)
     httpd.serve_forever()
 
 if __name__ == '__main__':
