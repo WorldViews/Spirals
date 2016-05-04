@@ -17,8 +17,8 @@
        },
        {
           "id": "map3", 
-	  "latRange": [-122.21, -122.20], 
-          "lonRange": [37.41, 37.42],
+	  "latRange": [-122.15, -122.145], 
+          "lonRange": [37.40, 37.405],
           "url": "PorterFloorPlan.png",
 	  "width": 100000,
 	  "height": 100000
