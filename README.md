@@ -1,4 +1,19 @@
 # PhysViz
+
+TeleViewer
+
+To run TeleViewer, you need to first install Cesium.  We are currently
+using Cesium 1.21.1.  Install Cesium on your system, and then copy
+the Build/Cesium directory to Spirals/Cesium/Cesium
+
+Then run PhysVizServer80.py
+
+and try http://localhost
+
+You should get a page with a link to TeleViewer.
+
+PhysViz
+
 Software related to visualizations and physical simulations with music
 
 Some of this requires python, for an HTML server, and for

@@ -1,11 +1,21 @@
 
+WV.geo = function(lon, lat)
+{
+    return new Cesium.Cartographic(lon, lat, 0);
+}
 
 WV.drawImage = function(image, lon0, lat0, wid, len, height, rot) {
 	report("drawImage");
 	report("lon0: "+lon0+"  lat0: "+lat0+" wid: "+wid+" len: "+len+" h: "+height+" rot: "+rot);
 	var entity      = new Cesium.Entity();
-	var dlon = wid *0.001;
-	var dlat = len *0.001;
+	var dp = 0.0001;
+	var g = new Cesium.EllipsoidGeodesic(WV.geo(lon0,lat0), WV.geo(lon0+dp,lat0));
+	var dlonPerDs = dp/g.surfaceDistance;
+	var g = new Cesium.EllipsoidGeodesic(WV.geo(lon0,lat0), WV.geo(lon0,lat0+dp));
+	var dlatPerDs = dp/g.surfaceDistance;
+	report("dlonPerDs: "+dlonPerDs+"     dlatPerDs: "+dlatPerDs);
+	var dlon = wid * dlonPerDs;
+	var dlat = len * dlatPerDs;
 	var lon1 = lon0 + dlon;
 	var lat1 = lat0 + dlat;
 	report("lon0: "+lon0+"  lat0: "+lat0+"  lon1: "+lon1+" lat1: "+lat1);
@@ -115,6 +125,7 @@ WV.handleIndoorMapData = function(data, name)
 	var lon;
 	var latLow;
 	var latHigh;
+	var h = 10;
 	if (rec.lonRange != null) {
             lon = rec.lonRange[0];
             lonHigh = rec.lonRange[1];
@@ -127,6 +138,8 @@ WV.handleIndoorMapData = function(data, name)
 	}
 	else
 	    lat = rec.lat;
+	if (rec.height != null)
+	    h = rec.height;
         var id = rec.id;
 	var rot = 0;
 	if (rec.rot) {
@@ -141,8 +154,7 @@ WV.handleIndoorMapData = function(data, name)
 	var len = rec.length;
 	report("len: "+len+" width: "+width+"  rot: "+rot);
 	//ilayer = WV.addImageLayer(rec.url, lon, lat, lonHigh, latHigh);
-	ilayer = WV.drawImage(rec.url,   lon, lat, width, len, 10, rot);
-        //ilayer =   WV.drawImage("eye1.png", -120, 50, 300, 300, 10, 0.5);
+	ilayer = WV.drawImage(rec.url,   lon, lat, width, len, h, rot);
 	ilayer.name = name;
 	layer.ilayers[id] = ilayer;
     }

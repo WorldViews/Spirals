@@ -4,24 +4,27 @@
 	  "lonRange": [-115.0, -108],
 	  "latRange": [38.0,     39.75],
           "url": "PorterFloorPlan.png",
-	  "width": 10000,
-	  "length": 10000
+	  "width": 100000,
+	  "length": 100000
        },
        {
           "id": "map2", 
 	  "lonRange": [-105.0, -100],
 	  "latRange": [35.0,     38.0],
           "url": "PorterFloorPlan.png",
-	  "width": 10000,
-	  "length": 10000
+	  "rot": 60,
+	  "height": 1000,
+	  "width":  30000000,
+	  "length": 30000000
        },
        {
           "id": "map3", 
-	  "lon": -122.15,
-          "lat": 37.40,
+	  "lon": -122.15118,
+          "lat": 37.40598,
           "url": "PorterFloorPlan.png",
-	  "width": 10,
-	  "length": 10,
-	  "rot": 30
+	  "width": 1500,
+	  "length": 1500,
+	  "height": 2,
+	  "rot": 60
        }
 ]
