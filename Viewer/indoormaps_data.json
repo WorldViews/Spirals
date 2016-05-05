@@ -1,26 +1,27 @@
 [
        {
           "id": "map1", 
-	  "latRange": [-115.0, -108],
-	  "lonRange": [38.0,     39.75],
+	  "lonRange": [-115.0, -108],
+	  "latRange": [38.0,     39.75],
           "url": "PorterFloorPlan.png",
-	  "width": 100000,
-	  "height": 100000
+	  "width": 10000,
+	  "length": 10000
        },
        {
           "id": "map2", 
-	  "latRange": [-105.0, -100],
-	  "lonRange": [35.0,     38.0],
+	  "lonRange": [-105.0, -100],
+	  "latRange": [35.0,     38.0],
           "url": "PorterFloorPlan.png",
-	  "width": 100000,
-	  "height": 100000
+	  "width": 10000,
+	  "length": 10000
        },
        {
           "id": "map3", 
-	  "latRange": [-122.15, -122.145], 
-          "lonRange": [37.40, 37.405],
+	  "lon": -122.15,
+          "lat": 37.40,
           "url": "PorterFloorPlan.png",
-	  "width": 100000,
-	  "height": 100000
+	  "width": 10,
+	  "length": 10,
+	  "rot": 30
        }
 ]

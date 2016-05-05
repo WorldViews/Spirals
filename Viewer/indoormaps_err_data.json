@@ -1,0 +1,10 @@
+[
+       {
+          "id": "map1", 
+	  "lonRange": [-115.0, -108],
+	  "latRange": [38.0,     39.75],
+          "url": "PorterFloorPlan.png",
+	  "width": 10000,
+	  "length": 10000
+       }
+]
