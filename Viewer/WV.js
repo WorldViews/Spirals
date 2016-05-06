@@ -56,9 +56,9 @@ WV.LAYER_DATA =
        {
           'name': 'hiking',
           'description': 'hiking',
-	  'maxNum': 1000,
+	  'maxNum': 5000,
 	  'visible': false,
-	  'height': 1000,
+	  'height': 10000,
 	  'iconUrl': "hiking.png",
 	  'mediaType': 'youtube',
 	  'dataFile': 'hiking_data.json'
@@ -66,7 +66,7 @@ WV.LAYER_DATA =
        {
           'name': 'surfing',
           'description': 'surfing videos',
-	  'maxNum': 100,
+	  'maxNum': 8000,
 	  'visible': false,
 	  'iconUrl': "surfing.png",
 	  'mediaType': 'youtube',

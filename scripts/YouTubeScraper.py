@@ -37,8 +37,8 @@ class YouTubeScraper:
                  "15.0465951,-166.3735415"]
       if locs == "global":
          locs = []
-         for lat in range(-90,90+15,15):
-           for lon in range(-160,180,20):
+         for lat in range(-90,90+10,10):
+           for lon in range(-180,180,15):
              if lat==0 and lon==0:
                 continue
              if (lat==-90 or lat==90) and lon != 0:
@@ -126,9 +126,7 @@ def fetch(q):
    ys.fetch(q, "global")
 
 if __name__ == "__main__":
-   fetch("hiking")
-#   fetch(loc="37.42307,-122.08427")
-#   fetch(loc="15.0465951,-166.3735415")
-#   saveRecs("surfing_data.json")
+#   fetch("hiking")
+   fetch("surfing")
 
 

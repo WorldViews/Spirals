@@ -27,7 +27,7 @@ WV.addModel = function()
 }
  
 WV.drawImage = function(image, lon0, lat0, wid, len, height, rot) {
-	report("drawImage");
+	report("------------- drawImage --------------");
 	report("lon0: "+lon0+"  lat0: "+lat0+" wid: "+wid+" len: "+len+" h: "+height+" rot: "+rot);
 	var entity      = new Cesium.Entity();
 	var dp = 0.0001;
