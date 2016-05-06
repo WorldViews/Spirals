@@ -4,6 +4,28 @@ WV.geo = function(lon, lat)
     return new Cesium.Cartographic(lon, lat, 0);
 }
 
+WV.addModel = function()
+{
+   var position = Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, 10);
+   var heading = Cesium.Math.toRadians(135);
+   var pitch = 0;
+   var roll = 0;
+   var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
+   var url = "fxpalRot.png";
+
+   var entity = WV.viewer.entities.add({
+        name : url,
+        position : position,
+        orientation : orientation,
+        model : {
+            uri : url,
+            minimumPixelSize : 128,
+            maximumScale : 20000
+        }
+    });
+   return entity;
+}
+ 
 WV.drawImage = function(image, lon0, lat0, wid, len, height, rot) {
 	report("drawImage");
 	report("lon0: "+lon0+"  lat0: "+lat0+" wid: "+wid+" len: "+len+" h: "+height+" rot: "+rot);
@@ -23,7 +45,10 @@ WV.drawImage = function(image, lon0, lat0, wid, len, height, rot) {
 	entity.rectangle = new Cesium.RectangleGraphics(
 		{
 		    coordinates: rect,
-		    material: new Cesium.ImageMaterialProperty( {image: image} ),
+		    material: new Cesium.ImageMaterialProperty( {
+			    transparent: true,
+			    image: image
+			} ),
 		    rotation: rot,
 		    stRotation: rot,
 		    height: height
@@ -42,7 +67,6 @@ WV.addImageLayer = function(imageUrl, lon0, lat0, lon1, lat1)
     report("lon0: "+lon0+"  lat0: "+lat0+"  lon1: "+lon1+" lat1: "+lat1);
     var rect = Cesium.Rectangle.fromDegrees(lon0, lat0, lon1, lat1);
     var provider = new Cesium.SingleTileImageryProvider({
-	    //url : 'PorterFloorPlan.png',
 	    url : imageUrl,
 	    rectangle : rect
 	});
@@ -61,34 +85,8 @@ function testy()
 
 WV.getIndoorMapData = function()
 {
-    testy();
+    //testy();
     report("WV.getIndoorMapData");
-    var data = [
-       {
-          'id': 'map1', 
-	  'lonRange': [-115.0, -107],
-	  'latRange': [38.0,     39.75],
-          'url': 'PorterFloorPlan.png',
-	  'width': 100000,
-	  'height': 100000,
-       },
-       {
-          'id': 'map2', 
-	  'lonRange': [-105.0, -100],
-	  'latRange': [35.0,     38.0],
-          'url': 'PorterFloorPlan.png',
-	  'width': 100000,
-	  'height': 100000,
-       },
-       {
-          'id': 'map3', 
-	  'lonRange': [-122.21, -122.20], 
-          'latRange': [37.41, 37.42],
-          'url': 'PorterFloorPlan.png',
-	  'width': 100000,
-	  'height': 100000,
-       }
-    ]
     url = "indoormaps_data.json";
     //url = "indoormaps_err_data.json";
     report("url: "+url);
@@ -100,6 +98,7 @@ WV.getIndoorMapData = function()
 
 WV.handleIndoorMapData = function(data, name)
 {
+    WV.addModel();
     report("handleIndoorMapData");
     var layer = WV.layers["indoorMaps"];
     layer.showFun = WV.getIndoorMapData;
@@ -153,8 +152,12 @@ WV.handleIndoorMapData = function(data, name)
 	var width = rec.width;
 	var len = rec.length;
 	report("len: "+len+" width: "+width+"  rot: "+rot);
-	//ilayer = WV.addImageLayer(rec.url, lon, lat, lonHigh, latHigh);
-	ilayer = WV.drawImage(rec.url,   lon, lat, width, len, h, rot);
+	if (rec.type == "imageLayer") {
+	    ilayer = WV.addImageLayer(rec.url, lon, lat, lonHigh, latHigh);
+	}
+	else {
+	    ilayer = WV.drawImage(rec.url,   lon, lat, width, len, h, rot);
+	}
 	ilayer.name = name;
 	layer.ilayers[id] = ilayer;
     }

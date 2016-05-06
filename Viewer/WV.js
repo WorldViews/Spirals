@@ -54,6 +54,16 @@ WV.LAYER_DATA =
 	  'dataFile': 'climbing_data.json'
        },
        {
+          'name': 'hiking',
+          'description': 'hiking',
+	  'maxNum': 1000,
+	  'visible': false,
+	  'height': 1000,
+	  'iconUrl': "hiking.png",
+	  'mediaType': 'youtube',
+	  'dataFile': 'hiking_data.json'
+       },
+       {
           'name': 'surfing',
           'description': 'surfing videos',
 	  'maxNum': 100,
@@ -178,7 +188,7 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
     if (!scale)
        scale = WV.bbScaleUnselected;
     if (!height)
-       height = 1000000;
+       height = 100000;
     var b = bbCollection.add({
        show : true,
        position : Cesium.Cartesian3.fromDegrees(lon, lat, height),
@@ -203,7 +213,15 @@ function handleVideoRecs(data, layerName)
     layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
     WV.scene.primitives.add(layer.bbCollection);
-    var recs = data;
+    var recs = null;
+    try {
+	recs = data.records;
+    }
+    catch (err) {
+	recs = data;
+    }
+    if (recs == null)
+	recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	rec.layerName = layerName;
@@ -221,7 +239,11 @@ function handleVideoRecs(data, layerName)
         id = layerName+"_"+rec.id;
         layer.recs[id] = rec;
 	WV.recs[id] = rec;
-        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id);
+	scale = WV.bbScaleUnselected;
+	h = 100000;
+	if (layer.height)
+	    h = layer.height;
+        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
         layer.billboards[id] = b;
     }
 }

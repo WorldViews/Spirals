@@ -1,30 +1,32 @@
 [
        {
           "id": "map1", 
-	  "lonRange": [-115.0, -108],
+	  "lonRange": [-120.0, -112],
 	  "latRange": [38.0,     39.75],
           "url": "PorterFloorPlan.png",
+	  "type": "imageLayer",
 	  "width": 100000,
 	  "length": 100000
        },
        {
           "id": "map2", 
-	  "lonRange": [-105.0, -100],
-	  "latRange": [35.0,     38.0],
-          "url": "PorterFloorPlan.png",
-	  "rot": 60,
+	  "lon": -105.0,
+	  "lat": 35.0,
+          "xurl": "drone.png",
+          "url": "fxpalRot.png",
+	  "rot": 0,
 	  "height": 1000,
-	  "width":  30000000,
+	  "width":  40000000,
 	  "length": 30000000
        },
        {
           "id": "map3", 
 	  "lon": -122.15118,
           "lat": 37.40598,
-          "url": "PorterFloorPlan.png",
+          "url": "fxpalRot.png",
 	  "width": 1500,
 	  "length": 1500,
 	  "height": 2,
-	  "rot": 60
+	  "rot": 0
        }
 ]
