@@ -2,6 +2,8 @@
 var WV = {};
 
 WV.screenSpaceEventHandler = null;
+WV.layersUrl = "layers.json";
+WV.defaultBillboardIconURL = "/images/mona_cat.jpg";
 //WV.playInPopup = false;
 WV.playInPopup = true;
 WV.prevEndId = null;
@@ -31,7 +33,7 @@ WV.entities = WV.viewer.entities;
 WV.scene = WV.viewer.scene;				 
 WV.scene.globe.depthTestAgainstTerrain = true;
 
-
+/*
 WV.LAYER_DATA =
 {
     "layers": [
@@ -91,7 +93,7 @@ WV.LAYER_DATA =
        }
     ]
 };
-
+*/
 
 WV.getLocation = function() {
     if (navigator.geolocation) {
@@ -128,14 +130,22 @@ function WVLayer(spec)
     this.recs = null;
     this.billboards = null;
     this.bbCollection = null;
+    this.pickHandler = WV.simplePickHandler;
     WV.layers[name] = this;
 
     this.loaderFun = function() {
 	var layer = WV.layers[this.name];
 	var name = this.name;
 	if (layer.mediaType == "youtube") {
+	    layer.pickHandler = WV.playVid;
 	    wvCom.subscribe(name,
 			    handleVideoRecs,
+			    {dataFile: layer.dataFile});
+	}
+	if (layer.mediaType == "html") {
+	    layer.pickHandler = WV.showPage;
+	    wvCom.subscribe(name,
+			    handleHTMLRecs,
 			    {dataFile: layer.dataFile});
 	}
 	if (name == "photos")
@@ -184,7 +194,7 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
     report("Adding billboard "+WV.numBillboards);
     // Example 1:  Add a billboard, specifying all the default values.
     if (!imgUrl)
-       imgUrl = MONACAT_URL;
+	imgUrl = WV.defaultBillboardIconURL;
     if (!scale)
        scale = WV.bbScaleUnselected;
     if (!height)
@@ -304,6 +314,43 @@ function handleImageRecs(recs)
     }
 }
 
+function handleHTMLRecs(data, layerName)
+{
+    report("*** handleHTMLRecs "+layerName);
+    var layer = WV.layers[layerName];
+    layer.recs = {};
+    layer.billboards = {};
+    layer.bbCollection = new Cesium.BillboardCollection();
+    WV.scene.primitives.add(layer.bbCollection);
+    var recs = null;
+    try {
+	recs = data.records;
+    }
+    catch (err) {
+	recs = data;
+    }
+    if (recs == null)
+	recs = data;
+    for (var i=0; i<recs.length; i++) {
+        var rec = recs[i];
+	rec.layerName = layerName;
+        layer.numObjs++;
+        if (layer.numObjs > layer.maxNum)
+            return;
+        var imageUrl = layer.iconUrl;
+        var lon = rec.lon;
+        var lat = rec.lat;
+        id = layerName+"_"+rec.id;
+        layer.recs[id] = rec;
+	WV.recs[id] = rec;
+	scale = WV.bbScaleUnselected;
+	h = 100000;
+	if (layer.height)
+	    h = layer.height;
+        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+        layer.billboards[id] = b;
+    }
+}
 
 function setupCesium()
 {
@@ -350,11 +397,12 @@ function setupCesium()
 	var layer = WV.layers[layerName];
         report("click picked..... pickedObject._id "+id);
         var rec = layer.recs[id];
-        playVid(rec);
+	layer.pickHandler(rec);
+        //WV.playVid(rec);
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 }
 
-function playVidInPopup(rec)
+WV.playVidInPopup = function(rec)
 {
     var youtubeId = rec.youtubeId;
     var url = "https://www.youtube.com/watch?v="+youtubeId;
@@ -363,7 +411,7 @@ function playVidInPopup(rec)
     }, 400);
 }
 
-function playVidInIFrame(rec)
+WV.playVidInIFrame = function(rec)
 {
     var youtubeId = rec.youtubeId;
     WVYT.playVideo(youtubeId);
@@ -375,12 +423,25 @@ function playVidInIFrame(rec)
     */
 }
 
-function playVid(rec)
+WV.playVid = function(rec)
 {
     if (WV.playInPopup)
-	playVidInPopup(rec);
+	WV.playVidInPopup(rec);
     else
-	playVidInIFrame(rec);
+	WV.playVidInIFrame(rec);
+}
+
+WV.showPage = function(rec)
+{
+    report("show page: "+JSON.stringify(rec));
+    setTimeout(function() {
+        window.open(rec.url, "HTMLPages");
+    }, 400);
+}
+
+WV.simplePickHandler = function(rec)
+{
+    report("picked record: "+JSON.stringify(rec));
 }
 
 
@@ -392,7 +453,8 @@ function playVid(rec)
  */
 function getLayers()
 {
-    setupLayers(WV.LAYER_DATA);
+    $.getJSON(WV.layersUrl, setupLayers);
+    //setupLayers(WV.LAYER_DATA);
 }
 
 /*

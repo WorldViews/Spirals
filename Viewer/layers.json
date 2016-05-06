@@ -1,0 +1,65 @@
+{
+    "layers": [
+       {
+          "name": "drones",
+          "description": "drone videos",
+	  "maxNum": 100,
+	  "visible": false,
+	  "iconUrl": "drone.png",
+	  "mediaType": "youtube",
+	  "dataFile": "tbd_data.json"
+       },
+       {
+          "name": "climbing",
+          "description": "rock climbing",
+	  "maxNum": 100,
+	  "visible": false,
+	  "iconUrl": "climber.png",
+	  "mediaType": "youtube",
+	  "dataFile": "climbing_data.json"
+       },
+       {
+          "name": "hiking",
+          "description": "hiking",
+	  "maxNum": 5000,
+	  "visible": false,
+	  "height": 10000,
+	  "iconUrl": "hiking.png",
+	  "mediaType": "youtube",
+	  "dataFile": "hiking_data.json"
+       },
+       {
+          "name": "surfing",
+          "description": "surfing videos",
+	  "maxNum": 8000,
+	  "visible": false,
+	  "iconUrl": "surfing.png",
+	  "mediaType": "youtube",
+	  "dataFile": "surfing_data.json"
+       },
+       {
+          "name": "photos",
+          "description": "recently tweeted images",
+	  "maxNum": 100,
+	  "imageServer": "/"
+       },
+       {
+          "name": "people",
+          "description": "people watching now",
+	  "maxNum": 100,
+	  "visible": false
+       },
+       {
+          "name": "pages",
+          "description": "Geo tagged HTML pages",
+	  "maxNum": 100,
+	  "mediaType": "html",
+	  "dataFile": "pages_data.json",
+	  "visible": false
+       },
+       {
+          "name": "indoorMaps",
+          "description": "indoor maps"
+       }
+    ]
+}
