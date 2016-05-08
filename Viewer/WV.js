@@ -21,6 +21,8 @@ WV.curPos = null;
 WV.myId = "_anon_"+new Date().getTime();
 WV.numPolls = 0;
 WV.recs = {};
+WV.useSocketIO = false;
+WV.statusInterval = 1000;
 var wvCom = null;
 
 WV.viewer = new Cesium.Viewer('cesiumContainer', {
@@ -154,6 +156,8 @@ function WVLayer(spec)
 	    WV.watchPeople();
 	if (name == "indoorMaps")
 	    WV.getIndoorMapData();
+	if (name == "chat")
+	    WV.watchChat();
     }
 
     this.setVisibility = function(visible) {
@@ -444,6 +448,27 @@ WV.simplePickHandler = function(rec)
     report("picked record: "+JSON.stringify(rec));
 }
 
+/*
+  Use this instead of $.getJSON() because this will give
+  an error message in the console if there is a parse error
+  in the JSON.
+ */
+WV.getJSON = function(url, handler)
+{
+    report(">>>>> getJSON: "+url);
+    //$.getJSON(url, function(data) {
+    //   //report(">>>> got data... calling handler");
+    //   handler(data);
+    //});
+    $.ajax({
+        url: url,
+	dataType: 'text',
+	success: function(str) {
+		data = JSON.parse(str);
+		handler(data);
+	    }
+	});
+}
 
 /*
   This loads the layer information, and then sets up the GUI
@@ -453,7 +478,8 @@ WV.simplePickHandler = function(rec)
  */
 function getLayers()
 {
-    $.getJSON(WV.layersUrl, setupLayers);
+    //$.getJSON(WV.layersUrl, setupLayers);
+    WV.getJSON(WV.layersUrl, setupLayers);
     //setupLayers(WV.LAYER_DATA);
 }
 
@@ -534,15 +560,14 @@ function toRadians(d)
     return d*Math.PI/180;
 }
 
-function reportStatus()
+function getStatusObj()
 {
-//    report("reportStatus");
+    WV.numPolls++;
     var cpos = WV.viewer.camera.positionCartographic;
     var clat = toDegrees(cpos.latitude);
     var clon = toDegrees(cpos.longitude);
     WV.curPos = [clat, clon, cpos.height];
     var t = getClockTime();
-    WV.numPolls++;
     var status = {
 	'type': 'people',
 	'id': WV.myId,
@@ -550,8 +575,15 @@ function reportStatus()
 	'curPos': WV.curPos,
 	't': t,
 	'n': WV.numPolls};
+    return status;
+}
+
+function reportStatus()
+{
+//    report("reportStatus");
+    var status = getStatusObj();
     wvCom.sendStatus(status);
-    setTimeout(reportStatus, 1000);
+    setTimeout(reportStatus, WV.statusInterval);
 }
 
 $(document).ready(function() {
@@ -560,5 +592,5 @@ $(document).ready(function() {
     getLayers();
     setupCesium();
     WV.getLocation();
-    setTimeout(reportStatus, 1000);
+    setTimeout(reportStatus, WV.statusInterval);
 });

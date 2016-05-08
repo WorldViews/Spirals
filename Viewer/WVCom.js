@@ -6,11 +6,23 @@
 
  */
 
-var socket = null;
+//WV.useSocketIO = false;
+WV.socket = null;
 
 WV.WVCom = function()
 {
+    report(">>> WV.useSocketIO: "+WV.useSocketIO);
     this.types = {};
+    if (WV.useSocketIO) {
+	report("Getting socket.io socket");
+	WV.socket = io();
+	WV.socket.on('register', function(msg){
+	    });
+        //socket.emit('register', "hello");
+    }
+    else {
+	report("*** not using socket.io ***");
+    }
 }
 
 WV.Watcher = function(wvCom, evType)
@@ -18,8 +30,33 @@ WV.Watcher = function(wvCom, evType)
     this.wvCom = wvCom;
     this.evType = evType;
     this.prevMaxId = null;
-    report("Starting poll requests evType: "+evType);
-    this.pollRequest();
+    report(">>> Starting poll requests evType: "+evType);
+    if (WV.socket) {
+	report("watching socket.io stream for "+evType);
+	var inst = this;
+	WV.socket.on(evType, function(dataStr) {
+		data = JSON.parse(dataStr)
+		inst.sioHandler(data);
+	    });
+    }
+    else {
+	this.pollRequest();
+    }
+}
+
+WV.Watcher.prototype.sioHandler = function(data)
+{
+    var typeObj = this.wvCom.types[this.evType];
+    if (typeObj.handler) {
+	try {
+	    var recs = [data];
+	    //report("sioHandler: recs "+JSON.stringify(recs));
+	    typeObj.handler(recs, this.evType);
+	}
+	catch (err) {
+	    report(""+err);
+	}
+    }
 }
 
 WV.Watcher.prototype.pollRequest = function()
@@ -32,7 +69,7 @@ WV.Watcher.prototype.pollRequest = function()
 	url += "&prevEndNum="+this.prevMaxId;
     report(" url: "+url);
     var inst = this;
-    $.getJSON(url, function(data) {
+    WV.getJSON(url, function(data) {
 	    inst.pollHandler(data);
 	});
 }
@@ -74,20 +111,21 @@ WV.WVCom.prototype.subscribe = function(evType, handler, opts)
     this.types[evType] = typeObj;
     if (opts.dataFile) {
 	var url = opts.dataFile;
-        $.getJSON(url, function(data) {
+        WV.getJSON(url, function(data) {
 		handler(data, evType)});
     }
-    else
+    else {
 	typeObj.watcher = new WV.Watcher(this, evType);
+    }
 }
 
 WV.WVCom.prototype.sendStatus = function(status)
 {
     var sStr = JSON.stringify(status);
     //report("sStr: "+sStr);
-    if (socket) {
+    if (WV.socket) {
 	try {
-	    socket.emit('register', sStr);
+	    WV.socket.emit('people', sStr);
 	}
 	catch (err) {
 	    report(""+err);

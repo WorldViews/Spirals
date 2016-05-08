@@ -8,6 +8,7 @@
   <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <title>WorldViews Viewer</title>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="../Cesium/Cesium/Cesium.js"></script>
   <style>
@@ -42,13 +43,15 @@
 
 <script src="WV.js"></script>
 <script src="WVCom.js"></script>
+<script src="WVChat.js"></script>
 <script src="WVLiveUsers.js"></script>
 <script src="WVIndoorMaps.js"></script>
 <script src="WVYT.js"></script>
 <script>
 // You could specify a different layers url if you want
 //WV.layersUrl = "myLayers.json";
-
+WV.useSocketIO = true;
+WV.statusInterval = 500;
 </script>
 </body>
 </html>

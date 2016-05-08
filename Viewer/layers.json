@@ -60,6 +60,11 @@
        {
           "name": "indoorMaps",
           "description": "indoor maps"
+       },
+       {
+          "name": "chat",
+	  "visible": true,
+          "description": "Chat"
        }
     ]
 }

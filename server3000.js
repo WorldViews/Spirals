@@ -169,9 +169,13 @@
 
     io.on('connection', function(socket){
         report("setting up socket.io channels register chat");
-	socket.on('register', function(rmsg){
-            report('register: '+rmsg);
-            io.emit('register', rmsg);
+	socket.on('people', function(rmsg){
+            report('people: '+rmsg);
+            io.emit('people', rmsg);
+        });
+	socket.on('chat', function(rmsg){
+            report('chat: '+rmsg);
+            io.emit('chat', rmsg);
         });
 	socket.on('chat message', function(msg){
 	    io.emit('chat message', msg);
