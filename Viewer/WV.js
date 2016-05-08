@@ -19,6 +19,7 @@ WV.thisPersonData = null;
 WV.origin = [0,0];
 WV.curPos = null;
 WV.myId = "_anon_"+new Date().getTime();
+WV.myName = "anon";
 WV.numPolls = 0;
 WV.recs = {};
 WV.useSocketIO = false;
@@ -34,68 +35,6 @@ WV.viewer = new Cesium.Viewer('cesiumContainer', {
 WV.entities = WV.viewer.entities;
 WV.scene = WV.viewer.scene;				 
 WV.scene.globe.depthTestAgainstTerrain = true;
-
-/*
-WV.LAYER_DATA =
-{
-    "layers": [
-       {
-          'name': 'drones',
-          'description': 'drone videos',
-	  'maxNum': 100,
-	  'visible': false,
-	  'iconUrl': "drone.png",
-	  'mediaType': 'youtube',
-	  'dataFile': 'tbd_data.json'
-       },
-       {
-          'name': 'climbing',
-          'description': 'rock climbing',
-	  'maxNum': 100,
-	  'visible': true,
-	  'iconUrl': "climber.png",
-	  'mediaType': 'youtube',
-	  'dataFile': 'climbing_data.json'
-       },
-       {
-          'name': 'hiking',
-          'description': 'hiking',
-	  'maxNum': 5000,
-	  'visible': false,
-	  'height': 10000,
-	  'iconUrl': "hiking.png",
-	  'mediaType': 'youtube',
-	  'dataFile': 'hiking_data.json'
-       },
-       {
-          'name': 'surfing',
-          'description': 'surfing videos',
-	  'maxNum': 8000,
-	  'visible': false,
-	  'iconUrl': "surfing.png",
-	  'mediaType': 'youtube',
-	  'dataFile': 'surfing_data.json'
-       },
-       {
-          'name': 'photos',
-          'description': 'recently tweeted images',
-	  'maxNum': 100,
-	  // 'imageServer': 'http://localhost:8001/'
-	  'imageServer': '/'
-       },
-       {
-          'name': 'people',
-          'description': 'people watching now',
-	  'maxNum': 100,
-	  'visible': false,
-       },
-       {
-          'name': 'indoorMaps',
-          'description': 'indoor maps',
-       }
-    ]
-};
-*/
 
 WV.getLocation = function() {
     if (navigator.geolocation) {
@@ -571,6 +510,7 @@ function getStatusObj()
     var status = {
 	'type': 'people',
 	'id': WV.myId,
+	'name': WV.myName,
 	'origin': WV.origin,
 	'curPos': WV.curPos,
 	't': t,
@@ -586,9 +526,25 @@ function reportStatus()
     setTimeout(reportStatus, WV.statusInterval);
 }
 
+// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 $(document).ready(function() {
     report("Starting...");
     wvCom = new WV.WVCom();
+    var userName = getParameterByName("user", document.location.search);
+    report("*********************** userName: "+userName);
+    if (userName) {
+	WV.myName = userName;
+    }
     getLayers();
     setupCesium();
     WV.getLocation();

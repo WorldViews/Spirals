@@ -31,6 +31,27 @@
           left: 100px;
       }
 
+      .chat-window {
+          xxxvisibility: hidden;
+          xxdisplay: block;
+          display: none;
+          position: absolute;
+          top: 200px;
+          left: 100px;
+          height: 300px;
+          width: 300px;
+          color: white;
+      }
+
+      .chat-display {
+          display: block;
+          position: relative;
+          xxoverflow: scroll;
+          overflow: hidden;
+          height: 300px;
+          width: 100%;
+      }
+
   </style>
 </head>
 <body>
@@ -39,6 +60,13 @@
      <span id="layersLabel">Hide Layers</span>
   </div>
   <div class="video-window" id="ytplayer" style="color:white;">
+  </div>
+  <div class="chat-window" id="chatView">
+    <div class="chat-display" id="chatDisplay">
+    <form action="" id="chatForm">
+      <input id="chatText" autocomplete="off" /><button>Send</button>
+    </form>
+    </div>
   </div>
 
 <script src="WV.js"></script>

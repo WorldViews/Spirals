@@ -1,17 +1,17 @@
 
-WV.chatRunning = false;
+WV.chatInitialized = false;
+WV.watchingChat = false;
 
 WV.watchChat = function()
 {
     var layer = WV.layers["chat"];
-    layer.visible = true;
-    if (WV.chatRunning)
-	return;
-    WV.chatRunning = true;
-    layer.hideFun = WV.hideChat;
-    //layer.polylines = new Cesium.PolylineCollection();
-    wvCom.subscribe("chat", WV.handleChatData);
-    chatter();
+    //WV.chatRunning = true;
+    WV.setChatVisibility(true);
+    if (!WV.chatInitialized) {
+	layer.hideFun = WV.hideChat;
+	WV.chatInitialized = true;
+	wvCom.subscribe("chat", WV.handleChatData);
+    }
 }
 
 WV.handleChatData = function(data, name)
@@ -21,12 +21,14 @@ WV.handleChatData = function(data, name)
     if (!layer.visible) {
 	return;
     }
-    WV.setChatVisibility(true);
+    //WV.setChatVisibility(true);
     var recs = data;
     var t = getClockTime();
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	report("chat rec: "+JSON.stringify(rec));
+	var str = rec.name+": "+rec.text;
+	$("#chatDisplay").append(str+"<br>");
 	if (rec.id == WV.myId) {
 	    report("******** SKIPPING MY OWN RECORD *********");
 	    continue;
@@ -51,6 +53,30 @@ WV.hideChat = function()
 WV.setChatVisibility = function(v)
 {
     var layer = WV.layers["chat"];
+    if (v) {
+	report("Show #chatView ");
+	$("#chatView").show();
+	if (!WV.watchingChat)
+	    WV.postChatMessage("[joining chat]");
+	WV.watchingChat = true;
+	if (!layer.visible)
+	layer.visible = true;
+	//$("#chatDisplay").append("<br>");
+	/*
+	setTimeout(function() {
+		report("ughhh......");
+		$("#chatDisplay").append("<br>");
+	    }, 1000);
+	*/
+    }
+    else {
+	report("hide #chatView ");
+	layer.visible = false;
+	$("#chatView").hide(200);
+	if (WV.watchingChat)
+	    WV.postChatMessage("[leaving chat]");
+	WV.watchingChat = false;
+    }
     //
 }
 
@@ -77,9 +103,21 @@ WV.postChatMessage = function(text)
     }
 }
 
+WV.xxxx = 0;
 function chatter()
 {
-    WV.postChatMessage("hello.  I am sam");
+    WV.xxxx++;
+    WV.postChatMessage("hello.  I am sam "+WV.xxxx);
     setTimeout(chatter, 5000);
 }
+
+$(document).ready(function()
+{
+    $("#chatForm").submit(function(){
+	    WV.postChatMessage($("#chatText").val());
+	    $("#chatText").val("");
+            return false;
+	});
+});
+
 

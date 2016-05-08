@@ -2,7 +2,7 @@
     "layers": [
        {
           "name": "drones",
-          "description": "drone videos",
+          "description": "Drone videos",
 	  "maxNum": 100,
 	  "visible": false,
 	  "iconUrl": "drone.png",
@@ -11,7 +11,7 @@
        },
        {
           "name": "climbing",
-          "description": "rock climbing",
+          "description": "Rock climbing",
 	  "maxNum": 100,
 	  "visible": false,
 	  "iconUrl": "climber.png",
@@ -20,7 +20,7 @@
        },
        {
           "name": "hiking",
-          "description": "hiking",
+          "description": "Hiking",
 	  "maxNum": 5000,
 	  "visible": false,
 	  "height": 10000,
@@ -30,7 +30,7 @@
        },
        {
           "name": "surfing",
-          "description": "surfing videos",
+          "description": "Surfing videos",
 	  "maxNum": 8000,
 	  "visible": false,
 	  "iconUrl": "surfing.png",
@@ -39,13 +39,13 @@
        },
        {
           "name": "photos",
-          "description": "recently tweeted images",
+          "description": "Recently tweeted images",
 	  "maxNum": 100,
 	  "imageServer": "/"
        },
        {
           "name": "people",
-          "description": "people watching now",
+          "description": "People watching now",
 	  "maxNum": 100,
 	  "visible": false
        },
@@ -59,11 +59,10 @@
        },
        {
           "name": "indoorMaps",
-          "description": "indoor maps"
+          "description": "Indoor maps"
        },
        {
           "name": "chat",
-	  "visible": true,
           "description": "Chat"
        }
     ]
