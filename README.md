@@ -1,4 +1,7 @@
-# PhysViz
+# WorldViews Spirals Repo
+
+This has been a play repo for doing various experiments for the WorldViews
+organization.
 
 TeleViewer
 ==========
@@ -10,8 +13,8 @@ the Build/Cesium directory to Spirals/Cesium/Cesium.
 You then need to run a server.  We have been using a python server
 but are moving to a node.js server.
 
-For Python server:
-------------------
+Using Python server:
+--------------------
 
 run PhysVizServer80.py
 
@@ -19,18 +22,32 @@ and try http://localhost
 
 You should get a page with a link to TeleViewer.
 
+Using node server:
+------------------
+
 Now we are moving to a node server, and the use of the RethinkDB.
 For configuration install node.js and RethinkDB.  (RethinkDB will
 simply be a single .exe that is in this directory.)  Then do
 
    npm install
 
-to make sure you have the necessary packages.  Then run either
-runServer80.bat or runServer3000.bat
+to make sure you have the necessary packages, and
+then start the RethinkDB by running rethinkdb.exe
+
+Then create a chat table using command
+
+   node createChatTable.js
+
+Now you should be ready to run the server.
+Simply run either runServer80.bat or runServer3000.bat
+or create a new configuration of your choice.
+
+Note: while the rethinkDB is running you should be able to 
+get to its admin interface at http://localhost:8080
 
 
-
-<h3>PhysViz</h3>
+PhysViz
+=======
 
 Software related to visualizations and physical simulations with music
 
