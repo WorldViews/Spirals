@@ -58,6 +58,14 @@
 	  "visible": false
        },
        {
+          "name": "zilong",
+          "description": "Zilong's Journey",
+	  "iconUrl": "yinyang.png",
+	  "mediaType": "html",
+	  "dataFile": "zilong_data.json",
+	  "visible": false
+       },
+       {
           "name": "indoorMaps",
           "description": "Indoor maps"
        },
