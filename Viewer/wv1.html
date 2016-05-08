@@ -8,6 +8,8 @@
   <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <title>WorldViews Viewer</title>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <!--<script src="http://code.jquery.com/jquery-1.11.1.js"></script>-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="../Cesium/Cesium/Cesium.js"></script>
   <style>
@@ -45,5 +47,14 @@
 <script src="WVLiveUsers.js"></script>
 <script src="WVIndoorMaps.js"></script>
 <script src="WVYT.js"></script>
+<script>
+
+var socket = io();
+socket.on('register', function(msg){
+});
+//socket.emit('register', "hello");
+
+
+</script>
 </body>
 </html>

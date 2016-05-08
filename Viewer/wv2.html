@@ -39,14 +39,15 @@
 
 report("------------------------------------------------------------");
 
-var numCupcakes = 0;
-function addBB(str, lon, lat, h, desc) {
+var numCBB = 0;
+
+function addCanvasBillboard(str, lon, lat, h, desc) {
     var viewer = WV.viewer;
     var canvas = document.createElement('canvas');
     canvas.width = 600;
     canvas.height = 300;
-    numCupcakes++;
-    var id = 'Cupcake_'+numCupcakes;
+    numCBB++;
+    var id = 'CBB_'+numCBB;
     var svgString = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
        '<foreignObject width="100%" height="100%">' +
        '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:40px; color: #FF0">' +
@@ -66,17 +67,38 @@ function addBB(str, lon, lat, h, desc) {
        canvas.getContext('2d').drawImage(image, 0, 0);
        var opts = { id: id,
                     position: Cesium.Cartesian3.fromDegrees(lon, lat, h),
-                    billboard: {
-                       image: canvas
-                    }};
+                    pixelOffset : Cesium.Cartesian2.ZERO,
+                    eyeOffset : Cesium.Cartesian3.ZERO,
+                    horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+                    verticalOrigin : Cesium.VerticalOrigin.CENTER,
+                    color: Cesium.Color.WHITE,
+                    'scale': 0.1,
+                    image: "drone.png"
+//                    image: canvas
+//                    billboard: { image: canvas }
+       };
        if (desc)
            opts.description = desc;
        viewer.entities.add(opts);
     };
 }
 
-addBB("Cupcakes", -75.59777, 40.03883, 1000000, "Many Cals");
-addBB("pies", -50.59777, 20.03883, 1000000, "Medium");
+function addDataSource() {
+    var viewer = WV.viewer;
+    viewer.dataSources.add(Cesium.KmlDataSource
+       .load('../sampleData/kml/MaineScubaDiving.kml', {
+           camera: viewer.camera,
+           canvas: viewer.canvas
+       })
+   )
+   .then( function (dataSource) {
+       viewer.flyTo(dataSource.entities);
+    })
+};
+
+addDataSource();
+addCanvasBillboard("El Cap", -119.538, 37.865,   100000, "El Capitan");
+addCanvasBillboard("pies", -50.59777, 20.03883,  100000, "Medium");
 
 </script>
 

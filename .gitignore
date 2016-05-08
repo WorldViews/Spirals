@@ -16,6 +16,7 @@ Kinetics.r71/
 junk/
 bin/
 tmp/
+*.exe
 *.tmp
 *.bak
 *.swp
@@ -24,6 +25,10 @@ local.properties
 .classpath
 .settings/
 .loadpath
+
+# Node server and DB
+node_modules/
+rethinkdb_data/
 
 # Cesium
 Cesium/

@@ -6,6 +6,7 @@
 
  */
 
+var socket = null;
 
 WV.WVCom = function()
 {
@@ -84,7 +85,17 @@ WV.WVCom.prototype.sendStatus = function(status)
 {
     var sStr = JSON.stringify(status);
     //report("sStr: "+sStr);
-    jQuery.post("/register/", sStr, function() {
-	    report("registered");
-	}, "json");
+    if (socket) {
+	try {
+	    socket.emit('register', sStr);
+	}
+	catch (err) {
+	    report(""+err);
+	}
+    }
+    else {
+	jQuery.post("/register/", sStr, function() {
+		report("registered");
+	    }, "json");
+    }
 }
