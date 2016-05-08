@@ -1,13 +1,17 @@
 # PhysViz
 
 TeleViewer
+==========
 
 To run TeleViewer, you need to first install Cesium.  We are currently
 using Cesium 1.21.1.  Install Cesium on your system, and then copy
-the Build/Cesium directory to Spirals/Cesium/Cesium
+the Build/Cesium directory to Spirals/Cesium/Cesium.
 
-You then need to run a server.  We have been using a python server.
+You then need to run a server.  We have been using a python server
+but are moving to a node.js server.
+
 For Python server:
+------------------
 
 run PhysVizServer80.py
 
