@@ -113,7 +113,7 @@ WV.handlePeopleData = function(data, name)
     var t = getClockTime();
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
-	if (rec.id == WV.myId) {
+	if (rec.userId == WV.myId) {
 	    report("******** SKIPPING MY OWN RECORD *********");
 	    continue;
 	}
@@ -132,7 +132,7 @@ WV.handlePeopleData = function(data, name)
 	    report("ignoring view that is too old...");
 	    continue;
 	}
-	if (rec.id == "person0") {
+	if (rec.userId == "person0") {
 	    //report("******** skipping person0 ********");
 	    continue;
 	}
@@ -142,7 +142,7 @@ WV.handlePeopleData = function(data, name)
         var lat =    rec.curPos[0];
         var lon =    rec.curPos[1];
 	var height = rec.curPos[2];
-        var id = "person_"+rec.id;
+        var id = "person_"+rec.userId;
 	var h1 = 0.1*height;
         //var id = "person_"+layer.numObjs;
         layer.recs[id] = rec;
@@ -162,7 +162,7 @@ WV.handlePeopleData = function(data, name)
 	    cb = addBillboard(layer.bbCollection, lat, lon,
 			      curPosImageUrl, id, curPosScale, h1);
 	    layer.curPosBillboards[id] = cb;
-	    var tetherId = "tether_"+rec.id;
+	    var tetherId = "tether_"+rec.userId;
 	    var material = new Cesium.PolylineGlowMaterialProperty({
 		    color : Cesium.Color.RED,
 		    glowPower : 0.15});

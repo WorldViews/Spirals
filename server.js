@@ -15,6 +15,7 @@
     var url = require('url');
     var request = require('request');
     var rethink = require('rethinkdb');
+    var httpPort = 3000;
 
     var connection = null;
 
@@ -34,6 +35,17 @@
     {
         report("addMsg");
         var msg = {'user':'Unknown', text: text};
+        rethink.table('chat').insert(msg).run(connection, function(err, res) {
+           if(err) throw err;
+           console.log(res);
+        });
+    }
+
+    function addChatMsg(jStr)
+    {
+        report("addChatMsg");
+	msg = JSON.parse(jStr);
+	msg.user = msg.name;
         rethink.table('chat').insert(msg).run(connection, function(err, res) {
            if(err) throw err;
            console.log(res);
@@ -76,6 +88,8 @@
     if (argv.help) {
         return yargs.showHelp();
     }
+    httpPort = argv.port;
+    report("httpPort: "+httpPort);
 
     // eventually this mime type configuration will need to change
     // https://github.com/visionmedia/send/commit/d2cb54658ce65948b0ed6e5fb5de69d022bef941
@@ -173,9 +187,10 @@
             report('people: '+rmsg);
             io.emit('people', rmsg);
         });
-	socket.on('chat', function(rmsg){
-            report('chat: '+rmsg);
-            io.emit('chat', rmsg);
+	socket.on('chat', function(msgStr){
+	    report('chat: '+msgStr);
+            io.emit('chat', msgStr);
+            addChatMsg(msgStr);
         });
 	socket.on('chat message', function(msg){
 	    io.emit('chat message', msg);
@@ -183,8 +198,9 @@
         });
     });
 
-    server = http.listen(3000, function() {
-	    console.log("listening on *:3000");
+    //server = http.listen(3000, function() {
+    server = http.listen(httpPort, function() {
+	    console.log("listening on *:"+httpPort);
 	    console.log("addr:"+server.address());
 	    console.log("port:"+server.address().port);
 	});

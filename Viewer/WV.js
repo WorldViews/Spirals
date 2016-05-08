@@ -509,7 +509,7 @@ function getStatusObj()
     var t = getClockTime();
     var status = {
 	'type': 'people',
-	'id': WV.myId,
+	'userId': WV.myId,
 	'name': WV.myName,
 	'origin': WV.origin,
 	'curPos': WV.curPos,
