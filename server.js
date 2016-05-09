@@ -44,7 +44,14 @@
     function addChatMsg(jStr)
     {
         report("addChatMsg");
-	msg = JSON.parse(jStr);
+	try {
+	    msg = JSON.parse(jStr);
+	}
+	catch (err) {
+	    report("Cannot parse json");
+	    report("err: "+err);
+	    return;
+	}
 	msg.user = msg.name;
         rethink.table('chat').insert(msg).run(connection, function(err, res) {
            if(err) throw err;

@@ -29,6 +29,7 @@ WV.handleChatData = function(data, name)
 	report("chat rec: "+JSON.stringify(rec));
 	var str = rec.name+": "+rec.text;
 	$("#chatDisplay").append(str+"<br>");
+	//$("#chatDisplay").prepend(str+"<br>");
 	if (rec.id == WV.myId) {
 	    report("******** SKIPPING MY OWN RECORD *********");
 	    continue;
