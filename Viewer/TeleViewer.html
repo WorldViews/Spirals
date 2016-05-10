@@ -31,30 +31,8 @@
           left: 100px;
       }
 
-      .chat-window {
-          xxxvisibility: hidden;
-          xxdisplay: block;
-          display: none;
-          position: absolute;
-          top: 280px;
-          left: 100px;
-          height: 300px;
-          width: 500px;
-          color: black;
-          background-color: white;
-      }
-
-      .chat-display {
-          display: block;
-          position: relative;
-          xxoverflow: scroll;
-          overflow: hidden;
-          xxheight: 300px;
-          height: 100%;
-          width: 100%;
-      }
-
   </style>
+  <link rel="stylesheet" type="text/css" href="css/chat.css">
 </head>
 <body>
   <div id="cesiumContainer"></div>
@@ -64,14 +42,15 @@
   <div class="video-window" id="ytplayer" style="color:white;">
   </div>
 
-  <div class="chat-window" id="chatView">
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-title" id="chatTitle" style="background-color:grey">Chat:</div>
+    <div class="chat-text" id="chatText"></div>
     <form action="" id="chatForm">
       <input id="chatText" autocomplete="off" style="width: 82%;" />
       <button>Send</button>
       <button id="dismissChat">X</button>
     </form>
-    <div class="chat-display" id="chatDisplay">
-    </div>
+    
   </div>
 
 <script src="WV.js"></script>
@@ -85,29 +64,6 @@
 //WV.layersUrl = "myLayers.json";
 WV.useSocketIO = true;
 WV.statusInterval = 500;
-
-$(document).ready(function() {
-    report("********************");
-    $('#dismissChat').click(function(e) {
-        WV.setChatVisibility(false);
-    });
-    $('#chatDisplay').on('mousedown', function(e) {
-        var offs0 = $('#chatView').offset();
-        var p0 = {x: e.pageX, y: e.pageY};
-        report(" offset: "+offs0.top+" "+offs0.left);
-        $('#chatView').on('mousemove', function(e) {
-            $('#chatView').offset({
-                top: offs0.top + (e.pageY - p0.y),
-                left: offs0.left + (e.pageX-p0.x)
-            }).on('mouseup', function() {
-                report("mouseup");
-                //$('#chatView').off('mousemove', false);
-                $('#chatView').off('mousemove');
-            });
-        });
-        e.preventDefault();
-    });
-});
 
 </script>
 </body>

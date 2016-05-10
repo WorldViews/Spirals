@@ -1,0 +1,21 @@
+
+      .chat-window {
+          display: none;
+          position: absolute;
+          top: 280px;
+          left: 100px;
+          xheight: 300px;
+          xwidth: 500px;
+          color: black;
+          background-color: white;
+      }
+
+      .chat-text {
+          display: block;
+          position: relative;
+          overflow-y: auto;
+          xheight: 100%;
+          xwidth: 100%;
+          height: 200px;
+          width: 500px;
+      }
