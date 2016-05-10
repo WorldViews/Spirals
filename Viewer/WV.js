@@ -30,6 +30,10 @@ WV.viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
         url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
     }),
+    animation: false,
+    timeline : false,
+    //animation: true,
+    //timeline : true,
     baseLayerPicker : false
 });
 WV.entities = WV.viewer.entities;
@@ -343,6 +347,22 @@ function setupCesium()
 	layer.pickHandler(rec);
         //WV.playVid(rec);
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+
+    // Tried this to get rid of default action of looking for feature
+    // but it didn't work.
+    //handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    handler.setInputAction(function(movement) {
+	    report("LEFT_CLICK");
+	    WV.viewer.trackedEntity = undefined;
+	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    handler.setInputAction(function(movement) {
+	    report("LEFT_DOUBLE_CLICK");
+	    WV.viewer.trackedEntity = undefined;
+	    //WV.hideAnimationWidget();
+	}, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
 }
 
 WV.playVidInPopup = function(rec)
@@ -537,6 +557,14 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+WV.hideAnimationWidget = function()
+{
+    if (WV.viewer.animation)
+	WV.viewer.animation.destroy();
+    if (WV.viewer.timeline)
+	WV.viewer.timeline.destroy();
+}
+
 $(document).ready(function() {
     report("Starting...");
     wvCom = new WV.WVCom();
@@ -549,4 +577,5 @@ $(document).ready(function() {
     setupCesium();
     WV.getLocation();
     setTimeout(reportStatus, WV.statusInterval);
+
 });

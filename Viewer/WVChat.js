@@ -56,6 +56,7 @@ WV.setChatVisibility = function(v)
     var layer = WV.layers["chat"];
     if (v) {
 	report("Show #chatWindow ");
+	$("#cb_chat").prop("checked", true);
 	$("#chatWindow").show();
 	if (!WV.watchingChat)
 	    WV.postChatMessage("[joining chat]");
@@ -72,6 +73,7 @@ WV.setChatVisibility = function(v)
     }
     else {
 	report("hide #chatWindow ");
+	$("#cb_chat").prop("checked", false);
 	layer.visible = false;
 	$("#chatWindow").hide(200);
 	if (WV.watchingChat)
