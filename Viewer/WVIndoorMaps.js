@@ -64,7 +64,7 @@ WV.addImageLayer = function(imageUrl, lon0, lat0, lon1, lat1)
 {
     var imageryLayers = WV.viewer.imageryLayers;
     //var rect = Cesium.Rectangle.fromDegrees(latLow, lonLow, latHigh, lonHigh);
-    report("lon0: "+lon0+"  lat0: "+lat0+"  lon1: "+lon1+" lat1: "+lat1);
+    report("addImageLayer lon0: "+lon0+"  lat0: "+lat0+"  lon1: "+lon1+" lat1: "+lat1);
     var rect = Cesium.Rectangle.fromDegrees(lon0, lat0, lon1, lat1);
     var provider = new Cesium.SingleTileImageryProvider({
 	    url : imageUrl,
@@ -90,7 +90,7 @@ WV.getIndoorMapData = function()
     url = "indoormaps_data.json";
     //url = "indoormaps_err_data.json";
     report("url: "+url);
-    $.getJSON(url, function(data) {
+    WV.getJSON(url, function(data) {
 	    WV.handleIndoorMapData(data, "indoorMaps");
 	});
     //WV.handleIndoorMapData(data);
@@ -98,7 +98,7 @@ WV.getIndoorMapData = function()
 
 WV.handleIndoorMapData = function(data, name)
 {
-    WV.addModel();
+    //WV.addModel();
     report("handleIndoorMapData");
     var layer = WV.layers["indoorMaps"];
     layer.showFun = WV.getIndoorMapData;
@@ -118,48 +118,55 @@ WV.handleIndoorMapData = function(data, name)
     var recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
-        //report("rec "+i+" "+JSON.stringify(rec));
-        var imageUrl = "person0.png";
-	var lon;
-	var lon;
-	var latLow;
-	var latHigh;
-	var h = 10;
-	if (rec.lonRange != null) {
-            lon = rec.lonRange[0];
-            lonHigh = rec.lonRange[1];
-	}
-	else
-	    lon = rec.lon;
-	if (rec.latRange != null) {
-	    lat = rec.latRange[0];
-	    var latHigh = rec.latRange[1];
-	}
-	else
-	    lat = rec.lat;
-	if (rec.height != null)
-	    h = rec.height;
-        var id = rec.id;
-	var rot = 0;
-	if (rec.rot) {
-	    rot = toRadians(rec.rot);
-	}
+	var rtype = rec.type;
+	var id = rec.id;
 	if (layer.ilayers[id]) {
 	    report("************* Hiding map we already have...");
 	    layer.ilayers[id].show = false;
 	}
-        layer.recs[id] = rec;
-	var width = rec.width;
-	var len = rec.length;
-	report("len: "+len+" width: "+width+"  rot: "+rot);
-	if (rec.type == "imageLayer") {
-	    ilayer = WV.addImageLayer(rec.url, lon, lat, lonHigh, latHigh);
+	if (rtype.toLowerCase() == "geojson") {
+	    var url = rec.url;
+	    var obj = WV.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(url, {
+			stroke: Cesium.Color.HOTPINK,
+			    fill: Cesium.Color.PINK.withAlpha(0.5),
+			    strokeWidth: 3
+	    }));
+	    xobj = obj;
+	    //rec.ilayers[id] = obj;
+	    report("obj: "+obj);
+	    continue;
 	}
-	else {
+	if (rtype == "image") {
+	    var lon = rec.lon;
+	    var lat = rec.lat;
+	    var h = 10;
+	    if (rec.height != null)
+		h = rec.height;
+	    var rot = 0;
+	    if (rec.rot) {
+		rot = toRadians(rec.rot);
+	    }
+	    layer.recs[id] = rec;
+	    var width = rec.width;
+	    var len = rec.length;
+	    report("len: "+len+" width: "+width+"  rot: "+rot);
 	    ilayer = WV.drawImage(rec.url,   lon, lat, width, len, h, rot);
+	    ilayer.name = name;
+	    layer.ilayers[id] = ilayer;
+	    continue;
 	}
-	ilayer.name = name;
-	layer.ilayers[id] = ilayer;
+	if (rtype.toLowerCase() == "imagelayer") {
+	    var lon = rec.lonRange[0];
+	    var lonHigh = rec.lonRange[1];
+	    var lat = rec.latRange[0];
+	    var latHigh = rec.latRange[1];
+	    layer.recs[id] = rec;
+	    ilayer = WV.addImageLayer(rec.url, lon, lat, lonHigh, latHigh);
+	    ilayer.name = name;
+	    layer.ilayers[id] = ilayer;
+	    continue;
+	}
+	report("**** unknown rtype: "+rtype);
     }
 }
 

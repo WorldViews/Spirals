@@ -66,6 +66,14 @@
 	  "visible": false
        },
        {
+          "name": "beyondthefence",
+          "description": "Enock's Blog",
+	  "iconUrl": "yinyang.png",
+	  "mediaType": "html",
+	  "dataFile": "beyondthefence_data.json",
+	  "visible": false
+       },
+       {
           "name": "indoorMaps",
           "description": "Indoor maps"
        },

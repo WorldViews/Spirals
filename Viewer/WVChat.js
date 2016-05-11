@@ -57,7 +57,8 @@ WV.setChatVisibility = function(v)
     if (v) {
 	report("Show #chatWindow ");
 	$("#cb_chat").prop("checked", true);
-	$("#chatWindow").show();
+	$("#chatWindow").show(200);
+	$("#noteWindow").show(200);
 	if (!WV.watchingChat)
 	    WV.postChatMessage("[joining chat]");
 	WV.watchingChat = true;
@@ -76,6 +77,7 @@ WV.setChatVisibility = function(v)
 	$("#cb_chat").prop("checked", false);
 	layer.visible = false;
 	$("#chatWindow").hide(200);
+	$("#noteWindow").hide(200);
 	if (WV.watchingChat)
 	    WV.postChatMessage("[leaving chat]");
 	WV.watchingChat = false;
@@ -114,33 +116,76 @@ function chatter()
     setTimeout(chatter, 5000);
 }
 
+' <div class="chat-window" id="|NAME|Window">\n' +
+'    <div class="chat-title" id="|NAME|Title" style="background-color:grey">|NAME|:</div>\n' +
+'    <div class="chat-text" id="|NAME|Text"></div>\n' +
+'    <form action="" id="|NAME|Form">\n' +
+'      <input id="|NAME|Input" autocomplete="off" style="width: 82%;" />\n' +
+'      <button>Send</button>\n' +
+'      <button id="|NAME|Dismiss">X</button>\n' +
+'    </form>\n' +
+'  </div>\n';
+
+
+function ChatWidget(name)
+{
+    this.name = name;
+    var windowId = "#"+name+"Window";
+    var formId = "#"+name+"Form";
+    var textId = "#"+name+"Text";
+    var titleId = "#"+name+"Title";
+    var dismissId = "#"+name+"Dismiss";
+
+    function build() {
+	if (name == "chat") {
+	    report("***** skipping......");
+	    return;
+	}
+	if ($(titleId).length > 0) {
+	    report("**** "+titleId+" already exists");
+	    return;
+	}
+	report("str:\n"+str);
+	$("#notesLayerDiv").append(str);
+    }
+
+    function rig() {
+	$(titleId).html(" "+name+":");
+	$(formId).submit(function(){
+		WV.postChatMessage($(textId).val());
+		$(textId).val("");
+		return false;
+	});
+	$(dismissId).click(function(e) {
+		WV.setChatVisibility(false);
+	});
+	$(titleId).on('mousedown', function(e) {
+		report("mouse down on "+name);
+		var offs0 = $(windowId).offset();
+		var p0 = {x: e.pageX, y: e.pageY};
+		report(" offset: "+offs0.top+" "+offs0.left);
+		$(windowId).on('mousemove', function(e) {
+	            $(windowId).offset({
+			top: offs0.top + (e.pageY - p0.y),
+			left: offs0.left + (e.pageX-p0.x)
+		    }).on('mouseup', function() {
+			report("mouseup");
+			$(windowId).off('mousemove');
+		    });
+                });
+		e.preventDefault();
+	    });
+    }
+    build();
+    rig();
+}
+
 $(document).ready(function()
 {
-    $("#chatForm").submit(function(){
-	    WV.postChatMessage($("#chatText").val());
-	    $("#chatText").val("");
-            return false;
-	});
-    $('#dismissChat').click(function(e) {
-        WV.setChatVisibility(false);
-    });
-    $('#chatTitle').on('mousedown', function(e) {
-        var offs0 = $('#chatWindow').offset();
-        var p0 = {x: e.pageX, y: e.pageY};
-        report(" offset: "+offs0.top+" "+offs0.left);
-        $('#chatWindow').on('mousemove', function(e) {
-            $('#chatWindow').offset({
-                top: offs0.top + (e.pageY - p0.y),
-                left: offs0.left + (e.pageX-p0.x)
-            }).on('mouseup', function() {
-                report("mouseup");
-                //$('#chatWindow').off('mousemove', false);
-                $('#chatWindow').off('mousemove');
-            });
-        });
-        e.preventDefault();
-    });
-
+    WV.chatWidget = new ChatWidget("chat");
+    //WV.noteWidget = new ChatWidget("note");
+    //WV.commentWidget = new ChatWidget("comment");
+    //    WV.noteWidget = new ChatWidget("note");
 });
 
 
