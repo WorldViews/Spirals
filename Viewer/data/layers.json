@@ -7,7 +7,7 @@
 	  "visible": false,
 	  "iconUrl": "drone.png",
 	  "mediaType": "youtube",
-	  "dataFile": "tbd_data.json"
+	  "dataFile": "data/tbd_data.json"
        },
        {
           "name": "climbing",
@@ -16,7 +16,7 @@
 	  "visible": false,
 	  "iconUrl": "climber.png",
 	  "mediaType": "youtube",
-	  "dataFile": "climbing_data.json"
+	  "dataFile": "data/climbing_data.json"
        },
        {
           "name": "hiking",
@@ -26,7 +26,7 @@
 	  "height": 10000,
 	  "iconUrl": "hiking.png",
 	  "mediaType": "youtube",
-	  "dataFile": "hiking_data.json"
+	  "dataFile": "data/hiking_data.json"
        },
        {
           "name": "surfing",
@@ -35,7 +35,7 @@
 	  "visible": false,
 	  "iconUrl": "surfing.png",
 	  "mediaType": "youtube",
-	  "dataFile": "surfing_data.json"
+	  "dataFile": "data/surfing_data.json"
        },
        {
           "name": "photos",
@@ -54,7 +54,7 @@
           "description": "Geo tagged HTML pages",
 	  "maxNum": 100,
 	  "mediaType": "html",
-	  "dataFile": "pages_data.json",
+	  "dataFile": "data/pages_data.json",
 	  "visible": false
        },
        {
@@ -62,7 +62,7 @@
           "description": "Zilong's Journey",
 	  "iconUrl": "yinyang.png",
 	  "mediaType": "html",
-	  "dataFile": "zilong_data.json",
+	  "dataFile": "data/zilong_data.json",
 	  "visible": false
        },
        {
@@ -70,7 +70,7 @@
           "description": "Enock's Blog",
 	  "iconUrl": "yinyang.png",
 	  "mediaType": "html",
-	  "dataFile": "beyondthefence_data.json",
+	  "dataFile": "data/beyondthefence_data.json",
 	  "visible": false
        },
        {

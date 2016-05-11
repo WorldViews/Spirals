@@ -2,7 +2,7 @@
 var WV = {};
 
 WV.screenSpaceEventHandler = null;
-WV.layersUrl = "layers.json";
+WV.layersUrl = "data/layers.json";
 WV.defaultBillboardIconURL = "/images/mona_cat.jpg";
 //WV.playInPopup = false;
 WV.playInPopup = true;
