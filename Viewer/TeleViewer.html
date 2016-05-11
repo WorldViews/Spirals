@@ -42,26 +42,30 @@
   <div class="video-window" id="ytplayer" style="color:white;">
   </div>
 
+  <div id="toolbar"></div>
+
   <div class="chat-window" id="chatWindow">
     <div class="chat-title" id="chatTitle" style="background-color:grey">Chat:</div>
     <div class="chat-text" id="chatText"></div>
     <form action="" id="chatForm">
-      <input id="chatText" autocomplete="off" style="width: 82%;" />
+      <input id="chatInput" autocomplete="off" style="width: 82%;" />
       <button>Send</button>
-      <button id="dismissChat">X</button>
+      <button id="chatDismiss">X</button>
     </form>
-    
   </div>
+  <div id="notesLayerDiv"></div>
+<!--
+-->
 
-<script src="WV.js"></script>
-<script src="WVCom.js"></script>
-<script src="WVChat.js"></script>
-<script src="WVLiveUsers.js"></script>
-<script src="WVIndoorMaps.js"></script>
-<script src="WVYT.js"></script>
+<script src="js/WV.js"></script>
+<script src="js/WVCom.js"></script>
+<script src="js/WVChat.js"></script>
+<script src="js/WVLiveUsers.js"></script>
+<script src="js/WVIndoorMaps.js"></script>
+<script src="js/WVYT.js"></script>
 <script>
 // You could specify a different layers url if you want
-//WV.layersUrl = "myLayers.json";
+//WV.layersUrl = "data/myLayers.json";
 WV.useSocketIO = true;
 WV.statusInterval = 500;
 
