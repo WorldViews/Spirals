@@ -41,6 +41,14 @@ WV.entities = WV.viewer.entities;
 WV.scene = WV.viewer.scene;				 
 WV.scene.globe.depthTestAgainstTerrain = true;
 
+WV.getUniqueId = function(name)
+{
+    if (!name)
+	name = "obj";
+    var id = name+"_"+ new Date().getTime()+"_"+Math.floor(10000*Math.random());
+    return id;
+}
+
 WV.getLocation = function() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(WV.handleLocation);
@@ -58,7 +66,7 @@ WV.handleLocation = function(position) {
     report("pos: "+JSON.stringify(position));
     WV.thisPersonData = { 'op': 'create',
 			  'id': 'person0',
-			  't': getClockTime(),
+			  't': WV.getClockTime(),
 			  'origin': WV.origin };
 }
 
@@ -102,6 +110,8 @@ function WVLayer(spec)
 	    WV.getIndoorMapData();
 	if (name == "chat")
 	    WV.watchChat();
+	if (name == "notes")
+	    WV.Note.watch();
     }
 
     this.setVisibility = function(visible) {
@@ -305,8 +315,6 @@ function setupCesium()
     // If the mouse is over the billboard, change its scale and color
     var handler = new Cesium.ScreenSpaceEventHandler(WV.scene.canvas);
     WV.screenSpaceEventHandler = handler;
-    var layerName = "drones";
-    //var layerName = "photos";
     handler.setInputAction(function(movement) {
         var pickedObject = WV.scene.pick(movement.endPosition);
 	if (!Cesium.defined(pickedObject)) {
@@ -409,10 +417,11 @@ WV.handleClick = function(e)
     report("handleClick e: "+JSON.stringify(e));
     var cartesian = WV.viewer.camera.pickEllipsoid(e.position, WV.scene.globe.ellipsoid);
     if (cartesian) {
-	var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-	var lonStr = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
-	var latStr = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
-	report("picked: "+lonStr+" "+latStr);
+	var gpos = Cesium.Cartographic.fromCartesian(cartesian);
+	var lon = Cesium.Math.toDegrees(gpos.longitude);
+	var lat = Cesium.Math.toDegrees(gpos.latitude);
+	report("picked: "+lon+" "+lat);
+	WV.Note.sendNote(lon, lat, "This is a note");
     }
     else {
 	report("no intersect...");
@@ -521,9 +530,17 @@ function toggleLayer(layerName)
     layer.setVisibility(checked);
 }
 
-function getClockTime()
+WV.getClockTime = function()
 {
     return new Date().getTime()/1000.0;
+}
+
+function getClockTime()
+{
+    report("**********************************************");
+    report("*** change getClockTIme to WV.getClockTime ***");
+    report("**********************************************");
+    return WV.getClockTime();
 }
 
 function toDegrees(r)
@@ -543,7 +560,7 @@ function getStatusObj()
     var clat = toDegrees(cpos.latitude);
     var clon = toDegrees(cpos.longitude);
     WV.curPos = [clat, clon, cpos.height];
-    var t = getClockTime();
+    var t = WV.getClockTime();
     var status = {
 	'type': 'people',
 	'userId': WV.myId,
@@ -594,5 +611,4 @@ $(document).ready(function() {
     setupCesium();
     WV.getLocation();
     setTimeout(reportStatus, WV.statusInterval);
-
 });

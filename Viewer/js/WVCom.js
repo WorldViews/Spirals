@@ -35,7 +35,7 @@ WV.Watcher = function(wvCom, evType)
 	report("watching socket.io stream for "+evType);
 	var inst = this;
 	WV.socket.on(evType, function(dataStr) {
-		data = JSON.parse(dataStr)
+		var data = JSON.parse(dataStr)
 		inst.sioHandler(data);
 	    });
     }
@@ -134,6 +134,30 @@ WV.WVCom.prototype.sendStatus = function(status)
     else {
 	jQuery.post("/register/", sStr, function() {
 		report("registered");
+	    }, "json");
+    }
+}
+
+WV.WVCom.prototype.sendNote = function(note)
+{
+    this.sendMsg("notes", note);
+}
+
+WV.WVCom.prototype.sendMsg = function(mtype, msg)
+{
+    var str = JSON.stringify(msg);
+    //report("sStr: "+sStr);
+    if (WV.socket) {
+	try {
+	    WV.socket.emit(mtype, str);
+	}
+	catch (err) {
+	    report(""+err);
+	}
+    }
+    else {
+	jQuery.post("/msg/"+mtype+"/", str, function() {
+		report("sent mtype");
 	    }, "json");
     }
 }

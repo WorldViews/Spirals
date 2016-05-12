@@ -81,6 +81,11 @@
        {
           "name": "chat",
           "description": "Chat"
+       },
+       {
+          "name": "notes",
+          "description": "Notes",
+	  "visible": true
        }
     ]
 }

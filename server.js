@@ -59,6 +59,26 @@
         });
     }
 
+    function addNoteMsg(jStr)
+    {
+        report("addNoteMsg");
+	try {
+	    msg = JSON.parse(jStr);
+	}
+	catch (err) {
+	    report("Cannot parse json");
+	    report("err: "+err);
+	    return;
+	}
+	/*
+	msg.user = msg.name;
+        rethink.table('chat').insert(msg).run(connection, function(err, res) {
+           if(err) throw err;
+           console.log(res);
+        });
+	*/
+    }
+
     var loadCallback = function(err, cursor) {
          if (err) throw err;
          // returns an array of all documents (fruit in this case) in the cursor
@@ -198,6 +218,11 @@
 	    report('chat: '+msgStr);
             io.emit('chat', msgStr);
             addChatMsg(msgStr);
+        });
+	socket.on('notes', function(msgStr){
+	    report('note: '+msgStr);
+            io.emit('notes', msgStr);
+            addNoteMsg(msgStr);
         });
 	socket.on('chat message', function(msg){
 	    io.emit('chat message', msg);
