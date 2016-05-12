@@ -75,6 +75,7 @@
        },
        {
           "name": "indoorMaps",
+	  "url": "data/indoormaps_data.json",
           "description": "Indoor maps"
        },
        {

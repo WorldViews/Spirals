@@ -87,7 +87,9 @@ WV.getIndoorMapData = function()
 {
     //testy();
     report("WV.getIndoorMapData");
-    url = "indoormaps_data.json";
+    var layer = WV.layers["indoorMaps"];
+    //url = "indoormaps_data.json";
+    url = layer.url;
     //url = "indoormaps_err_data.json";
     report("url: "+url);
     WV.getJSON(url, function(data) {
