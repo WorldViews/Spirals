@@ -28,7 +28,8 @@ var wvCom = null;
 
 WV.viewer = new Cesium.Viewer('cesiumContainer', {
     imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
-        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
+	enablePickFeatures: false
     }),
     animation: false,
     timeline : false,
@@ -352,13 +353,14 @@ function setupCesium()
     // but it didn't work.
     //handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-    handler.setInputAction(function(movement) {
-	    report("LEFT_CLICK");
+    handler.setInputAction(function(e) {
+	    report("LEFT_CLICK e: "+JSON.stringify(e));
 	    WV.viewer.trackedEntity = undefined;
 	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-    handler.setInputAction(function(movement) {
-	    report("LEFT_DOUBLE_CLICK");
+    handler.setInputAction(function(e) {
+	    report("LEFT_DOUBLE_CLICK e: "+JSON.stringify(e));
+	    WV.handleClick(e);
 	    WV.viewer.trackedEntity = undefined;
 	    //WV.hideAnimationWidget();
 	}, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
@@ -400,6 +402,21 @@ WV.showPage = function(rec)
     setTimeout(function() {
         window.open(rec.url, "HTMLPages");
     }, 400);
+}
+
+WV.handleClick = function(e)
+{
+    report("handleClick e: "+JSON.stringify(e));
+    var cartesian = WV.viewer.camera.pickEllipsoid(e.position, WV.scene.globe.ellipsoid);
+    if (cartesian) {
+	var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+	var lonStr = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+	var latStr = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+	report("picked: "+lonStr+" "+latStr);
+    }
+    else {
+	report("no intersect...");
+    }
 }
 
 WV.simplePickHandler = function(rec)
