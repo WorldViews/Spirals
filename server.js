@@ -19,26 +19,58 @@
 
     var connection = null;
 
-    rethink.connect( {host: 'localhost', port: 28015}, function(err, conn) {
-        if (err) throw err;
-        connection = conn;
-        loadTable();
-        //setupWatch();
-    })
+    report("connecing to Rethinkdb");
+    rethink.connect( {host: 'localhost', port: 28015},
+		     function(err, conn) {
+			 //if (err) throw err;
+			 if (err) {
+			     report("err: "+err);
+			     report("Could not connect to rethinkdb");
+			     report("*** WARNING - NO DB ACCESS ***");
+			 }
+			 else {
+			     connection = conn;
+			     loadTables();
+			 }
+		     });
 
-    function loadTable()
+    function loadTables()
     {
+	if (connection == null) {
+	    report("*** loadTables - NO DB ACCESS ***");
+	    return;
+	}
         rethink.table('chat').run(connection, loadCallback);
     }
 
-    function addMsg(text)
+    /*
+    function addMsg(type, text)
     {
+	if (connection == null) {
+	    report("*** addMsg - NO DB ACCESS ***");
+	    return;
+	}
+	var table = type;
         report("addMsg");
         var msg = {'user':'Unknown', text: text};
-        rethink.table('chat').insert(msg).run(connection, function(err, res) {
+        rethink.table(table).insert(msg).run(connection, function(err, res) {
            if(err) throw err;
            console.log(res);
         });
+    }
+    */
+    function addObj(table, obj)
+    {
+	if (connection == null) {
+	    report("*** addObj "+table+" - NO DB ACCESS ***");
+	    return;
+	}
+        rethink.table(table).insert(obj).run(
+	     connection,
+	     function(err, res) {
+		 if(err) throw err;
+		 console.log(res);
+	     });
     }
 
     function addChatMsg(jStr)
@@ -53,10 +85,7 @@
 	    return;
 	}
 	msg.user = msg.name;
-        rethink.table('chat').insert(msg).run(connection, function(err, res) {
-           if(err) throw err;
-           console.log(res);
-        });
+	addObj('chat', msg);
     }
 
     function addNoteMsg(jStr)
@@ -64,19 +93,13 @@
         report("addNoteMsg");
 	try {
 	    msg = JSON.parse(jStr);
+	    //addMsg("note", msg);
 	}
 	catch (err) {
 	    report("Cannot parse json");
 	    report("err: "+err);
 	    return;
 	}
-	/*
-	msg.user = msg.name;
-        rethink.table('chat').insert(msg).run(connection, function(err, res) {
-           if(err) throw err;
-           console.log(res);
-        });
-	*/
     }
 
     var loadCallback = function(err, cursor) {
@@ -224,10 +247,10 @@
             io.emit('notes', msgStr);
             addNoteMsg(msgStr);
         });
-	socket.on('chat message', function(msg){
-	    io.emit('chat message', msg);
-            addMsg(msg);
-        });
+	//socket.on('chat message', function(msg){
+	//    io.emit('chat message', msg);
+        //    addMsg(msg);
+        //});
     });
 
     //server = http.listen(3000, function() {
