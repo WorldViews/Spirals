@@ -41,23 +41,6 @@ WV.entities = WV.viewer.entities;
 WV.scene = WV.viewer.scene;				 
 WV.scene.globe.depthTestAgainstTerrain = true;
 
-WV.toJSON = function(obj) { return JSON.stringify(obj, null, 3); }
-
-WV.getUniqueId = function(name)
-{
-    if (!name)
-	name = "obj";
-    var id = name+"_"+ new Date().getTime()+"_"+Math.floor(10000*Math.random());
-    return id;
-}
-
-WV.getRecords = function(v)
-{
-    if (v instanceof Array)
-	return v;
-    return v.records;
-}
-
 WV.getLocation = function() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(WV.handleLocation);
