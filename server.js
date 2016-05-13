@@ -15,24 +15,33 @@
     var url = require('url');
     var request = require('request');
     var rethink = require('rethinkdb');
-    var httpPort = 3000;
+    //var httpPort = 3000;
+    var httpPort = null;
 
     var connection = null;
 
-    report("connecing to Rethinkdb");
-    rethink.connect( {host: 'localhost', port: 28015},
-		     function(err, conn) {
-			 //if (err) throw err;
-			 if (err) {
-			     report("err: "+err);
-			     report("Could not connect to rethinkdb");
-			     report("*** WARNING - NO DB ACCESS ***");
-			 }
-			 else {
-			     connection = conn;
-			     loadTables();
-			 }
-		     });
+    function connectToDB()
+    {
+	report("connecing to Rethinkdb");
+	rethink.connect( {host: 'localhost', port: 28015},
+			 function(err, conn) {
+			     //if (err) throw err;
+			     if (err) {
+				 report("err: "+err);
+				 report("Could not connect to rethinkdb");
+				 report("*** WARNING - NO DB ACCESS ***");
+			     }
+			     else {
+				 connection = conn;
+				 loadTables();
+			     }
+			 });
+    }
+
+    function getClockTime()
+    {
+	return new Date().getTime()/1000.0;
+    }
 
     function loadTables()
     {
@@ -43,22 +52,6 @@
         rethink.table('chat').run(connection, loadCallback);
     }
 
-    /*
-    function addMsg(type, text)
-    {
-	if (connection == null) {
-	    report("*** addMsg - NO DB ACCESS ***");
-	    return;
-	}
-	var table = type;
-        report("addMsg");
-        var msg = {'user':'Unknown', text: text};
-        rethink.table(table).insert(msg).run(connection, function(err, res) {
-           if(err) throw err;
-           console.log(res);
-        });
-    }
-    */
     function addObj(table, obj)
     {
 	if (connection == null) {
@@ -142,6 +135,8 @@
     httpPort = argv.port;
     report("httpPort: "+httpPort);
 
+    connectToDB();
+
     // eventually this mime type configuration will need to change
     // https://github.com/visionmedia/send/commit/d2cb54658ce65948b0ed6e5fb5de69d022bef941
     var mime = express.static.mime;
@@ -188,6 +183,35 @@
             bypassUpstreamProxyHosts[host.toLowerCase()] = true;
         });
     }
+
+    app.get('/db/*', function(req, res, next) {
+	    var etype = req.params[0];
+	    report("handling etype: "+etype);
+	    var tableName = etype;
+	    res.setHeader('Content-Type', 'application/json');
+            rethink.table(tableName).run(connection, function(err,cursor) {
+		    if (err) {
+			var robj = {'error': err};
+			res.send(JSON.stringify(vec, null, 3));
+		    }
+		    else {
+			cursor.toArray(function(err, vec) {
+                            if (err) {
+				var robj = {'error': err};
+				res.send(JSON.stringify(vec, null, 3));
+			    }
+			    else {
+				console.log("got: "+vec);
+				var t = getClockTime();
+				var robj = {'records': vec, 'table': tableName, t: t};
+				var jbuf = JSON.stringify(robj, null, 3);
+				res.send(jbuf);
+			    }
+			});
+		    }
+		});
+	});
+
 
     app.get('/proxy/*', function(req, res, next) {
         // look for request like http://localhost:8080/proxy/http://example.com/file?query=1
@@ -248,10 +272,6 @@
             io.emit('notes', msgStr);
             addNoteMsg(msgStr);
         });
-	//socket.on('chat message', function(msg){
-	//    io.emit('chat message', msg);
-        //    addMsg(msg);
-        //});
     });
 
     //server = http.listen(3000, function() {

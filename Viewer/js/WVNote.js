@@ -35,15 +35,7 @@ WV.Note.handleData = function(data, layerName)
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
-    var recs = null;
-    try {
-	recs = data.records;
-    }
-    catch (err) {
-	recs = data;
-    }
-    if (recs == null)
-	recs = data;
+    var recs = WV.getRecords(data);
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	rec.layerName = layerName;

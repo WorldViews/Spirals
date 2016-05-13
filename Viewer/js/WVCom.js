@@ -117,6 +117,13 @@ WV.WVCom.prototype.subscribe = function(evType, handler, opts)
     else {
 	typeObj.watcher = new WV.Watcher(this, evType);
     }
+    if (evType == "notes" || evType == "chat") {
+	var url = "/db/"+evType;
+	report("WVCom.subscribe "+evType+" fetching "+url);
+	WV.getJSON(url, function(data) {
+		handler(data, evType);
+	    });
+    }
 }
 
 WV.WVCom.prototype.sendStatus = function(status)

@@ -73,6 +73,11 @@ WV.WindowWidget = function(name)
 	$(textId).html(text);
     }
 
+    this.prepend = function(text) {
+	report("prepend "+text);
+	$(textId).prepend(text);
+    }
+
     this.show = function() {
 	report("WV.ChatWidget.show");
 	$(windowId).show(100);
