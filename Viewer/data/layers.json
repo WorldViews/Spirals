@@ -68,7 +68,7 @@
        {
           "name": "beyondthefence",
           "description": "Enock's Blog",
-	  "iconUrl": "yinyang.png",
+	  "iconUrl": "enockicon.png",
 	  "mediaType": "html",
 	  "dataFile": "data/beyondthefence_data.json",
 	  "visible": false

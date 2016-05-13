@@ -12,22 +12,15 @@ WV.Note.watch = function()
 
 WV.Note.sendNote = function(lon, lat, str)
 {
-    var id = WV.getUniqueId('note');
-    report("id: "+id);
-    var note = {'type': 'notes',
-		'id': id,
-		't': WV.getClockTime(),
-		'lon': lon,
-		'lat': lat,
-		'text': str};
-    wvCom.sendNote(note);
+    var msg = getStatusObj();
+    msg.type = 'notes';
+    msg.id = WV.getUniqueId('note');
+    msg.lon = lon;
+    msg.lat = lat;
+    msg.text = str;
+    wvCom.sendNote(msg);
 }
 
-
-//WV.Note.handleData = function(data, name)
-//{
-//    report("handleNoteData "+JSON.stringify(data));
-//}
 
 // THis code is very generic and should be inherited...
 WV.Note.handleData = function(data, layerName)
@@ -37,6 +30,8 @@ WV.Note.handleData = function(data, layerName)
     if (layer.recs == null) {
 	layer.recs = {};
 	layer.billboards = {};
+	layer.hideFun = WV.Note.hide,
+	layer.pickHandler = WV.Note.pickHandler;
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
@@ -76,6 +71,16 @@ WV.Note.handleData = function(data, layerName)
     }
 }
 
+WV.Note.pickHandler = function(rec)
+{
+    report("WV.Note.pickHandler: "+JSON.stringify(rec));
+    if (WV.noteWidget == null) {
+	WV.noteWidget = new WV.WindowWidget("note");
+    }
+    WV.noteWidget.setText(rec.text);
+    WV.noteWidget.show();
+}
+
 WV.Note.hide = function()
 {
     WV.Note.setVisibility(false);
@@ -83,7 +88,14 @@ WV.Note.hide = function()
 
 WV.Note.setVisibility = function(v)
 {
+    report("WV.Note.setVisibility "+v);
     var layer = WV.layers["notes"];
     //setObjsAttr(layer.billboards, "show", v);
+    if (v) {
+	WV.noteWidget.show();
+    }
+    else {
+	WV.noteWidget.hide();
+    }
 }
 

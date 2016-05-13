@@ -100,6 +100,7 @@
 	    report("err: "+err);
 	    return;
 	}
+	addObj('notes', msg);
     }
 
     var loadCallback = function(err, cursor) {

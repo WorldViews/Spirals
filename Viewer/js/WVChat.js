@@ -1,4 +1,5 @@
 
+
 WV.chatInitialized = false;
 WV.watchingChat = false;
 
@@ -57,8 +58,8 @@ WV.setChatVisibility = function(v)
     if (v) {
 	report("Show #chatWindow ");
 	$("#cb_chat").prop("checked", true);
-	$("#chatWindow").show(200);
-	$("#noteWindow").show(200);
+	//$("#chatWindow").show(200);
+	WV.chatWidget.show();
 	if (!WV.watchingChat)
 	    WV.postChatMessage("[joining chat]");
 	WV.watchingChat = true;
@@ -76,8 +77,8 @@ WV.setChatVisibility = function(v)
 	report("hide #chatWindow ");
 	$("#cb_chat").prop("checked", false);
 	layer.visible = false;
-	$("#chatWindow").hide(200);
-	$("#noteWindow").hide(200);
+	//$("#chatWindow").hide(200);
+	WV.chatWidget.hide();
 	if (WV.watchingChat)
 	    WV.postChatMessage("[leaving chat]");
 	WV.watchingChat = false;
@@ -91,21 +92,8 @@ WV.postChatMessage = function(text)
     var msg = getStatusObj();
     msg.text = text;
     msg.type = "chat";
-    var sStr = JSON.stringify(msg);
-    report("postChatMessage sStr: "+sStr);
-    if (WV.socket) {
-	try {
-	    WV.socket.emit('chat', sStr);
-	}
-	catch (err) {
-	    report(""+err);
-	}
-    }
-    else {
-	jQuery.post("/chat/", sStr, function() {
-		report("sent chat");
-	    }, "json");
-    }
+    msg.id = WV.getUniqueId('chat');
+    wvCom.sendMsg('chat', msg);
 }
 
 WV.xxxx = 0;
@@ -116,75 +104,10 @@ function chatter()
     setTimeout(chatter, 5000);
 }
 
-WV.chatDivTemplate =
-' <div class="chat-window" id="|NAME|Window">\n' +
-'    <div class="chat-title" id="|NAME|Title" style="background-color:grey">|NAME|:</div>\n' +
-'    <div class="chat-text" id="|NAME|Text"></div>\n' +
-'    <form action="" id="|NAME|Form">\n' +
-'      <input id="|NAME|Input" autocomplete="off" style="width: 82%;" />\n' +
-'      <button>Send</button>\n' +
-'      <button id="|NAME|Dismiss">X</button>\n' +
-'    </form>\n' +
-'  </div>\n';
-
-
-function ChatWidget(name)
-{
-    this.name = name;
-    var windowId = "#"+name+"Window";
-    var formId = "#"+name+"Form";
-    var textId = "#"+name+"Text";
-    var titleId = "#"+name+"Title";
-    var dismissId = "#"+name+"Dismiss";
-
-    function build() {
-	if (name == "chat") {
-	    report("***** skipping......");
-	    return;
-	}
-	if ($(titleId).length > 0) {
-	    report("**** "+titleId+" already exists");
-	    return;
-	}
-	var str = WV.chatDivTemplate.replace(/\|NAME\|/g, name);
-	report("str:\n"+str);
-	$("#notesLayerDiv").append(str);
-    }
-
-    function rig() {
-	$(titleId).html(" "+name+":");
-	$(formId).submit(function(){
-		WV.postChatMessage($(textId).val());
-		$(textId).val("");
-		return false;
-	});
-	$(dismissId).click(function(e) {
-		WV.setChatVisibility(false);
-	});
-	$(titleId).on('mousedown', function(e) {
-		report("mouse down on "+name);
-		var offs0 = $(windowId).offset();
-		var p0 = {x: e.pageX, y: e.pageY};
-		report(" offset: "+offs0.top+" "+offs0.left);
-		$(windowId).on('mousemove', function(e) {
-	            $(windowId).offset({
-			top: offs0.top + (e.pageY - p0.y),
-			left: offs0.left + (e.pageX-p0.x)
-		    }).on('mouseup', function() {
-			report("mouseup");
-			$(windowId).off('mousemove');
-		    });
-                });
-		e.preventDefault();
-	    });
-    }
-    build();
-    rig();
-}
 
 $(document).ready(function()
 {
-    WV.chatWidget = new ChatWidget("chat");
+    WV.chatWidget = new WV.WindowWidget("chat");
     //WV.noteWidget = new ChatWidget("note");
     //WV.commentWidget = new ChatWidget("comment");
     //    WV.noteWidget = new ChatWidget("note");

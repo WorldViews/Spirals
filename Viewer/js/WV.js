@@ -164,14 +164,62 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
        eyeOffset : Cesium.Cartesian3.ZERO,
        horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
        verticalOrigin : Cesium.VerticalOrigin.CENTER,
-       'scale' : scale,
+       scale : scale,
        image : imgUrl,
        color : Cesium.Color.WHITE,
        id : id
     });
-    bb = b;//to make debugging easier..
     return b;
 }
+
+//http://stackoverflow.com/questions/24869733/how-to-draw-custom-dynamic-billboards-in-cesium-js
+WV.addSVGBillboard = function(text, lon, lat, h, size)
+{
+   // create the svg image string
+   if (h == null)
+	h = 1000000;
+   var width = 100;
+   var height = 100;
+   if (size) {
+       width = size;
+       height = size;
+   }
+   var cx = Math.floor(width/2);
+   var cy = Math.floor(height/2);
+   var r = Math.floor(0.45*width);
+   var svgDataDeclare = "data:image/svg+xml,";
+   var svgPrefix = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="|WIDTH|px" height="|HEIGHT|px" xml:space="preserve">';
+   var svgSuffix = "</svg>";
+   var svgCircle1 = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="3" fill="red" /> ';
+   var svgText1   = '<text x="5" y="|CY|">|TEXT|</text>\n ';
+   var svgString = svgPrefix + svgCircle1 + svgText1 + svgSuffix;
+   svgString = svgString.replace("|CX|", ""+cx);
+   svgString = svgString.replace("|CY|", ""+cy);
+   svgString = svgString.replace("|CY|", ""+cy);
+   svgString = svgString.replace("|R|", ""+r);
+   svgString = svgString.replace("|WIDTH|", width);
+   svgString = svgString.replace("|HEIGHT|", height);
+   svgString = svgString.replace("|TEXT|", text);
+   
+   // create the cesium entity
+   var svgEntityImage = svgDataDeclare + svgString;
+   report("svgString: "+svgString);
+   var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h);
+   report(" pos: "+JSON.stringify(pos));
+   WV.viewer.entities.add({
+	   position: pos,
+           billboard: { image: svgEntityImage }
+     });
+
+   // test the image in a dialog
+   /*
+   $("#dialog").html(svgString );
+   $("#dialog").dialog({
+                 position: {my: "left top", at: "left bottom"}
+       });
+   */
+}
+
 
 function handleVideoRecs(data, layerName)
 {
@@ -363,13 +411,13 @@ function setupCesium()
 
     handler.setInputAction(function(e) {
 	    report("LEFT_CLICK e: "+JSON.stringify(e));
-	    WV.viewer.trackedEntity = undefined;
+	    //WV.viewer.trackedEntity = undefined;
 	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     handler.setInputAction(function(e) {
 	    report("LEFT_DOUBLE_CLICK e: "+JSON.stringify(e));
-	    WV.handleClick(e);
-	    WV.viewer.trackedEntity = undefined;
+	    WV.handleNoteClick(e);
+	    //WV.viewer.trackedEntity = undefined;
 	    //WV.hideAnimationWidget();
 	}, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
@@ -412,7 +460,7 @@ WV.showPage = function(rec)
     }, 400);
 }
 
-WV.handleClick = function(e)
+WV.handleNoteClick = function(e)
 {
     report("handleClick e: "+JSON.stringify(e));
     var cartesian = WV.viewer.camera.pickEllipsoid(e.position, WV.scene.globe.ellipsoid);
@@ -421,7 +469,7 @@ WV.handleClick = function(e)
 	var lon = Cesium.Math.toDegrees(gpos.longitude);
 	var lat = Cesium.Math.toDegrees(gpos.latitude);
 	report("picked: "+lon+" "+lat);
-	WV.Note.sendNote(lon, lat, "This is a note");
+	WV.Note.sendNote(lon, lat, "This is a note made at "+new Date());
     }
     else {
 	report("no intersect...");
@@ -611,4 +659,7 @@ $(document).ready(function() {
     setupCesium();
     WV.getLocation();
     setTimeout(reportStatus, WV.statusInterval);
+    //WV.addSVGBillboard("Miami", -80.12, 25.46, 1000000, 50);
+    //WV.addSVGBillboard("Over Miami", -80.2, 25.46, 10000);
+    //WV.addSVGBillboard("Midwest", -100.12, 35.46, 1000000);
 });
