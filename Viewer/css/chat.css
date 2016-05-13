@@ -19,3 +19,20 @@
           height: 200px;
           width: 500px;
       }
+
+      .video-window {
+          display: none;
+          position: absolute;
+          top: 280px;
+          left: 100px;
+          color: black;
+          background-color: white;
+      }
+
+      .video-body {
+          display: block;
+          position: relative;
+          overflow-y: auto;
+          height: 400px;
+          width: 800px;
+      }

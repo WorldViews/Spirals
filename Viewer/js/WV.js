@@ -4,8 +4,8 @@ var WV = {};
 WV.screenSpaceEventHandler = null;
 WV.layersUrl = "data/layers.json";
 WV.defaultBillboardIconURL = "/images/mona_cat.jpg";
-//WV.playInPopup = false;
-WV.playInPopup = true;
+WV.playVideoInIframe = false;
+WV.showPagesInIframe = true;
 WV.prevEndId = null;
 WV.numBillboards = 0;
 WV.bbScaleUnselected = 0.08;
@@ -446,18 +446,24 @@ WV.playVidInIFrame = function(rec)
 
 WV.playVid = function(rec)
 {
-    if (WV.playInPopup)
-	WV.playVidInPopup(rec);
-    else
+    if (WV.playVideoInIframe)
 	WV.playVidInIFrame(rec);
+    else
+	WV.playVidInPopup(rec);
 }
 
 WV.showPage = function(rec)
 {
     report("show page: "+JSON.stringify(rec));
     setTimeout(function() {
-        window.open(rec.url, "HTMLPages");
-    }, 400);
+	    if (WV.showPagesInIframe) {
+		WV.pageWidget.show();
+		WV.pageWidget.setSrc(rec.url);
+	    }
+	    else {
+		window.open(rec.url, "HTMLPages");
+	    }
+    }, 300);
 }
 
 WV.handleNoteClick = function(e)

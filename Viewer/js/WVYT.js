@@ -30,12 +30,16 @@ function onYouTubeIframeAPIReady() {
     if (WVYT.videoId == null)
 	WVYT.videoId = 'M7lc1UVf-VE';
     WVYT.setupYouTubePlayer(WVYT.videoId);
+    //WVYT.setupYouTubePlayer(WVYT.videoId, WV.pageWidget.divId);
 }
 
-WVYT.setupYouTubePlayer = function(videoId)
+WVYT.setupYouTubePlayer = function(videoId, divName)
 {
-    report("setupYouTubePlayer");
-    WVYT.player = new YT.Player('ytplayer', {
+    if (!divName)
+	divName = 'ytplayer';
+    report("setupYouTubePlayer "+videoId+" "+divName);
+    //WVYT.player = new YT.Player('ytplayer', {
+    WVYT.player = new YT.Player(divName, {
 	    height: '390',
 	    width: '640',
 	    //videoId: 'M7lc1UVf-VE',
