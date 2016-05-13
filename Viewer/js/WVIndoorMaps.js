@@ -130,7 +130,8 @@ WV.handleIndoorMapData = function(data, name)
 	    var url = rec.url;
 	    var obj = WV.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(url, {
 			stroke: Cesium.Color.HOTPINK,
-			    fill: Cesium.Color.PINK.withAlpha(0.5),
+			//fill: Cesium.Color.PINK.withAlpha(0.5),
+			    fill: Cesium.Color.PINK.withAlpha(0.0),
 			    strokeWidth: 3
 	    }));
 	    xobj = obj;
