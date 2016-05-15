@@ -1,5 +1,6 @@
 
 WV.Note = {};
+WV.noteWidget = null;
 
 WV.Note.watch = function()
 {
@@ -83,6 +84,8 @@ WV.Note.setVisibility = function(v)
     report("WV.Note.setVisibility "+v);
     var layer = WV.layers["notes"];
     //setObjsAttr(layer.billboards, "show", v);
+    if (!WV.noteWidget)
+	return;
     if (v) {
 	WV.noteWidget.show();
     }

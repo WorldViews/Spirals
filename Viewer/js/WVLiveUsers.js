@@ -1,7 +1,7 @@
 
 WV.tetherPolylines = null;
 
-WV.shownUserTimeout = 30; // How recently a user must have
+WV.shownUserTimeout = 10; // How recently a user must have
                           // posted to be shown here
 
 /*
@@ -110,11 +110,11 @@ WV.handlePeopleData = function(data, name)
     //var curPosImageUrl = "eagle1.png";
     var curPosImageUrl = "eye3.png";
     var recs = data;
-    var t = getClockTime();
+    var t = WV.getClockTime();
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	if (rec.userId == WV.myId) {
-	    report("******** SKIPPING MY OWN RECORD *********");
+	    //report("******** SKIPPING MY OWN RECORD *********");
 	    continue;
 	}
         //report("rec "+i+" "+JSON.stringify(rec));
@@ -187,6 +187,18 @@ WV.handlePeopleData = function(data, name)
 		tether.positions = points;
 	}
     }
+    for (var id in layer.recs) {
+	var rec = layer.recs[id];
+	var dt = t - rec.t;
+	report("dt: "+dt);
+	if (dt > WV.shownUserTimeout) {
+	    report("ignoring view that is too old...");
+	    continue;
+	}
+	layer.curPosBillboards[id].show = false;
+	layer.tethers[id].show = false;
+    }
+
 }
 
 WV.hidePeople = function()

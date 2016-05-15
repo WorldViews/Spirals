@@ -29,6 +29,16 @@
 	  "dataFile": "data/hiking_data.json"
        },
        {
+          "name": "temples",
+          "description": "Temples",
+	  "maxNum": 5000,
+	  "visible": false,
+	  "height": 10000,
+	  "iconUrl": "temple_trans.png",
+	  "mediaType": "youtube",
+	  "dataFile": "data/temples_data.json"
+       },
+       {
           "name": "surfing",
           "description": "Surfing videos",
 	  "maxNum": 8000,

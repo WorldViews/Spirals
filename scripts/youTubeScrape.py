@@ -1,5 +1,7 @@
 #!/usr/bin/python
-
+"""
+Old version - use YouTubeScraper.py
+"""
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 import codecs
