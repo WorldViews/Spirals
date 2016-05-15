@@ -546,11 +546,11 @@ function setupLayers(layerData)
             report("txt: "+txt);
 	    if (txt == "Hide Layers") {
 		$("#layersLabel").html("Show Layers");
-		cbList.hide();
+		cbList.hide(100);
 	    }
 	    else {
 		$("#layersLabel").html("Hide Layers");
-		cbList.show();
+		cbList.show(100);
 	    }
 	});
 
