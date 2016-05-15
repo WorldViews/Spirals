@@ -129,7 +129,7 @@ def run(port=PORT):
     print "PhysVizServer HTTP on port", port
     time.sleep(0.5)
 #    httpd = SocketServer.TCPServer(("", port), MyHandler)
-    httpd = SocketServer.ThreadingTCPServer(("", port), MyHandler)
+    httpd = SocketServer.ThreadingTCPServer(("0.0.0.0", port), MyHandler)
     httpd.serve_forever()
 
 if __name__ == '__main__':

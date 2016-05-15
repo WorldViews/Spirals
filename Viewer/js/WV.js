@@ -98,6 +98,10 @@ function WVLayer(spec)
 	    getTwitterImages();
 	if (name == "people")
 	    WV.watchPeople();
+	if (name == "sharecam") {
+	    layer.pickHandler = WV.ShareCam.handleClick;
+	    WV.ShareCam.watch();
+	}
 	if (name == "indoorMaps")
 	    WV.getIndoorMapData();
 	if (name == "chat")
@@ -372,13 +376,13 @@ function setupCesium()
 	}
 	var layerName = WV.recs[id].layerName;
 	var layer = WV.layers[layerName];
-        report("move over id "+id);
+        //report("move over id "+id);
         var b = layer.billboards[id];
         if (WV.currentBillboard && b != WV.currentBillboard) {
             WV.currentBillboard.scale = WV.bbScaleUnselected;
         }
         WV.currentBillboard = b;
-        report("b.scale "+b.scale);
+        //report("b.scale "+b.scale);
         b.scale = WV.bbScaleSelected;
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     handler.setInputAction(function(e) {

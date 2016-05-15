@@ -69,6 +69,13 @@
 	  "visible": false
        },
        {
+          "name": "sharecam",
+          "description": "Shared Camera Guides",
+	  "iconUrl": "jumpchat.png",
+	  "maxNum": 100,
+	  "visible": true
+       },
+       {
           "name": "pages",
           "description": "Geo tagged HTML pages",
 	  "maxNum": 100,

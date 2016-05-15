@@ -18,11 +18,17 @@ WV.WVCom = function()
 	WV.socket = io();
 	WV.socket.on('register', function(msg){
 	    });
+	WV.socket.on('sharecam', WV.sharecamHandler);
         //socket.emit('register', "hello");
     }
     else {
 	report("*** not using socket.io ***");
     }
+}
+
+WV.sharecamHandler = function(msg)
+{
+    report("sharecam: "+msg);
 }
 
 WV.Watcher = function(wvCom, evType)

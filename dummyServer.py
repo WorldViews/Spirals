@@ -36,21 +36,11 @@ def reg():
     lat = float(request.args.get('latitude'))
     room = request.args.get('room')
     numUsers = int(request.args.get('numUsers'))
-    sessionId = request.args.get('sessionId')
-    sessionId = sessionId.replace(':', '_')
-    sessionId = sessionId.replace('-', '_')
     obj = {'t': t, 'name': name, 'tagStr': tagStr,
            'lon': lon, 'lat': lat, 'room': room,
-           'sessionId': sessionId,
            'numUsers': numUsers, 'clientType': clientType}
     print obj
-    jstr = json.dumps(obj)
-    print "jstr:", jstr
-    if socketio:
-        print "send to socketio"
-        emit('sharecam', jstr, broadcast=True, namespace='/')
-    return "Ok"
-#    return flask.jsonify({'val': 'ok'})
+    return "ok"
 
 @app.route('/Viewer/<path:path>')
 def send(path):
@@ -93,13 +83,8 @@ def handle_notes(msg):
 
 @socketio.on('people')
 def handle_people(msg):
-    print "handle_people:", msg
-    emit('people', msg, broadcast=True)
-
-@socketio.on('sharecam')
-def handle_sharecam(msg):
     #print "handle_people:", msg
-    emit('sharecam', msg, broadcast=True)
+    emit('people', msg, broadcast=True)
 
 def addMsg(msgStr, etype):
     obj = json.loads(msgStr)

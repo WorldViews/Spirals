@@ -191,14 +191,14 @@ WV.handlePeopleData = function(data, name)
 	var rec = layer.recs[id];
 	var dt = t - rec.t;
 	report("dt: "+dt);
-	if (dt > WV.shownUserTimeout) {
-	    report("ignoring view that is too old...");
+	if (dt < WV.shownUserTimeout) {
+	    report("skipping new views...");
 	    continue;
 	}
+	//TODO: Should actually delete these, not just hide them
 	layer.curPosBillboards[id].show = false;
 	layer.tethers[id].show = false;
     }
-
 }
 
 WV.hidePeople = function()

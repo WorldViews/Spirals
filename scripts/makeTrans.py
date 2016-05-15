@@ -19,6 +19,7 @@ def makeTrans(inputPath, outputPath):
 
 
 if __name__ == '__main__':
-    makeTrans("../Viewer/temple.png", "../Viewer/temple_trans.png")
+#    makeTrans("../Viewer/temple.png", "../Viewer/temple_trans.png")
+    makeTrans("../Viewer/jumpChat0.png", "../Viewer/jumpChat.png")
 
 
