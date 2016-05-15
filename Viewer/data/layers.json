@@ -12,9 +12,9 @@
        {
           "name": "climbing",
           "description": "Rock climbing",
-	  "maxNum": 100,
 	  "visible": false,
 	  "iconUrl": "climber.png",
+	  "height": 4000,
 	  "mediaType": "youtube",
 	  "dataFile": "data/climbing_data.json"
        },
@@ -23,7 +23,7 @@
           "description": "Hiking",
 	  "maxNum": 5000,
 	  "visible": false,
-	  "height": 10000,
+	  "height": 2000,
 	  "iconUrl": "hiking.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/hiking_data.json"
