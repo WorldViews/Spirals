@@ -30,8 +30,10 @@ class YouTubeScraper:
       self.VIDNUM = 0
       pass
 
-   def fetch(self, q, locs=None):
-      fname = "%s_data.json" % q
+   def fetch(self, name, query=None, locs=None, dimension="any"):
+      if query == None:
+         query = name
+      fname = "%s_data.json" % name
       if locs == None:
          locs = ["37.42307,-122.08427",
                  "15.0465951,-166.3735415"]
@@ -46,14 +48,14 @@ class YouTubeScraper:
              locs.append("%d,%d" % (lat,lon))
       for loc in locs:
          try:
-            self.search(query=q, location=loc)
+            self.search(query=query, location=loc, dimension=dimension)
          except HttpError, e:
             print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
          except:
             traceback.print_exc()
          self.saveRecs(fname)
 
-   def search(self, query, location, max_results=50, location_radius="1000km"):
+   def search(self, query, location, max_results=50, location_radius="1000km", dimension="any"):
       print "query:", query
       print "location:", location
       print "location_radius:", location_radius
@@ -67,6 +69,7 @@ class YouTubeScraper:
           q=query,
           type="video",
           location=location,
+          videoDimension=dimension,
           locationRadius=location_radius,
           part="id,snippet",
           maxResults=max_results
@@ -90,6 +93,7 @@ class YouTubeScraper:
       print "Got %d items" % len(items)
       for video_result in items:
          self.VIDNUM += 1
+         #print video_result
          lat = video_result["recordingDetails"]["location"]["latitude"]
          lon = video_result["recordingDetails"]["location"]["longitude"]
          title = video_result["snippet"]["title"]
@@ -121,12 +125,15 @@ class YouTubeScraper:
 #argparser.add_argument("--location-radius", help="Location radius", default="1000km")
 #argparser.add_argument("--max-results", help="Max results", default=50)
 
-def fetch(q):
+def fetch(name, query=None, loc="global", dimension="any"):
    ys = YouTubeScraper()
-   ys.fetch(q, "global")
+   ys.fetch(name, query, loc, dimension)
+   ys.fetch(name, query, loc, dimension)
 
 if __name__ == "__main__":
 #   fetch("hiking")
-   fetch("surfing")
+#   fetch("surfing")
+#   fetch("boating", query="boating|sailing|surfing|waterski -fishing", loc=None)
+   fetch("waterSports3D", query="360 video", loc=None)
 
 

@@ -48,6 +48,15 @@
 	  "dataFile": "data/surfing_data.json"
        },
        {
+          "name": "waterSports3D",
+          "description": "3D Water fun videos",
+	  "maxNum": 8000,
+	  "visible": false,
+	  "iconUrl": "surfing.png",
+	  "mediaType": "youtube",
+	  "dataFile": "data/waterSports3D_data.json"
+       },
+       {
           "name": "photos",
           "description": "Recently tweeted images",
 	  "maxNum": 100,
@@ -95,7 +104,7 @@
        {
           "name": "notes",
           "description": "Notes",
-	  "visible": true
+	  "visible": false
        }
     ]
 }
