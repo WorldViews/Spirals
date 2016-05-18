@@ -9,9 +9,9 @@ class WVPoster:
 
     def postToSIO(self, name, obj):
         url = self.url+name
-        print "posting", name, obj, url
+        #print "posting", name, obj, url
         r = requests.post(url, data=json.dumps({'name': name, 'obj': obj}))
-        print r.status_code, r.reason
+        #print r.status_code, r.reason
 
 
 def test():

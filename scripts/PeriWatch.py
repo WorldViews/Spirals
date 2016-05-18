@@ -15,10 +15,11 @@ from exceptions import KeyboardInterrupt
 API = None
 UTF8Writer = codecs.getwriter('utf8')
 sys.stdout = UTF8Writer(sys.stdout)
-ofile = UTF8Writer(file("pw.txt", "w"))
 
 #IMAGE_DIR = "C:/kimber/WorldViews/twitter_images"
 IMAGE_DIR = "../images/twitter_images"
+LOG_DIR = None
+LOG_DIR = "../logs"
 CONFIG_PATH = "C:/kimber/WorldViews/twitter_auth_config.py"
 """
 You can get authentication values at twitter developer website https://dev.twitter.com/
@@ -103,8 +104,10 @@ def lookup(id):
 
 
 class Listener(StreamListener):
-    #jPath = "periscope_data.json"
-    jPath = None
+    #DATAFILE_PATH = "periscope_data.json"
+    DATAFILE_PATH = None
+    #logFile = UTF8Writer(file("pw.txt", "w"))
+    logFile = None
     records = []
     recs = {}
     n = 0
@@ -114,6 +117,7 @@ class Listener(StreamListener):
     #sio.runInThread()
 
     def on_data(self, data):
+        print "========================================================"
         try:
             return self.on_data_(data)
         except KeyboardInterrupt:
@@ -122,7 +126,6 @@ class Listener(StreamListener):
         except:
             traceback.print_exc()
             return True
-        print "--------------------------------"
 
     def on_data_(self, data):
         self.k += 1
@@ -182,46 +185,52 @@ class Listener(StreamListener):
             userGeo = getGeo(userLoc)
         #if id:
         #    lobj = lookup(int(id))
-        jobj = {'text': text, 'expanded_url': periscope_url,
-                'display_url': display_url, 'fullObj': obj}
-        json.dump(jobj, ofile, indent=3, sort_keys=True)
-        ofile.flush()
+        if self.logFile:
+            jobj = {'text': text, 'expanded_url': periscope_url,
+                    'display_url': display_url, 'fullObj': obj}
+            json.dump(jobj, logFile, indent=3, sort_keys=True)
+            logFile.flush()
         if place == None and geo == None and userGeo == None:
             print "skipping rec with no place"
             return True
         if periscope_url == None:
             print "skipping rec with no persiscope_url"
-        print "*************************** BINGO\07 ****************"
+        print "*** BINGO\07 ***"
         self.n += 1
-        id = "%07d" % self.n
-        jsonPath = "peri_%s.json" % id
-        json.dump(obj, file(jsonPath, "w"), indent=3, sort_keys=True)
+        lgId = "%07d" % self.n
+        if LOG_DIR:
+            jsonPath = "%s/peri_%s.json" % (LOG_DIR, lgId)
+            print "saving to ", jsonPath
+            json.dump(obj, file(jsonPath, "w"), indent=3, sort_keys=True)
         pobj = {'title': text,
                 'id': id,
+                'lgId': lgId,
                 't': t,
                 'userGeo': userGeo,
                 'lat': userGeo['lat'],
                 'lon': userGeo['lon'],
                 'url': periscope_url}
-        self.records.append(pobj)
-        pLayer = {"name": "periscope",
-                  "records": self.records}
-        if self.jPath:
+        pobj['tweet'] = obj
+        if self.DATAFILE_PATH:
+            self.records.append(pobj)
+            pLayer = {"name": "periscope",
+                      "records": self.records}
             t1 = time.time()
-            json.dump(pLayer, file(self.jPath,"w"),
-                      indent=3, sort_keys=True)
+            f = UTF8Writer(file(self.DATAFILE_PATH,"w"))
+            json.dump(pLayer, f, indent=3, sort_keys=True)
             t2 = time.time()
             print "Saved %d records to %s in %.3fsec" % \
-                   (len(self.records), self.jPath, t2-t1)
+                   (len(self.records), self.DATAFILE_PATH, t2-t1)
         #if self.sio:
         #    self.sio.emit(pobj)
         if id in self.recs:
             print "********************** REPEAT ****************"
             print "\07\07\07"
-            self.recs[id].append(pobj)
+            self.recs[id] += 1
         else:
-            self.recs[id] = [pobj]
+            self.recs[id] = 1
         if self.wvPoster:
+            print "posting to periscope stream"
             self.wvPoster.postToSIO("periscope", pobj)
 
     def on_error(self, status):
@@ -243,6 +252,7 @@ class TwitterWatcher:
         self.twitterStream = Stream(auth, Listener())
         API = tweepy.API(auth)
         verifyDir(IMAGE_DIR)
+        verifyDir(LOG_DIR)
 
     def run(self):
         pattern = ["#Periscope"]
