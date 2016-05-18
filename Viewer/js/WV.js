@@ -145,7 +145,7 @@ function report(str)
 function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
 {
     WV.numBillboards++;
-    report("Adding billboard "+WV.numBillboards);
+    //report("Adding billboard "+WV.numBillboards);
     // Example 1:  Add a billboard, specifying all the default values.
     if (!imgUrl)
 	imgUrl = WV.defaultBillboardIconURL;
@@ -319,11 +319,14 @@ function handleImageRecs(recs)
 function handleHTMLRecs(data, layerName)
 {
     report("*** handleHTMLRecs "+layerName);
+    report("data:\n"+WV.toJSON(data));
     var layer = WV.layers[layerName];
-    layer.recs = {};
-    layer.billboards = {};
-    layer.bbCollection = new Cesium.BillboardCollection();
-    WV.scene.primitives.add(layer.bbCollection);
+    if (layer.recs == null) {
+	layer.recs = {};
+	layer.billboards = {};
+	layer.bbCollection = new Cesium.BillboardCollection();
+	WV.scene.primitives.add(layer.bbCollection);
+    }
     var recs = null;
     try {
 	recs = data.records;
@@ -335,6 +338,7 @@ function handleHTMLRecs(data, layerName)
 	recs = data;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
+	report("rec:\n"+WV.toJSON(data));
 	rec.layerName = layerName;
         layer.numObjs++;
         if (layer.numObjs > layer.maxNum)

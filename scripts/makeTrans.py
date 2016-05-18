@@ -1,7 +1,7 @@
 
 from PIL import Image
 
-def makeTrans(inputPath, outputPath):
+def makeTrans(inputPath, outputPath, size=None):
     img = Image.open(inputPath)
     img = img.convert("RGBA")
 
@@ -15,11 +15,16 @@ def makeTrans(inputPath, outputPath):
             newData.append(item)
 
     img.putdata(newData)
+    if size:
+        print "resizing to", size
+        img = img.resize(size)
     img.save(outputPath, "PNG")
 
 
 if __name__ == '__main__':
 #    makeTrans("../Viewer/temple.png", "../Viewer/temple_trans.png")
-    makeTrans("../Viewer/jumpChat0.png", "../Viewer/jumpChat.png")
+#    makeTrans("../Viewer/jumpChat0.png", "../Viewer/jumpChat.png")
+    makeTrans("../Viewer/images/drone0.png",
+              "../Viewer/images/drone.png", (200,200))
 
 

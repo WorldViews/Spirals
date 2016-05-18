@@ -24,6 +24,9 @@ socketio = SocketIO(app)
 def index():
     return send_file('index.html')
 
+"""
+This is used by SharedCam to make itself known.
+"""
 @app.route('/regp/', methods=['POST','GET'])
 def reg():
     print "reg path:", request.path
@@ -62,6 +65,26 @@ def send_page(path):
     print "send_page", path
     return send_from_directory('Cesium', path)
 
+@app.route('/sioput/<path:etype>', methods=['POST','GET'])
+def sioput(etype):
+    req = {}
+    args = request.args
+    if request.data:
+        req = json.loads(request.data)
+    for key in args:
+        req[key] = args[key][0]
+    print "req:", req
+    name = req['name']
+    obj = req['obj']
+    jObj = json.dumps(obj)
+    print "name:", name
+    print "jObj:", jObj
+    if socketio:
+        print "send to socketio"
+        emit(name, jObj, broadcast=True, namespace='/')
+    print
+    return "OK"
+
 @app.route('/db/<path:etype>')
 def query(etype):
     #print "query", etype
@@ -93,7 +116,7 @@ def handle_notes(msg):
 
 @socketio.on('people')
 def handle_people(msg):
-    print "handle_people:", msg
+    #print "handle_people:", msg
     emit('people', msg, broadcast=True)
 
 @socketio.on('sharecam')

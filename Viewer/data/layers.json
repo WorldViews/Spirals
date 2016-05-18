@@ -3,9 +3,9 @@
        {
           "name": "drones",
           "description": "Drone videos",
-	  "maxNum": 100,
+	  "maxNum": 500,
 	  "visible": false,
-	  "iconUrl": "drone.png",
+	  "iconUrl": "images/drone.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/tbd_data.json"
        },
@@ -94,9 +94,17 @@
        {
           "name": "beyondthefence",
           "description": "Enock's Blog",
-	  "iconUrl": "enockicon.png",
+	  "iconUrl": "images/enockicon.png",
 	  "mediaType": "html",
 	  "dataFile": "data/beyondthefence_data.json",
+	  "visible": false
+       },
+       {
+          "name": "periscope",
+          "description": "Periscope",
+	  "iconUrl": "images/periscopeIcon.png",
+	  "mediaType": "html",
+	  "xxxdataFile": "data/periscope_data.json",
 	  "visible": false
        },
        {

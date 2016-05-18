@@ -1,0 +1,1039 @@
+{
+   "display_url": "periscope.tv/w/agkJ9jFEWUtY\u2026", 
+   "expanded_url": "https://www.periscope.tv/w/agkJ9jFEWUtYT2JHQm9RZ0x8MWRqeFhrYVhnQVZKWj3nMk6sViwitpwOlkABEzWCyLRDdV1Ke4s4GCFMg5nY", 
+   "fullObj": {
+      "contributors": null, 
+      "coordinates": null, 
+      "created_at": "Tue May 17 01:12:51 +0000 2016", 
+      "entities": {
+         "hashtags": [
+            {
+               "indices": [
+                  33, 
+                  43
+               ], 
+               "text": "Periscope"
+            }
+         ], 
+         "symbols": [], 
+         "urls": [
+            {
+               "display_url": "periscope.tv/w/agkJ9jFEWUtY\u2026", 
+               "expanded_url": "https://www.periscope.tv/w/agkJ9jFEWUtYT2JHQm9RZ0x8MWRqeFhrYVhnQVZKWj3nMk6sViwitpwOlkABEzWCyLRDdV1Ke4s4GCFMg5nY", 
+               "indices": [
+                  64, 
+                  87
+               ], 
+               "url": "https://t.co/aL4I9zMyQa"
+            }
+         ], 
+         "user_mentions": [
+            {
+               "id": 113236879, 
+               "id_str": "113236879", 
+               "indices": [
+                  3, 
+                  17
+               ], 
+               "name": "El Tlacuache\u00ae", 
+               "screen_name": "eltlacuache40"
+            }
+         ]
+      }, 
+      "favorite_count": 0, 
+      "favorited": false, 
+      "filter_level": "low", 
+      "geo": null, 
+      "id": 732378311574196224, 
+      "id_str": "732378311574196224", 
+      "in_reply_to_screen_name": null, 
+      "in_reply_to_status_id": null, 
+      "in_reply_to_status_id_str": null, 
+      "in_reply_to_user_id": null, 
+      "in_reply_to_user_id_str": null, 
+      "is_quote_status": false, 
+      "lang": "es", 
+      "place": null, 
+      "possibly_sensitive": false, 
+      "retweet_count": 0, 
+      "retweeted": false, 
+      "retweeted_status": {
+         "contributors": null, 
+         "coordinates": null, 
+         "created_at": "Tue May 17 00:21:11 +0000 2016", 
+         "entities": {
+            "hashtags": [
+               {
+                  "indices": [
+                     14, 
+                     24
+                  ], 
+                  "text": "Periscope"
+               }
+            ], 
+            "symbols": [], 
+            "urls": [
+               {
+                  "display_url": "periscope.tv/w/agkJ9jFEWUtY\u2026", 
+                  "expanded_url": "https://www.periscope.tv/w/agkJ9jFEWUtYT2JHQm9RZ0x8MWRqeFhrYVhnQVZKWj3nMk6sViwitpwOlkABEzWCyLRDdV1Ke4s4GCFMg5nY", 
+                  "indices": [
+                     45, 
+                     68
+                  ], 
+                  "url": "https://t.co/aL4I9zMyQa"
+               }
+            ], 
+            "user_mentions": []
+         }, 
+         "favorite_count": 16, 
+         "favorited": false, 
+         "filter_level": "low", 
+         "geo": null, 
+         "id": 732365311756754944, 
+         "id_str": "732365311756754944", 
+         "in_reply_to_screen_name": null, 
+         "in_reply_to_status_id": null, 
+         "in_reply_to_status_id_str": null, 
+         "in_reply_to_user_id": null, 
+         "in_reply_to_user_id_str": null, 
+         "is_quote_status": false, 
+         "lang": "es", 
+         "place": null, 
+         "possibly_sensitive": false, 
+         "retweet_count": 4, 
+         "retweeted": false, 
+         "source": "<a href=\"https://periscope.tv\" rel=\"nofollow\">Periscope</a>", 
+         "text": "EN DIRECTO en #Periscope: Pago Tlacuachero.  https://t.co/aL4I9zMyQa", 
+         "truncated": false, 
+         "user": {
+            "contributors_enabled": false, 
+            "created_at": "Thu Feb 11 04:09:33 +0000 2010", 
+            "default_profile": false, 
+            "default_profile_image": false, 
+            "description": "Cuando cae la noche... Sale El Tlacuache!!! Programa por @los40mx conducido por @bazookajoeradio @inakialvarez @faisirrito @ninoconbarba @Memohostil", 
+            "favourites_count": 4070, 
+            "follow_request_sent": null, 
+            "followers_count": 300941, 
+            "following": null, 
+            "friends_count": 77, 
+            "geo_enabled": true, 
+            "id": 113236879, 
+            "id_str": "113236879", 
+            "is_translator": false, 
+            "lang": "es", 
+            "listed_count": 633, 
+            "location": "Televisa Radio", 
+            "name": "El Tlacuache\u00ae", 
+            "notifications": null, 
+            "profile_background_color": "1A1B1F", 
+            "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/783123536/a0efccec73d08bb4aa0e0fdc4401ff69.jpeg", 
+            "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/783123536/a0efccec73d08bb4aa0e0fdc4401ff69.jpeg", 
+            "profile_background_tile": true, 
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/113236879/1463253952", 
+            "profile_image_url": "http://pbs.twimg.com/profile_images/731565908280283137/txqLA75A_normal.jpg", 
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/731565908280283137/txqLA75A_normal.jpg", 
+            "profile_link_color": "2FC2EF", 
+            "profile_sidebar_border_color": "FFFFFF", 
+            "profile_sidebar_fill_color": "252429", 
+            "profile_text_color": "666666", 
+            "profile_use_background_image": true, 
+            "protected": false, 
+            "screen_name": "eltlacuache40", 
+            "statuses_count": 34395, 
+            "time_zone": "Mexico City", 
+            "url": "http://www.los40.com.mx", 
+            "utc_offset": -18000, 
+            "verified": true
+         }
+      }, 
+      "source": "<a href=\"http://twitter.com/download/android\" rel=\"nofollow\">Twitter for Android</a>", 
+      "text": "RT @eltlacuache40: EN DIRECTO en #Periscope: Pago Tlacuachero.  https://t.co/aL4I9zMyQa", 
+      "timestamp_ms": "1463447571067", 
+      "truncated": false, 
+      "user": {
+         "contributors_enabled": false, 
+         "created_at": "Thu Mar 26 21:43:51 +0000 2015", 
+         "default_profile": true, 
+         "default_profile_image": false, 
+         "description": null, 
+         "favourites_count": 132, 
+         "follow_request_sent": null, 
+         "followers_count": 7, 
+         "following": null, 
+         "friends_count": 37, 
+         "geo_enabled": false, 
+         "id": 3119899516, 
+         "id_str": "3119899516", 
+         "is_translator": false, 
+         "lang": "es", 
+         "listed_count": 0, 
+         "location": "Nicol\u00e1s Romero, M\u00e9xico", 
+         "name": "Ruben .S.J", 
+         "notifications": null, 
+         "profile_background_color": "C0DEED", 
+         "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_tile": false, 
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/3119899516/1462055405", 
+         "profile_image_url": "http://pbs.twimg.com/profile_images/726539150699073537/k4jmvkz9_normal.jpg", 
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/726539150699073537/k4jmvkz9_normal.jpg", 
+         "profile_link_color": "0084B4", 
+         "profile_sidebar_border_color": "C0DEED", 
+         "profile_sidebar_fill_color": "DDEEF6", 
+         "profile_text_color": "333333", 
+         "profile_use_background_image": true, 
+         "protected": false, 
+         "screen_name": "RubenTujetchu", 
+         "statuses_count": 135, 
+         "time_zone": null, 
+         "url": null, 
+         "utc_offset": null, 
+         "verified": false
+      }
+   }, 
+   "text": "RT @eltlacuache40: EN DIRECTO en #Periscope: Pago Tlacuachero.  https://t.co/aL4I9zMyQa"
+}{
+   "display_url": "periscope.tv/w/agkVmzg2NDY3\u2026", 
+   "expanded_url": "https://www.periscope.tv/w/agkVmzg2NDY3NzR8MW1ueGV3YmtwWnZHWEXitG0mKHDu7o-6p6S2OC2fWj_mbvxGjK_Pd2YLsjGs", 
+   "fullObj": {
+      "contributors": null, 
+      "coordinates": null, 
+      "created_at": "Tue May 17 01:12:51 +0000 2016", 
+      "entities": {
+         "hashtags": [
+            {
+               "indices": [
+                  21, 
+                  31
+               ], 
+               "text": "Periscope"
+            }, 
+            {
+               "indices": [
+                  33, 
+                  46
+               ], 
+               "text": "ServiceScope"
+            }, 
+            {
+               "indices": [
+                  86, 
+                  91
+               ], 
+               "text": "Save"
+            }, 
+            {
+               "indices": [
+                  96, 
+                  106
+               ], 
+               "text": "Sacrifice"
+            }
+         ], 
+         "symbols": [], 
+         "urls": [
+            {
+               "display_url": "periscope.tv/w/agkVmzg2NDY3\u2026", 
+               "expanded_url": "https://www.periscope.tv/w/agkVmzg2NDY3NzR8MW1ueGV3YmtwWnZHWEXitG0mKHDu7o-6p6S2OC2fWj_mbvxGjK_Pd2YLsjGs", 
+               "indices": [
+                  107, 
+                  130
+               ], 
+               "url": "https://t.co/UQnTMnINEi"
+            }
+         ], 
+         "user_mentions": [
+            {
+               "id": 3021450009, 
+               "id_str": "3021450009", 
+               "indices": [
+                  1, 
+                  17
+               ], 
+               "name": "Felix Anderson", 
+               "screen_name": "mrfelixanderson"
+            }
+         ]
+      }, 
+      "favorite_count": 0, 
+      "favorited": false, 
+      "filter_level": "low", 
+      "geo": null, 
+      "id": 732378313163952130, 
+      "id_str": "732378313163952130", 
+      "in_reply_to_screen_name": null, 
+      "in_reply_to_status_id": null, 
+      "in_reply_to_status_id_str": null, 
+      "in_reply_to_user_id": null, 
+      "in_reply_to_user_id_str": null, 
+      "is_quote_status": false, 
+      "lang": "en", 
+      "place": null, 
+      "possibly_sensitive": false, 
+      "retweet_count": 0, 
+      "retweeted": false, 
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>", 
+      "text": ".@mrfelixanderson on #Periscope: #ServiceScope\ud83d\udece\ud83d\udece\ud83d\udece Are You A Slave and Don't Know It\u2049\ufe0f #Save and #Sacrifice https://t.co/UQnTMnINEi", 
+      "timestamp_ms": "1463447571446", 
+      "truncated": false, 
+      "user": {
+         "contributors_enabled": false, 
+         "created_at": "Mon May 20 06:39:03 +0000 2013", 
+         "default_profile": true, 
+         "default_profile_image": false, 
+         "description": "Board Certified Dermatologist, Licensed Cosmetologist, Hair Loss & Skin Care Expert. Offering VIRTUAL skin and hair consultations from the comfort of your home.", 
+         "favourites_count": 111, 
+         "follow_request_sent": null, 
+         "followers_count": 435, 
+         "following": null, 
+         "friends_count": 475, 
+         "geo_enabled": true, 
+         "id": 1443043801, 
+         "id_str": "1443043801", 
+         "is_translator": false, 
+         "lang": "en", 
+         "listed_count": 14, 
+         "location": null, 
+         "name": "Dr. Yolanda Lenzy", 
+         "notifications": null, 
+         "profile_background_color": "C0DEED", 
+         "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_tile": false, 
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/1443043801/1460366109", 
+         "profile_image_url": "http://pbs.twimg.com/profile_images/528274822355091456/_BXAeCRB_normal.jpeg", 
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/528274822355091456/_BXAeCRB_normal.jpeg", 
+         "profile_link_color": "0084B4", 
+         "profile_sidebar_border_color": "C0DEED", 
+         "profile_sidebar_fill_color": "DDEEF6", 
+         "profile_text_color": "333333", 
+         "profile_use_background_image": true, 
+         "protected": false, 
+         "screen_name": "dryolandalenzy", 
+         "statuses_count": 449, 
+         "time_zone": null, 
+         "url": "http://bit.ly/DrLenzy15minconsult", 
+         "utc_offset": null, 
+         "verified": false
+      }
+   }, 
+   "text": ".@mrfelixanderson on #Periscope: #ServiceScope\ud83d\udece\ud83d\udece\ud83d\udece Are You A Slave and Don't Know It\u2049\ufe0f #Save and #Sacrifice https://t.co/UQnTMnINEi"
+}{
+   "display_url": "periscope.tv/w/agkWEzU0NTYw\u2026", 
+   "expanded_url": "https://www.periscope.tv/w/agkWEzU0NTYwODN8MWxQS3FsZ0FPemV4YnxMsmB0FTDE2Py16SBRFp1Y_natPmz7FgvhQS7VWXMS", 
+   "fullObj": {
+      "contributors": null, 
+      "coordinates": null, 
+      "created_at": "Tue May 17 01:12:51 +0000 2016", 
+      "entities": {
+         "hashtags": [
+            {
+               "indices": [
+                  8, 
+                  18
+               ], 
+               "text": "Periscope"
+            }
+         ], 
+         "symbols": [], 
+         "urls": [
+            {
+               "display_url": "periscope.tv/w/agkWEzU0NTYw\u2026", 
+               "expanded_url": "https://www.periscope.tv/w/agkWEzU0NTYwODN8MWxQS3FsZ0FPemV4YnxMsmB0FTDE2Py16SBRFp1Y_natPmz7FgvhQS7VWXMS", 
+               "indices": [
+                  54, 
+                  77
+               ], 
+               "url": "https://t.co/3ecv46KGs5"
+            }
+         ], 
+         "user_mentions": []
+      }, 
+      "favorite_count": 0, 
+      "favorited": false, 
+      "filter_level": "low", 
+      "geo": null, 
+      "id": 732378313344331776, 
+      "id_str": "732378313344331776", 
+      "in_reply_to_screen_name": null, 
+      "in_reply_to_status_id": null, 
+      "in_reply_to_status_id_str": null, 
+      "in_reply_to_user_id": null, 
+      "in_reply_to_user_id_str": null, 
+      "is_quote_status": false, 
+      "lang": "en", 
+      "place": null, 
+      "possibly_sensitive": false, 
+      "retweet_count": 0, 
+      "retweeted": false, 
+      "source": "<a href=\"https://periscope.tv\" rel=\"nofollow\">Periscope</a>", 
+      "text": "LIVE on #Periscope: First preview of Barstool Cool!!! https://t.co/3ecv46KGs5", 
+      "timestamp_ms": "1463447571489", 
+      "truncated": false, 
+      "user": {
+         "contributors_enabled": false, 
+         "created_at": "Fri Jul 17 04:29:47 +0000 2009", 
+         "default_profile": false, 
+         "default_profile_image": false, 
+         "description": "I got a college degree, but I don't use it. Debut EP Young available https://itun.es/us/5OSe-", 
+         "favourites_count": 10846, 
+         "follow_request_sent": null, 
+         "followers_count": 2510, 
+         "following": null, 
+         "friends_count": 2418, 
+         "geo_enabled": true, 
+         "id": 57552126, 
+         "id_str": "57552126", 
+         "is_translator": false, 
+         "lang": "en", 
+         "listed_count": 6, 
+         "location": "West Virginia", 
+         "name": "Logan Wojcik", 
+         "notifications": null, 
+         "profile_background_color": "022330", 
+         "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/378800000113255552/1ae166ac6796cca602ee917964193824.jpeg", 
+         "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/378800000113255552/1ae166ac6796cca602ee917964193824.jpeg", 
+         "profile_background_tile": true, 
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/57552126/1459380921", 
+         "profile_image_url": "http://pbs.twimg.com/profile_images/730243660248420352/e2VI57cu_normal.jpg", 
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/730243660248420352/e2VI57cu_normal.jpg", 
+         "profile_link_color": "0084B4", 
+         "profile_sidebar_border_color": "FFFFFF", 
+         "profile_sidebar_fill_color": "C0DFEC", 
+         "profile_text_color": "333333", 
+         "profile_use_background_image": true, 
+         "protected": false, 
+         "screen_name": "Logan_Wojcik", 
+         "statuses_count": 36136, 
+         "time_zone": "Quito", 
+         "url": "http://loganwojcik.com", 
+         "utc_offset": -18000, 
+         "verified": false
+      }
+   }, 
+   "text": "LIVE on #Periscope: First preview of Barstool Cool!!! https://t.co/3ecv46KGs5"
+}{
+   "display_url": "periscope.tv/w/agkWEzF4bmpy\u2026", 
+   "expanded_url": "https://www.periscope.tv/w/agkWEzF4bmpyWFZla1pXUVl8MWt2S3BsZ3BiVmdLRfB1slEKj_GLtIzzjw3-2IfOFf3akAXQh1xXNTN4UAjv", 
+   "fullObj": {
+      "contributors": null, 
+      "coordinates": null, 
+      "created_at": "Tue May 17 01:12:52 +0000 2016", 
+      "entities": {
+         "hashtags": [
+            {
+               "indices": [
+                  8, 
+                  18
+               ], 
+               "text": "Periscope"
+            }
+         ], 
+         "symbols": [], 
+         "urls": [
+            {
+               "display_url": "periscope.tv/w/agkWEzF4bmpy\u2026", 
+               "expanded_url": "https://www.periscope.tv/w/agkWEzF4bmpyWFZla1pXUVl8MWt2S3BsZ3BiVmdLRfB1slEKj_GLtIzzjw3-2IfOFf3akAXQh1xXNTN4UAjv", 
+               "indices": [
+                  38, 
+                  61
+               ], 
+               "url": "https://t.co/CSt85FQNk5"
+            }
+         ], 
+         "user_mentions": []
+      }, 
+      "favorite_count": 0, 
+      "favorited": false, 
+      "filter_level": "low", 
+      "geo": null, 
+      "id": 732378315588145154, 
+      "id_str": "732378315588145154", 
+      "in_reply_to_screen_name": null, 
+      "in_reply_to_status_id": null, 
+      "in_reply_to_status_id_str": null, 
+      "in_reply_to_user_id": null, 
+      "in_reply_to_user_id_str": null, 
+      "is_quote_status": false, 
+      "lang": "en", 
+      "place": null, 
+      "possibly_sensitive": false, 
+      "retweet_count": 0, 
+      "retweeted": false, 
+      "source": "<a href=\"https://periscope.tv\" rel=\"nofollow\">Periscope</a>", 
+      "text": "LIVE on #Periscope: Studying medicine https://t.co/CSt85FQNk5", 
+      "timestamp_ms": "1463447572024", 
+      "truncated": false, 
+      "user": {
+         "contributors_enabled": false, 
+         "created_at": "Tue May 17 00:11:18 +0000 2016", 
+         "default_profile": false, 
+         "default_profile_image": true, 
+         "description": null, 
+         "favourites_count": 0, 
+         "follow_request_sent": null, 
+         "followers_count": 0, 
+         "following": null, 
+         "friends_count": 0, 
+         "geo_enabled": false, 
+         "id": 732362822504480768, 
+         "id_str": "732362822504480768", 
+         "is_translator": false, 
+         "lang": "en", 
+         "listed_count": 0, 
+         "location": null, 
+         "name": "Medicine", 
+         "notifications": null, 
+         "profile_background_color": "000000", 
+         "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_tile": false, 
+         "profile_image_url": "http://abs.twimg.com/sticky/default_profile_images/default_profile_6_normal.png", 
+         "profile_image_url_https": "https://abs.twimg.com/sticky/default_profile_images/default_profile_6_normal.png", 
+         "profile_link_color": "ABB8C2", 
+         "profile_sidebar_border_color": "000000", 
+         "profile_sidebar_fill_color": "000000", 
+         "profile_text_color": "000000", 
+         "profile_use_background_image": false, 
+         "protected": false, 
+         "screen_name": "3rdSpacing", 
+         "statuses_count": 1, 
+         "time_zone": null, 
+         "url": null, 
+         "utc_offset": null, 
+         "verified": false
+      }
+   }, 
+   "text": "LIVE on #Periscope: Studying medicine https://t.co/CSt85FQNk5"
+}{
+   "display_url": "periscope.tv/w/agkWFTFWR2p2\u2026", 
+   "expanded_url": "https://www.periscope.tv/w/agkWFTFWR2p2cHBQdnhRT2t8MXlOR2F3RGVncWJ4agN_QtcCWEza4dGZADBnHRlk56vZcjMAvtafxR_CqMIr", 
+   "fullObj": {
+      "contributors": null, 
+      "coordinates": null, 
+      "created_at": "Tue May 17 01:12:53 +0000 2016", 
+      "entities": {
+         "hashtags": [
+            {
+               "indices": [
+                  14, 
+                  24
+               ], 
+               "text": "Periscope"
+            }
+         ], 
+         "symbols": [], 
+         "urls": [
+            {
+               "display_url": "periscope.tv/w/agkWFTFWR2p2\u2026", 
+               "expanded_url": "https://www.periscope.tv/w/agkWFTFWR2p2cHBQdnhRT2t8MXlOR2F3RGVncWJ4agN_QtcCWEza4dGZADBnHRlk56vZcjMAvtafxR_CqMIr", 
+               "indices": [
+                  25, 
+                  48
+               ], 
+               "url": "https://t.co/tloqO9JvGP"
+            }
+         ], 
+         "user_mentions": []
+      }, 
+      "favorite_count": 0, 
+      "favorited": false, 
+      "filter_level": "low", 
+      "geo": null, 
+      "id": 732378321447608320, 
+      "id_str": "732378321447608320", 
+      "in_reply_to_screen_name": null, 
+      "in_reply_to_status_id": null, 
+      "in_reply_to_status_id_str": null, 
+      "in_reply_to_user_id": null, 
+      "in_reply_to_user_id_str": null, 
+      "is_quote_status": false, 
+      "lang": "es", 
+      "place": null, 
+      "possibly_sensitive": false, 
+      "retweet_count": 0, 
+      "retweeted": false, 
+      "source": "<a href=\"https://periscope.tv\" rel=\"nofollow\">Periscope</a>", 
+      "text": "EN DIRECTO en #Periscope https://t.co/tloqO9JvGP", 
+      "timestamp_ms": "1463447573421", 
+      "truncated": false, 
+      "user": {
+         "contributors_enabled": false, 
+         "created_at": "Tue Mar 30 23:03:20 +0000 2010", 
+         "default_profile": false, 
+         "default_profile_image": false, 
+         "description": "soy buena onda no me gustan la injusticias predico con la frace de benito juarez en la naciones como entre los individuos el derecho al respecto ajeno es la paz", 
+         "favourites_count": 169, 
+         "follow_request_sent": null, 
+         "followers_count": 22, 
+         "following": null, 
+         "friends_count": 251, 
+         "geo_enabled": true, 
+         "id": 128038752, 
+         "id_str": "128038752", 
+         "is_translator": false, 
+         "lang": "es", 
+         "listed_count": 1, 
+         "location": "mexico", 
+         "name": "mary ruth mayorga", 
+         "notifications": null, 
+         "profile_background_color": "642D8B", 
+         "profile_background_image_url": "http://abs.twimg.com/images/themes/theme10/bg.gif", 
+         "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme10/bg.gif", 
+         "profile_background_tile": true, 
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/128038752/1396993357", 
+         "profile_image_url": "http://pbs.twimg.com/profile_images/1297886769/014_normal.JPG", 
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/1297886769/014_normal.JPG", 
+         "profile_link_color": "FF0000", 
+         "profile_sidebar_border_color": "65B0DA", 
+         "profile_sidebar_fill_color": "7AC3EE", 
+         "profile_text_color": "3D1957", 
+         "profile_use_background_image": true, 
+         "protected": false, 
+         "screen_name": "marymayorga", 
+         "statuses_count": 562, 
+         "time_zone": "Central Time (US & Canada)", 
+         "url": null, 
+         "utc_offset": -18000, 
+         "verified": false
+      }
+   }, 
+   "text": "EN DIRECTO en #Periscope https://t.co/tloqO9JvGP"
+}{
+   "display_url": "periscope.tv/w/agjhUTFEWkVv\u2026", 
+   "expanded_url": "https://www.periscope.tv/w/agjhUTFEWkVvZUpvWnJ6S2F8MU9kSnJta255UGtHWJ1LlyO_ZqgDoC77BLeKWLBHiS4vs8zMmanGjEv3DZBF", 
+   "fullObj": {
+      "contributors": null, 
+      "coordinates": null, 
+      "created_at": "Tue May 17 01:12:53 +0000 2016", 
+      "entities": {
+         "hashtags": [
+            {
+               "indices": [
+                  21, 
+                  31
+               ], 
+               "text": "Periscope"
+            }, 
+            {
+               "indices": [
+                  43, 
+                  55
+               ], 
+               "text": "SAPPHIRENOW"
+            }, 
+            {
+               "indices": [
+                  58, 
+                  66
+               ], 
+               "text": "saphana"
+            }
+         ], 
+         "symbols": [], 
+         "urls": [
+            {
+               "display_url": "periscope.tv/w/agjhUTFEWkVv\u2026", 
+               "expanded_url": "https://www.periscope.tv/w/agjhUTFEWkVvZUpvWnJ6S2F8MU9kSnJta255UGtHWJ1LlyO_ZqgDoC77BLeKWLBHiS4vs8zMmanGjEv3DZBF", 
+               "indices": [
+                  86, 
+                  109
+               ], 
+               "url": "https://t.co/juSfR2GRT9"
+            }
+         ], 
+         "user_mentions": [
+            {
+               "id": 1616386736, 
+               "id_str": "1616386736", 
+               "indices": [
+                  3, 
+                  11
+               ], 
+               "name": "SAP IoT", 
+               "screen_name": "SAP_IoT"
+            }
+         ]
+      }, 
+      "favorite_count": 0, 
+      "favorited": false, 
+      "filter_level": "low", 
+      "geo": null, 
+      "id": 732378321359605762, 
+      "id_str": "732378321359605762", 
+      "in_reply_to_screen_name": null, 
+      "in_reply_to_status_id": null, 
+      "in_reply_to_status_id_str": null, 
+      "in_reply_to_user_id": null, 
+      "in_reply_to_user_id_str": null, 
+      "is_quote_status": false, 
+      "lang": "en", 
+      "place": null, 
+      "possibly_sensitive": false, 
+      "retweet_count": 0, 
+      "retweeted": false, 
+      "retweeted_status": {
+         "contributors": null, 
+         "coordinates": null, 
+         "created_at": "Mon May 16 21:27:45 +0000 2016", 
+         "entities": {
+            "hashtags": [
+               {
+                  "indices": [
+                     8, 
+                     18
+                  ], 
+                  "text": "Periscope"
+               }, 
+               {
+                  "indices": [
+                     30, 
+                     42
+                  ], 
+                  "text": "SAPPHIRENOW"
+               }, 
+               {
+                  "indices": [
+                     45, 
+                     53
+                  ], 
+                  "text": "saphana"
+               }
+            ], 
+            "symbols": [], 
+            "urls": [
+               {
+                  "display_url": "periscope.tv/w/agjhUTFEWkVv\u2026", 
+                  "expanded_url": "https://www.periscope.tv/w/agjhUTFEWkVvZUpvWnJ6S2F8MU9kSnJta255UGtHWJ1LlyO_ZqgDoC77BLeKWLBHiS4vs8zMmanGjEv3DZBF", 
+                  "indices": [
+                     73, 
+                     96
+                  ], 
+                  "url": "https://t.co/juSfR2GRT9"
+               }
+            ], 
+            "user_mentions": []
+         }, 
+         "favorite_count": 4, 
+         "favorited": false, 
+         "filter_level": "low", 
+         "geo": null, 
+         "id": 732321665863012352, 
+         "id_str": "732321665863012352", 
+         "in_reply_to_screen_name": null, 
+         "in_reply_to_status_id": null, 
+         "in_reply_to_status_id_str": null, 
+         "in_reply_to_user_id": null, 
+         "in_reply_to_user_id_str": null, 
+         "is_quote_status": false, 
+         "lang": "en", 
+         "place": null, 
+         "possibly_sensitive": false, 
+         "retweet_count": 2, 
+         "retweeted": false, 
+         "source": "<a href=\"https://periscope.tv\" rel=\"nofollow\">Periscope</a>", 
+         "text": "LIVE on #Periscope: live from #SAPPHIRENOW - #saphana innovation awards  https://t.co/juSfR2GRT9", 
+         "truncated": false, 
+         "user": {
+            "contributors_enabled": false, 
+            "created_at": "Wed Jul 24 00:02:45 +0000 2013", 
+            "default_profile": false, 
+            "default_profile_image": false, 
+            "description": "Official SAP\u00ae Internet of Things Twitter channel", 
+            "favourites_count": 126, 
+            "follow_request_sent": null, 
+            "followers_count": 8675, 
+            "following": null, 
+            "friends_count": 418, 
+            "geo_enabled": true, 
+            "id": 1616386736, 
+            "id_str": "1616386736", 
+            "is_translator": false, 
+            "lang": "en", 
+            "listed_count": 443, 
+            "location": "Global ", 
+            "name": "SAP IoT", 
+            "notifications": null, 
+            "profile_background_color": "000305", 
+            "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/378800000070511932/36046fb2223b7dd2850377b52a2aa2b8.jpeg", 
+            "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/378800000070511932/36046fb2223b7dd2850377b52a2aa2b8.jpeg", 
+            "profile_background_tile": false, 
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/1616386736/1400177506", 
+            "profile_image_url": "http://pbs.twimg.com/profile_images/557581621725908992/S7PfOb5r_normal.png", 
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/557581621725908992/S7PfOb5r_normal.png", 
+            "profile_link_color": "0084B4", 
+            "profile_sidebar_border_color": "FFFFFF", 
+            "profile_sidebar_fill_color": "DDEEF6", 
+            "profile_text_color": "333333", 
+            "profile_use_background_image": true, 
+            "protected": false, 
+            "screen_name": "SAP_IoT", 
+            "statuses_count": 2464, 
+            "time_zone": "Eastern Time (US & Canada)", 
+            "url": "http://www.sap.com/InternetofThings", 
+            "utc_offset": -14400, 
+            "verified": false
+         }
+      }, 
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>", 
+      "text": "RT @SAP_IoT: LIVE on #Periscope: live from #SAPPHIRENOW - #saphana innovation awards  https://t.co/juSfR2GRT9", 
+      "timestamp_ms": "1463447573400", 
+      "truncated": false, 
+      "user": {
+         "contributors_enabled": false, 
+         "created_at": "Fri Mar 18 18:13:06 +0000 2011", 
+         "default_profile": true, 
+         "default_profile_image": false, 
+         "description": "Husband, Father of 2HockeyBoys, Work for a great company - CSS", 
+         "favourites_count": 238, 
+         "follow_request_sent": null, 
+         "followers_count": 163, 
+         "following": null, 
+         "friends_count": 194, 
+         "geo_enabled": true, 
+         "id": 268405550, 
+         "id_str": "268405550", 
+         "is_translator": false, 
+         "lang": "en", 
+         "listed_count": 5, 
+         "location": "Cleveland, Ohio", 
+         "name": "Kevin von Keyserling", 
+         "notifications": null, 
+         "profile_background_color": "C0DEED", 
+         "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png", 
+         "profile_background_tile": false, 
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/268405550/1432675791", 
+         "profile_image_url": "http://pbs.twimg.com/profile_images/603311873396576256/hIyYOCXt_normal.jpg", 
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/603311873396576256/hIyYOCXt_normal.jpg", 
+         "profile_link_color": "0084B4", 
+         "profile_sidebar_border_color": "C0DEED", 
+         "profile_sidebar_fill_color": "DDEEF6", 
+         "profile_text_color": "333333", 
+         "profile_use_background_image": true, 
+         "protected": false, 
+         "screen_name": "kvkconnect", 
+         "statuses_count": 675, 
+         "time_zone": null, 
+         "url": "http://css-security.com", 
+         "utc_offset": null, 
+         "verified": false
+      }
+   }, 
+   "text": "RT @SAP_IoT: LIVE on #Periscope: live from #SAPPHIRENOW - #saphana innovation awards  https://t.co/juSfR2GRT9"
+}{
+   "display_url": "periscope.tv/w/agjiZjF4blFy\u2026", 
+   "expanded_url": "https://www.periscope.tv/w/agjiZjF4blFyWHZKWkxwall8MVlwSmtqYmFWandHasf_IgKA3ZZMN4TfeUTBdwu9tHZc8eehDclJp_iu99qk", 
+   "fullObj": {
+      "contributors": null, 
+      "coordinates": null, 
+      "created_at": "Tue May 17 01:12:54 +0000 2016", 
+      "entities": {
+         "hashtags": [
+            {
+               "indices": [
+                  30, 
+                  40
+               ], 
+               "text": "Periscope"
+            }
+         ], 
+         "symbols": [], 
+         "urls": [
+            {
+               "display_url": "periscope.tv/w/agjiZjF4blFy\u2026", 
+               "expanded_url": "https://www.periscope.tv/w/agjiZjF4blFyWHZKWkxwall8MVlwSmtqYmFWandHasf_IgKA3ZZMN4TfeUTBdwu9tHZc8eehDclJp_iu99qk", 
+               "indices": [
+                  116, 
+                  139
+               ], 
+               "url": "https://t.co/T9bEjJN5tF"
+            }
+         ], 
+         "user_mentions": [
+            {
+               "id": 3115488447, 
+               "id_str": "3115488447", 
+               "indices": [
+                  3, 
+                  14
+               ], 
+               "name": "Revocalo YA", 
+               "screen_name": "RevocaloYA"
+            }, 
+            {
+               "id": 54973156, 
+               "id_str": "54973156", 
+               "indices": [
+                  70, 
+                  83
+               ], 
+               "name": "Carlos Ocariz", 
+               "screen_name": "CarlosOcariz"
+            }
+         ]
+      }, 
+      "favorite_count": 0, 
+      "favorited": false, 
+      "filter_level": "low", 
+      "geo": null, 
+      "id": 732378327600730112, 
+      "id_str": "732378327600730112", 
+      "in_reply_to_screen_name": null, 
+      "in_reply_to_status_id": null, 
+      "in_reply_to_status_id_str": null, 
+      "in_reply_to_user_id": null, 
+      "in_reply_to_user_id_str": null, 
+      "is_quote_status": false, 
+      "lang": "es", 
+      "place": null, 
+      "possibly_sensitive": false, 
+      "retweet_count": 0, 
+      "retweeted": false, 
+      "retweeted_status": {
+         "contributors": null, 
+         "coordinates": null, 
+         "created_at": "Mon May 16 21:32:23 +0000 2016", 
+         "entities": {
+            "hashtags": [
+               {
+                  "indices": [
+                     14, 
+                     24
+                  ], 
+                  "text": "Periscope"
+               }
+            ], 
+            "symbols": [], 
+            "urls": [
+               {
+                  "display_url": "periscope.tv/w/agjiZjF4blFy\u2026", 
+                  "expanded_url": "https://www.periscope.tv/w/agjiZjF4blFyWHZKWkxwall8MVlwSmtqYmFWandHasf_IgKA3ZZMN4TfeUTBdwu9tHZc8eehDclJp_iu99qk", 
+                  "indices": [
+                     100, 
+                     123
+                  ], 
+                  "url": "https://t.co/T9bEjJN5tF"
+               }
+            ], 
+            "user_mentions": [
+               {
+                  "id": 54973156, 
+                  "id_str": "54973156", 
+                  "indices": [
+                     54, 
+                     67
+                  ], 
+                  "name": "Carlos Ocariz", 
+                  "screen_name": "CarlosOcariz"
+               }
+            ]
+         }, 
+         "favorite_count": 80, 
+         "favorited": false, 
+         "filter_level": "low", 
+         "geo": null, 
+         "id": 732322829174247428, 
+         "id_str": "732322829174247428", 
+         "in_reply_to_screen_name": null, 
+         "in_reply_to_status_id": null, 
+         "in_reply_to_status_id_str": null, 
+         "in_reply_to_user_id": null, 
+         "in_reply_to_user_id_str": null, 
+         "is_quote_status": false, 
+         "lang": "es", 
+         "place": null, 
+         "possibly_sensitive": false, 
+         "retweet_count": 143, 
+         "retweeted": false, 
+         "source": "<a href=\"https://periscope.tv\" rel=\"nofollow\">Periscope</a>", 
+         "text": "EN DIRECTO en #Periscope: Rueda de Prensa del Alcalde @CarlosOcariz en respuesta a Jorge Rodr\u00edguez  https://t.co/T9bEjJN5tF", 
+         "truncated": false, 
+         "user": {
+            "contributors_enabled": false, 
+            "created_at": "Wed Mar 25 18:42:09 +0000 2015", 
+            "default_profile": false, 
+            "default_profile_image": false, 
+            "description": "Revoquemos la crisis y construyamos el pa\u00eds lleno de oportunidadades para progresar que todos merecemos. #RevocatorioYA", 
+            "favourites_count": 337, 
+            "follow_request_sent": null, 
+            "followers_count": 45340, 
+            "following": null, 
+            "friends_count": 429, 
+            "geo_enabled": false, 
+            "id": 3115488447, 
+            "id_str": "3115488447", 
+            "is_translator": false, 
+            "lang": "es", 
+            "listed_count": 68, 
+            "location": "Venezuela", 
+            "name": "Revocalo YA", 
+            "notifications": null, 
+            "profile_background_color": "C0DEED", 
+            "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png", 
+            "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png", 
+            "profile_background_tile": false, 
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/3115488447/1459895080", 
+            "profile_image_url": "http://pbs.twimg.com/profile_images/717477785824931840/TdVFKyND_normal.jpg", 
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/717477785824931840/TdVFKyND_normal.jpg", 
+            "profile_link_color": "0040FF", 
+            "profile_sidebar_border_color": "C0DEED", 
+            "profile_sidebar_fill_color": "DDEEF6", 
+            "profile_text_color": "333333", 
+            "profile_use_background_image": true, 
+            "protected": false, 
+            "screen_name": "RevocaloYA", 
+            "statuses_count": 2645, 
+            "time_zone": "Atlantic Time (Canada)", 
+            "url": "http://www.revocalo.com", 
+            "utc_offset": -10800, 
+            "verified": false
+         }
+      }, 
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>", 
+      "text": "RT @RevocaloYA: EN DIRECTO en #Periscope: Rueda de Prensa del Alcalde @CarlosOcariz en respuesta a Jorge Rodr\u00edguez  https://t.co/T9bEjJN5tF", 
+      "timestamp_ms": "1463447574888", 
+      "truncated": false, 
+      "user": {
+         "contributors_enabled": false, 
+         "created_at": "Fri Apr 16 22:18:39 +0000 2010", 
+         "default_profile": false, 
+         "default_profile_image": false, 
+         "description": "Diosito te seguimos pidiendo por la libertad de nuestro pais y su paz.", 
+         "favourites_count": 29, 
+         "follow_request_sent": null, 
+         "followers_count": 1324, 
+         "following": null, 
+         "friends_count": 2164, 
+         "geo_enabled": true, 
+         "id": 133884014, 
+         "id_str": "133884014", 
+         "is_translator": false, 
+         "lang": "es", 
+         "listed_count": 4, 
+         "location": "Caracas, Venezuela", 
+         "name": "Mireya S\u00e1nchez C.", 
+         "notifications": null, 
+         "profile_background_color": "B2DFDA", 
+         "profile_background_image_url": "http://abs.twimg.com/images/themes/theme13/bg.gif", 
+         "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme13/bg.gif", 
+         "profile_background_tile": false, 
+         "profile_banner_url": "https://pbs.twimg.com/profile_banners/133884014/1451505727", 
+         "profile_image_url": "http://pbs.twimg.com/profile_images/682288689838485505/FU-zavNC_normal.jpg", 
+         "profile_image_url_https": "https://pbs.twimg.com/profile_images/682288689838485505/FU-zavNC_normal.jpg", 
+         "profile_link_color": "93A644", 
+         "profile_sidebar_border_color": "EEEEEE", 
+         "profile_sidebar_fill_color": "FFFFFF", 
+         "profile_text_color": "333333", 
+         "profile_use_background_image": true, 
+         "protected": false, 
+         "screen_name": "Mireyasanchez52", 
+         "statuses_count": 52175, 
+         "time_zone": "Caracas", 
+         "url": null, 
+         "utc_offset": -16200, 
+         "verified": false
+      }
+   }, 
+   "text": "RT @RevocaloYA: EN DIRECTO en #Periscope: Rueda de Prensa del Alcalde @CarlosOcariz en respuesta a Jorge Rodr\u00edguez  https://t.co/T9bEjJN5tF"
+}
