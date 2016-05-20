@@ -123,8 +123,12 @@ WV.WVCom.prototype.subscribe = function(evType, handler, opts)
     else {
 	typeObj.watcher = new WV.Watcher(this, evType);
     }
-    if (evType == "notes" || evType == "chat") {
+    if (evType == "notes" || evType == "chat" || evType == "periscope") {
 	var url = "/db/"+evType;
+	if (evType == "periscope") {
+	    tMin = WV.getClockTime()-60*60;
+	    url = url + "?tMin="+tMin+"&limit=50";
+	}
 	report("WVCom.subscribe "+evType+" fetching "+url);
 	WV.getJSON(url, function(data) {
 		handler(data, evType);

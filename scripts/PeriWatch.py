@@ -12,6 +12,8 @@ import socketIO_client
 from WVPoster import WVPoster
 from exceptions import KeyboardInterrupt
 
+KILLED = False
+
 API = None
 UTF8Writer = codecs.getwriter('utf8')
 sys.stdout = UTF8Writer(sys.stdout)
@@ -32,12 +34,13 @@ csecret = config['csecret']
 atoken = config['atoken']
 asecret = config['asecret']
 GOOGLE_API_KEY = config['GOOGLE_API_KEY']
+GOOGLE_API_KEY = "AIzaSyAAJmB1YoCDbgWILLWFPBR4UABC4RAwvX8"
 
 print "ckey", ckey
 print "csecret", csecret
 
 
-def getGeo(loc):
+def getGeoGoogle(loc):
     loc = unidecode(loc)
     print "location:", loc
     qloc = urllib2.quote(loc)
@@ -66,9 +69,29 @@ def getGeo(loc):
                'address': res['formatted_address'],
                'query': loc}
     else:
+        print "Cannot get geo information from google"
+        print ret
         obj = None
     print obj
     return obj
+
+def getGeoBing(loc):
+    #loc = "London, England"
+    #loc = "London"
+    qloc = urllib2.quote(loc)
+    key = "ApkF-vdI2ix3rcw-JCklfZG98zznVZfuAzRGf1khbyRZrev_qYq032B23YtYa-eX"
+    #url0 = "https://maps.googleapis.com/maps/api/geocode/json?locality=%(location)s&key=%(key)s"
+    url0 = "http://dev.virtualearth.net/REST/v1/Locations?locality=%(loc)s&maxResults=5&key=%(key)s"
+    url = url0 % {'key': key, 'loc': qloc}
+    print "url:", url
+    uos = urllib2.urlopen(url)
+    str = uos.read()
+    ret = json.loads(str)
+    print json.dumps(ret, indent=3, sort_keys=True)
+
+
+def getGeo(loc):
+    return getGeoGoogle(loc)
 
 def saveImage(url, id):
     path = "%s/%s.jpg" % (IMAGE_DIR, id)
@@ -117,10 +140,12 @@ class Listener(StreamListener):
     #sio.runInThread()
 
     def on_data(self, data):
+        global KILLED
         print "========================================================"
         try:
             return self.on_data_(data)
         except KeyboardInterrupt:
+            KILLED = True
             print "Killing with KeyboardInterrupt"
             return False
         except:
@@ -161,7 +186,7 @@ class Listener(StreamListener):
         except KeyError:
             pass
         if not hashtags:
-            #print "Skipping record with no hashtags"
+            print "Skipping record with no hashtags"
             return True
         if 'Periscope' not in hashtags:
             print "Skipping rec with no Periscope"
@@ -179,7 +204,11 @@ class Listener(StreamListener):
         print "bbox:", bbox
         print "text:", text
         user = obj.get('user')
+        print user.keys()
         userLoc = user['location']
+        userName = user['location']
+        print "user.location:", userLoc
+        print "user.name:", userName
         userGeo = None
         if userLoc != None:
             userGeo = getGeo(userLoc)
@@ -195,7 +224,8 @@ class Listener(StreamListener):
             return True
         if periscope_url == None:
             print "skipping rec with no persiscope_url"
-        print "*** BINGO\07 ***"
+            return True
+        print "*** BINGO ***"
         self.n += 1
         lgId = "%07d" % self.n
         if LOG_DIR:
@@ -264,16 +294,27 @@ class TwitterWatcher:
         #                          track=pattern)
         self.twitterStream.filter(track=pattern)
 
-
-
 def run():
     tw = TwitterWatcher()
     tw.run()
+
+def runLoop():
+    while True:
+        global KILLED
+        try:
+            run()
+        except KeyboardInterrupt:
+            return
+        except:
+            traceback.print_exc()
+        if KILLED:
+            return
+        print "Some bad error... restarting now\07\07\07"
 
 
 if __name__ == '__main__':
 #    run()
 #    getGeo("Mountain View, CA")
-    run()
+#    getGeoBing("London")
+     runLoop()
 
-    

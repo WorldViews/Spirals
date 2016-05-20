@@ -56,11 +56,19 @@ WV.Note.handleData = function(data, layerName)
         layer.recs[id] = rec;
 	WV.recs[id] = rec;
 	scale = WV.bbScaleUnselected;
+	if (rec.comments) {
+	    report("comments:" + JSON.stringify(rec.comments));
+	    scale *= rec.comments.length;
+	}
 	h = 100000;
 	if (layer.height)
 	    h = layer.height;
-        var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+        //var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+        var b = WV.addSVGBillboard(rec.text, lon, lat, h);
         layer.billboards[id] = b;
+	if (WV.noteWidget && WV.noteWidget.noteId == rec.id) {
+	    WV.Note.pickHandler(rec);
+	}
     }
 }
 
@@ -69,8 +77,18 @@ WV.Note.pickHandler = function(rec)
     report("WV.Note.pickHandler: "+JSON.stringify(rec));
     if (WV.noteWidget == null) {
 	WV.noteWidget = new WV.WindowWidget("note");
+	WV.noteWidget.noteId = null;
     }
-    WV.noteWidget.setText(rec.text);
+    var text = rec.text;
+    if (rec.comments) {
+	for (var i=0; i<rec.comments.length; i++) {
+	    var comment = rec.comments[i];
+	    var ctext = comment;
+	    text = text + "<br>\n" + ctext;
+	}
+    }
+    WV.noteWidget.setText(text);
+    WV.noteWidget.noteId = rec.id;
     WV.noteWidget.show();
 }
 

@@ -11,7 +11,7 @@ WV.numBillboards = 0;
 WV.bbScaleUnselected = 0.08;
 WV.bbScaleSelected = 0.12;
 WV.currentBillboard = null;
-WV.keepSending = true;
+//WV.keepSending = true;
 WV.layers = {};
 WV.viewer = null;
 WV.scene = null;
@@ -169,7 +169,7 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
 }
 
 //http://stackoverflow.com/questions/24869733/how-to-draw-custom-dynamic-billboards-in-cesium-js
-WV.addSVGBillboard = function(text, lon, lat, h, size)
+WV.addSVGBillboard = function(text, lon, lat, h, size, entities)
 {
    // create the svg image string
    if (h == null)
@@ -202,6 +202,8 @@ WV.addSVGBillboard = function(text, lon, lat, h, size)
    report("svgString: "+svgString);
    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h);
    report(" pos: "+JSON.stringify(pos));
+   if (!entities)
+       entities = WV.viewer.entities;
    WV.viewer.entities.add({
 	   position: pos,
            billboard: { image: svgEntityImage }
@@ -273,18 +275,23 @@ function setObjsAttr(objs, attr, val)
 
 function getTwitterImages(url)
 {
+    report("***** getTwitterImages ******");
     var layer = WV.layers["photos"];
+    /*
     if (url) {
         WV.keepSending = false;
     }
     else {
+        //url = layer.imageServer+"imageTweets/?maxNum=10";
         url = layer.imageServer+"imageTweets/?maxNum=10";
         if (WV.prevEndId)
             url += "&prevEndNum="+WV.prevEndId;
     }
+    */
     if (layer.billboards == null)
 	layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
+    WV.getJSON("data/imageTweets_data.json", handleImageRecs);
     WV.scene.primitives.add(layer.bbCollection);
     wvCom.subscribe("photos", handleImageRecs);
 }
@@ -292,8 +299,18 @@ function getTwitterImages(url)
 //function handleImageRecs(data)
 function handleImageRecs(recs)
 {
-    report("handleImageRecs");
+    report("****** handleImageRecs ******");
+    recs = WV.getRecords(recs);
+    report("num recs: "+recs.length);
     var layer = WV.layers["photos"];
+    var maxNumRecs = 2;
+    var tailRecs = null;
+    if (recs.length > maxNumRecs) {
+	report("slicing...");
+	tailRecs = recs.slice(maxNumRecs);
+	recs = recs.slice(0,maxNumRecs-1);
+    }
+    report("num recs now: "+recs.length);
     var imageList = recs;
     for (var i=0; i<imageList.length; i++) {
         layer.numObjs++;
@@ -311,8 +328,12 @@ function handleImageRecs(recs)
         var lat = ispec.lonlat[1];
         var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id);
         layer.billboards[id] = b;
+	b.show = layer.visible;
 	b._wvid = id;
 	report("ispec: "+JSON.stringify(ispec));
+    }
+    if (tailRecs != null) {
+	setTimeout(function() { handleImageRecs(tailRecs); }, 200);
     }
 }
 

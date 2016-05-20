@@ -7,6 +7,14 @@ class ImageTweets:
     def __init__(self):
         self.dir = IMAGE_DIR
     
+    def saveJSON(self, jsonPath):
+        ims = self.get()
+        obj = {'type': 'imageTweets',
+               't': time.time(),
+               'numRecords': len(ims),
+               'records': ims}
+        json.dump(obj, file(jsonPath, "w"), indent=3, sort_keys=True)
+
     def get(self, maxNum=None, startTime=None, prevEndNum=None):
         t0 = time.time()
         objs = []
@@ -35,6 +43,7 @@ class ImageTweets:
 
 if __name__ == '__main__':
     it = ImageTweets()
-    images = it.get()
-    print images
+    it.saveJSON("../Viewer/data/imageTweets_data.json")
+    #images = it.get()
+    #print images
 
