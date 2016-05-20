@@ -43,7 +43,6 @@ WV.Note.handleData = function(data, layerName)
         layer.numObjs++;
         if (layer.numObjs > layer.maxNum)
             return;
-        var imageUrl = "note.png";
         var lon = rec.lon;
         var lat = rec.lat;
 	if (rec.id) {
@@ -56,20 +55,43 @@ WV.Note.handleData = function(data, layerName)
         layer.recs[id] = rec;
 	WV.recs[id] = rec;
 	scale = WV.bbScaleUnselected;
+        var imageUrl = "images/note.png";
 	if (rec.comments) {
 	    report("comments:" + JSON.stringify(rec.comments));
-	    scale *= rec.comments.length;
+	    //scale *= rec.comments.length;
+	    var imageUrl = "images/noteWithReply.png";
+	    //scale *= 2;
 	}
 	h = 100000;
 	if (layer.height)
 	    h = layer.height;
-        //var b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
-        var b = WV.addSVGBillboard(rec.text, lon, lat, h);
+        var b = layer.billboards[id];
+	if (b != null) {
+	    b.show = false; //TODO: delete it...
+	}
+        b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+        //var b = WV.addSVGBillboard(rec.text, lon, lat, h);
+	report("b: "+b);
         layer.billboards[id] = b;
 	if (WV.noteWidget && WV.noteWidget.noteId == rec.id) {
 	    WV.Note.pickHandler(rec);
 	}
     }
+}
+
+WV.Note.postComment = function(text)
+{
+    report("**** postComment: "+text);
+    var noteId = WV.noteWidget.noteId;
+    if (noteId == null) {
+	report("no node id");
+	return;
+    }
+    var url = "/comment/notes?parent="+noteId+"&comment="+text;
+    report("url: "+url);
+    WV.getJSON(url, function(x) { 
+	    report("post successful");
+	});
 }
 
 WV.Note.pickHandler = function(rec)
@@ -78,6 +100,7 @@ WV.Note.pickHandler = function(rec)
     if (WV.noteWidget == null) {
 	WV.noteWidget = new WV.WindowWidget("note");
 	WV.noteWidget.noteId = null;
+	WV.noteWidget.handleInput = WV.Note.postComment;
     }
     var text = rec.text;
     if (rec.comments) {

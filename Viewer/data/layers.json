@@ -59,7 +59,7 @@
        {
           "name": "photos",
           "description": "Recently tweeted images",
-	  "maxNum": 80,
+	  "maxNum": 100,
 	  "imageServer": "/"
        },
        {

@@ -186,7 +186,7 @@ WV.addSVGBillboard = function(text, lon, lat, h, size, entities)
    var svgDataDeclare = "data:image/svg+xml,";
    var svgPrefix = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="|WIDTH|px" height="|HEIGHT|px" xml:space="preserve">';
    var svgSuffix = "</svg>";
-   var svgCircle1 = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="3" fill="red" /> ';
+   var svgCircle1 = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="1" fill="red" /> ';
    var svgText1   = '<text x="5" y="|CY|">|TEXT|</text>\n ';
    var svgString = svgPrefix + svgCircle1 + svgText1 + svgSuffix;
    svgString = svgString.replace("|CX|", ""+cx);
@@ -204,11 +204,10 @@ WV.addSVGBillboard = function(text, lon, lat, h, size, entities)
    report(" pos: "+JSON.stringify(pos));
    if (!entities)
        entities = WV.viewer.entities;
-   WV.viewer.entities.add({
+   var b = WV.viewer.entities.add({
 	   position: pos,
            billboard: { image: svgEntityImage }
      });
-
    // test the image in a dialog
    /*
    $("#dialog").html(svgString );
@@ -216,6 +215,7 @@ WV.addSVGBillboard = function(text, lon, lat, h, size, entities)
                  position: {my: "left top", at: "left bottom"}
        });
    */
+   return b;
 }
 
 

@@ -1,12 +1,29 @@
 
 WV.chatDivTemplate =
 ' <div class="chat-window" id="|NAME|Window">\n' +
-'    <div class="chat-title" id="|NAME|Title" style="background-color:grey">|NAME|:</div>\n' +
+'    <div style="background-color:grey" id="|NAME|Title">\n' +
+'      <span class="chat-title" id="|NAME|Title" style="background-color:grey">|NAME|:</span>\n' +
+'      <button id="|NAME|Dismiss" style="height:15px;float:right;"></button>\n' +
+'    </div>\n' +
 '    <div class="chat-text" id="|NAME|Text"></div>\n' +
 '    <form action="" id="|NAME|Form">\n' +
 '      <input id="|NAME|Input" autocomplete="off" style="width: 82%;" />\n' +
 '      <button>Send</button>\n' +
-'      <button id="|NAME|Dismiss">X</button>\n' +
+'    </form>\n' +
+'  </div>\n';
+
+
+WV.noteDivTemplate =
+' <div class="chat-window" id="|NAME|Window">\n' +
+'    <div style="background-color:grey" id="|NAME|Title">\n' +
+'      <span class="chat-title" style="width: 100%;">|NAME|:</span>\n' +
+'      <button id="|NAME|Dismiss" style="height:15px;float:right;"></button>\n' +
+'    </div>\n' +
+'    <div class="chat-text" id="|NAME|Text"></div>\n' +
+'    <form action="" id="|NAME|Form">\n' +
+'      <textarea id="|NAME|Input" autocomplete="off" style="width: 82%; height:150px" />\n' +
+'      </textarea>\n' +
+'      <button>Send</button>\n' +
 '    </form>\n' +
 '  </div>\n';
 
@@ -23,25 +40,32 @@ WV.WindowWidget = function(name)
     var inst = this;
 
     function build() {
-	if (name == "chat") {
-	    report("***** skipping......");
-	    return;
-	}
 	if ($(titleId).length > 0) {
 	    report("**** "+titleId+" already exists");
 	    return;
 	}
-	var str = WV.chatDivTemplate.replace(/\|NAME\|/g, name);
+	//var str = WV.chatDivTemplate.replace(/\|NAME\|/g, name);
+	var str = WV.noteDivTemplate;
+	if (name == "chat") {
+	    str = WV.chatDivTemplate;
+	}
+	//str = WV.noteDivTemplate.replace(/\|NAME\|/g, name);
+	str = str.replace(/\|NAME\|/g, name);
 	report("str:\n"+str);
 	$("#notesLayerDiv").append(str);
     }
 
     function rig() {
-	$(titleId).html(" "+name+":");
+	//$(titleId).html(" "+name+":");
 	$(formId).submit(function(){
 		var text = $(inputId).val();
 		$(inputId).val("");
-		inst.handleInput(text);
+		try {
+		    inst.handleInput(text);
+		}
+		catch (err) {
+		    report("err: "+err);
+		}
 		return false;
 	});
 	//$(dismissId).click(function(e) {
