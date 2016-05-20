@@ -127,7 +127,8 @@ WV.WVCom.prototype.subscribe = function(evType, handler, opts)
 	var url = "/db/"+evType;
 	if (evType == "periscope") {
 	    tMin = WV.getClockTime()-60*60;
-	    url = url + "?tMin="+tMin+"&limit=50";
+	    //url = url + "?tMin="+tMin+"&limit=50";
+	    url = url + "?limit=50";
 	}
 	report("WVCom.subscribe "+evType+" fetching "+url);
 	WV.getJSON(url, function(data) {
