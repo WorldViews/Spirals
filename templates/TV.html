@@ -40,7 +40,11 @@
   <div id="cesiumContainer"></div>
   <div class="toolbar-left" id="layersDiv" style="color:white;">
      <span id="layersLabel">Hide Layers</span>
-     user: {{ current_user.name }}
+     {% if current_user.name %}
+        {{ current_user.name }} <a href="/logout" style="color:white">logout</a>
+     {% else %}
+     <a href="/log" style="color:white">login</a>
+     {% endif %}
   </div>
   <div class="video-window" id="ytplayer" style="color:white;">
   </div>

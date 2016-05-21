@@ -6,7 +6,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import Security, SQLAlchemyUserDatastore, \
     UserMixin, RoleMixin, login_required
 
-from flask import Flask, render_template, send_file, \
+from flask import Flask, render_template, send_file, redirect, \
                   jsonify, send_from_directory, request
 from flask_socketio import SocketIO, emit
 
@@ -61,8 +61,18 @@ security = Security(app, user_datastore)
 @app.before_first_request
 def create_user():
     db.create_all()
-    user_datastore.create_user(email='matt@nobien.net', password='password')
-    user_datastore.create_user(email='donkimber@gmail.com', password='xxx', name="Don")
+    user_datastore.create_user(email='donkimber@gmail.com',
+                               password='xxx',
+                               name="Don")
+    user_datastore.create_user(email='enockglidden@hotmail.com',
+                               password='xxx',
+                               name="Enock")
+    user_datastore.create_user(email='sinasareth@yahoo.com',
+                               password='xxx',
+                               name="Sina")
+    user_datastore.create_user(email='doczeno@yahoo.com',
+                               password='xxx',
+                               name="doczeno")
     db.session.commit()
 
 
@@ -134,7 +144,8 @@ def send_page(path):
 @login_required
 def log_on():
     print "log_on"
-    render_template('TV.html')
+    return redirect('/Viewer/TV')
+#    render_template('TV.html')
 
 """
 This URL is a gateway for posting to SIO
@@ -289,6 +300,8 @@ def addMsgStrToDB(msgStr, etype):
         print "**** addMsgStrToDB unknown table:", etype
         return
     obj = json.loads(msgStr)
+    if rdb == None:
+        print "*** not connected to DB ***"
     rdb.table(etype).insert(obj).run(conn)
 
 def addObjToDB(obj, etype):
