@@ -54,9 +54,9 @@ http://server (where probably server is localhost for you.)
 And you will get an index page with a link to TeleViewer near the
 top.
 
-or to run one with user accounts
+Or to run one with user accounts:
 
-   flaskAuthServer80.py
+    flaskAuthServer80.py
 
 This version has some simple authentication and users.   For it
 use the URL http://server/Viewer/TV.  There should be a link at
@@ -73,9 +73,9 @@ Using Python server:
 --------------------
 
 This is the simplest and most limited version, so many features
-are not supported, and may not fail gracefully
+are not supported, and may not fail gracefully.  To use it run:
 
-run PhysVizServer80.py
+    PhysVizServer80.py
 
 and try http://localhost
 
