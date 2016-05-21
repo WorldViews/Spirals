@@ -26,10 +26,10 @@ class Role(db.Model, RoleMixin):
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
-    name = db.Column(db.String(255))
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
+    name = db.Column(db.String(255))
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
 
@@ -41,24 +41,20 @@ security = Security(app, user_datastore)
 @app.before_first_request
 def create_user():
     db.create_all()
-    user_datastore.create_user(name="Don", email='donkimber@gmail.com', password='xxx')
-    user_datastore.create_user(name="kimber", email='kimber@gmail.com', password='xxx')
+    user_datastore.create_user(email='matt@nobien.net', password='password')
+    user_datastore.create_user(email='donkimber@gmail.com',
+                               name="Don",
+                               password='xxx')
     db.session.commit()
 
 # Views
 @app.route('/')
 @login_required
 def home():
+    #return render_template('index.html')
     return render_template('ind.html')
-
-# Views
-@app.route('/hello')
-def hello():
-    return render_template('hello.html')
-
-@app.route('/register')
-def register():
-    return render_template('security/register_user.html')
+    return "Hello World"
 
 if __name__ == '__main__':
     app.run()
+
