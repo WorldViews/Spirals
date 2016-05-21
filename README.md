@@ -6,44 +6,80 @@ organization.
 TeleViewer
 ==========
 
+Setting up Cesium
+-----------------
 To run TeleViewer, you need to first install Cesium.  We are currently
 using Cesium 1.21.1.  Install Cesium on your system, and then copy
 the Build/Cesium directory to Spirals/Cesium/Cesium.
 
-You then need to run a server.  We have been using a python server
-but are moving to a node.js server.
+Setting up the Database
+-----------------------
+
+To run TeleViewer, you should first install RethinkDB.  For windows this
+is a single executable rethinkdb.exe that can be put in the top directly
+and run there.  After running this to start the server, you sould make
+sure it has the initial tables required.  This can be done using node by
+
+   npm install                   # this will install required packages
+
+   node createTables.js          # create a few requred tables
+
+The rethinkdb server makes a admin interface available at localhost:8080
+
+Using flask servers
+-------------------
+
+We have several versions of flask server.  To use these, first install
+necessary flask packages, which include:
+Flask
+Flask-Login
+Flask-Mail
+Flask-OAuth
+Flask-Principal
+Flask-SQLAlchemy
+Flask-Security
+Flask-SocketIO
+Flask-WTF
+Jinja2
+
+(you could do pip install with the requirements.txt but that probably
+has more packages than you need.)
+
+Then run one of the servers.  The simplest one is:
+
+    flaskServer80.py
+
+This version has no user accounts.  With this verions, use the URL
+http://server (where probably server is localhost for you.)
+And you will get an index page with a link to TeleViewer near the
+top.
+
+or to run one with user accounts
+
+   flaskAuthServer80.py
+
+This version has some simple authentication and users.   For it
+use the URL http://server/Viewer/TV.  There should be a link at
+the top of the layers tab for logging in.
+
+
+Using node server
+-----------------
+
+We have a node server with some functionality.  To try it use
+runServer80.bat or runServer3000.bat, or make your own configuration.
 
 Using Python server:
 --------------------
+
+This is the simplest and most limited version, so many features
+are not supported, and may not fail gracefully
 
 run PhysVizServer80.py
 
 and try http://localhost
 
 You should get a page with a link to TeleViewer.
-
-Using node server:
-------------------
-
-Now we are moving to a node server, and the use of the RethinkDB.
-For configuration install node.js and RethinkDB.  (RethinkDB will
-simply be a single .exe that is in this directory.)  Then do
-
-   npm install
-
-to make sure you have the necessary packages, and
-then start the RethinkDB by running rethinkdb.exe
-
-Then create a chat table using command
-
-   node createChatTable.js
-
-Now you should be ready to run the server.
-Simply run either runServer80.bat or runServer3000.bat
-or create a new configuration of your choice.
-
-Note: while the rethinkDB is running you should be able to 
-get to its admin interface at http://localhost:8080
 
 
 PhysViz

@@ -41,7 +41,8 @@
   <div class="toolbar-left" id="layersDiv" style="color:white;">
      <span id="layersLabel">Hide Layers</span>
      {% if current_user.name %}
-        {{ current_user.name }} <a href="/logout" style="color:white">logout</a>
+        {{ current_user.name }}
+        <a href="/logout?next=/Viewer/TV" style="color:white">logout</a>
      {% else %}
      <a href="/log" style="color:white">login</a>
      {% endif %}
@@ -50,18 +51,6 @@
   </div>
 
   <div id="toolbar"></div>
-
-<!--
-  <div class="chat-window" id="chatWindow">
-    <div class="chat-title" id="chatTitle" style="background-color:grey">Chat:</div>
-    <div class="chat-text" id="chatText"></div>
-    <form action="" id="chatForm">
-      <input id="chatInput" autocomplete="off" style="width: 82%;" />
-      <button>Send</button>
-      <button id="chatDismiss">X</button>
-    </form>
-  </div>
--->
   <div id="notesLayerDiv"></div>
 <!--
 -->
@@ -81,7 +70,9 @@
 //WV.layersUrl = "data/myLayers.json";
 WV.useSocketIO = true;
 WV.statusInterval = 500;
-
+{% if current_user.name %}
+WV.myName="{{ current_user.name }}";
+{% endif %}
 </script>
 </body>
 </html>

@@ -60,6 +60,8 @@ security = Security(app, user_datastore)
 # Create a user to test with
 @app.before_first_request
 def create_user():
+    print "------------------------------------------"
+    print "Creating tables and user entries"
     db.create_all()
     user_datastore.create_user(email='donkimber@gmail.com',
                                password='xxx',
@@ -74,6 +76,7 @@ def create_user():
                                password='xxx',
                                name="doczeno")
     db.session.commit()
+    print "------------------------------------------"
 
 
 def getObj(id, tname):
@@ -86,10 +89,11 @@ def getNote(id):
     
 @app.route('/')
 def index():
+    print "index ****"
     return send_file('index.html')
 
 """
-This is used by SharedCam to make itself known.
+This is used by SharedCam to register itself with us.
 """
 @app.route('/regp/', methods=['POST','GET'])
 def reg():
@@ -242,32 +246,16 @@ def query(etype):
     except:
         traceback.print_exc()
         return
-    """
-    try:
-        if tMin != None:
-            if limit == None:
-                recs = rdb.table(etype).filter(rdb.row["t"].gt(tMin)).order_by(
-                                         rdb.desc('t')).run(conn)
-            else:
-                recs = rdb.table(etype).filter(rdb.row["t"].gt(tMin)).order_by(
-                                         rdb.desc('t')).limit(limit).run(conn)
-        else:
-            if limit == None:
-                recs = rdb.table(etype).order_by(rdb.desc('t')).run(conn)
-            else:
-                recs = rdb.table(etype).order_by(rdb.desc('t')).limit(limit).run(conn)
-    except:
-        traceback.print_exc()
-        return
-    """
-    #print "recs:", recs
-    #items = [x for x in recs]
     items = list(recs)
     obj = {'type': etype,
            't' : t,
            'records': items}
     return flask.jsonify(obj)
 
+###################################################################
+#
+# SocketIO bindings
+#
 @socketio.on('my event')
 def test_message(message):
     emit('my response', {'data': 'got it!'})
