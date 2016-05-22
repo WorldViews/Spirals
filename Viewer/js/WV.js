@@ -168,34 +168,59 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
     return b;
 }
 
-//http://stackoverflow.com/questions/24869733/how-to-draw-custom-dynamic-billboards-in-cesium-js
-WV.addSVGBillboard = function(text, lon, lat, h, size, entities)
+WV.replace = function(str, a, b)
 {
-   // create the svg image string
-   if (h == null)
-	h = 1000000;
-   var width = 100;
-   var height = 100;
-   if (size) {
-       width = size;
-       height = size;
-   }
-   var cx = Math.floor(width/2);
-   var cy = Math.floor(height/2);
-   var r = Math.floor(0.45*width);
-   var svgDataDeclare = "data:image/svg+xml,";
-   var svgPrefix = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="|WIDTH|px" height="|HEIGHT|px" xml:space="preserve">';
-   var svgSuffix = "</svg>";
-   var svgCircle1 = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="1" fill="red" /> ';
-   var svgText1   = '<text x="5" y="|CY|">|TEXT|</text>\n ';
-   var svgString = svgPrefix + svgCircle1 + svgText1 + svgSuffix;
-   svgString = svgString.replace("|CX|", ""+cx);
-   svgString = svgString.replace("|CY|", ""+cy);
-   svgString = svgString.replace("|CY|", ""+cy);
-   svgString = svgString.replace("|R|", ""+r);
-   svgString = svgString.replace("|WIDTH|", width);
-   svgString = svgString.replace("|HEIGHT|", height);
-   svgString = svgString.replace("|TEXT|", text);
+    //TODO: setup regexp way to do this right
+    for (var i=0; i<5; i++) {
+	str = str.replace(a,b);
+    }
+    return str;
+}
+
+//http://stackoverflow.com/questions/24869733/how-to-draw-custom-dynamic-billboards-in-cesium-js
+//WV.addSVGBillboard = function(text, lon, lat, h, size, color, entities)
+WV.addSVGBillboard = function(lon, lat, opts, entities)
+{
+    if (!opts)
+	opts = {'h': 1000000, 'width': 100, 'height': 100, 'color': 'yellow'};
+    // create the svg image string
+    var text = opts.text;
+    var h = opts.h;
+    var color = opts.color;
+    var width = opts.width;
+    var height = opts.height;
+    var entities = opts.entities;
+    if (opts.size) {
+	width = opts.size;
+	height = opts.size;
+    }
+    var cx = Math.floor(width/2);
+    var cy = Math.floor(height/2);
+    var r = Math.floor(0.45*width);
+    var svgDataDeclare = "data:image/svg+xml,";
+    var svgPrefix = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="|WIDTH|px" height="|HEIGHT|px" xml:space="preserve">';
+    var svgSuffix = "</svg>";
+    var svgCircle = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="1" fill="|COLOR|" /> ';
+    var svgRect = '<rect x="|RX|" y="|RY|" width="|RW|" height="|RH|" stroke="black" stroke-width="1" fill="|COLOR|" /> ';
+    var svgText   = '<text x="|TX|" y="|TY|">|TEXT|</text>\n ';
+    var svgString = svgPrefix +
+    //              svgCircle +
+                    svgRect   + 
+                    svgText   +
+                    svgSuffix;
+    svgString = WV.replace(svgString, "|RX|", ""+0);
+    svgString = WV.replace(svgString, "|RY|", ""+0);
+    svgString = WV.replace(svgString, "|RW|", ""+(width-1));
+    svgString = WV.replace(svgString, "|RH|", ""+height);
+    svgString = WV.replace(svgString, "|CX|", ""+cx);
+    svgString = WV.replace(svgString, "|CY|", ""+cy);
+    svgString = WV.replace(svgString, "|R|", ""+r);
+    svgString = WV.replace(svgString, "|TX|", ""+0);
+    svgString = WV.replace(svgString, "|TY|", ""+cy);
+    svgString = WV.replace(svgString, "|WIDTH|", width);
+    svgString = WV.replace(svgString, "|HEIGHT|", height);
+    svgString = WV.replace(svgString, "|TEXT|", text);
+    svgString = WV.replace(svgString, "|COLOR|", color);
    
    // create the cesium entity
    var svgEntityImage = svgDataDeclare + svgString;

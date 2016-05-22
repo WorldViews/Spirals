@@ -69,8 +69,16 @@ WV.Note.handleData = function(data, layerName)
 	if (b != null) {
 	    b.show = false; //TODO: delete it...
 	}
-        b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
-        //var b = WV.addSVGBillboard(rec.text, lon, lat, h);
+	if (1) {
+	    b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+	}
+	else {
+	    var color = "rgb(250,250,0)";
+	    if (rec.comments)
+		color = "rgb(200,160,50)";
+	    var opts = {text: rec.text, h: h, width: 200, height: 30, color: color}
+	    var b = WV.addSVGBillboard(lon, lat, opts);
+	}
 	report("b: "+b);
         layer.billboards[id] = b;
 	if (WV.noteWidget && WV.noteWidget.noteId == rec.id) {
