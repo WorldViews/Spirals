@@ -13,7 +13,7 @@ from WVPoster import WVPoster
 from exceptions import KeyboardInterrupt
 
 KILLED = False
-
+USE_GEOCODE = True
 API = None
 UTF8Writer = codecs.getwriter('utf8')
 sys.stdout = UTF8Writer(sys.stdout)
@@ -38,6 +38,59 @@ GOOGLE_API_KEY = "AIzaSyAAJmB1YoCDbgWILLWFPBR4UABC4RAwvX8"
 
 print "ckey", ckey
 print "csecret", csecret
+
+"""
+There is some kludgy logic in here to get the scraper to not run all the
+time, because then it uses up its geocode API request allocation.   Instead
+the watcher starts in a dormant state in which it hibernates until a recent
+periscope DB request is noticed, or HIBERNATION_TIME seconds elapse.  It
+then enters an active state of scraping, and posting to the DB.  This state
+lasts for RUN_DURATION seconds.
+"""
+LAST_START_TIME = time.time()
+RUN_DURATION = 5*60            # How long to run after processing started
+HIBERNATION_TIME = 30*60       # How long to hibernate after paused
+
+def getDBStats():
+    statsUrl = "http://localhost/dbstats"
+    try:
+        uos = urllib2.urlopen(statsUrl)
+        jbuf = uos.read()
+        obj = json.loads(jbuf)
+        return obj
+    except:
+        traceback.print_exc()
+        return {}
+
+def keepRunning():
+    global LAST_START_TIME, RUN_DURATION
+    t = time.time()
+    dt = t - LAST_START_TIME
+    print "dt:", dt
+    v = dt < RUN_DURATION
+    print "keepRunning:", v
+    return  v
+
+def waitForStartCondition():
+    global LAST_START_TIME
+    print "waitForStartCondition..."
+    while 1:
+        t = time.time()
+        dbStats = getDBStats()
+        t = time.time()
+        if 'periscope' in dbStats:
+            rt = dbStats['periscope']
+            if t - rt < 20:
+                print "*****recent periscope request"
+                break
+        dt = t - LAST_START_TIME
+        print "dt:", dt
+        if dt > HIBERNATION_TIME:
+            break
+        print "pause..."
+        time.sleep(2)
+    LAST_START_TIME = time.time()
+    return True
 
 
 def getGeoGoogle(loc):
@@ -142,6 +195,9 @@ class Listener(StreamListener):
     def on_data(self, data):
         global KILLED
         print "========================================================"
+        if not keepRunning():
+            print "******** Stopping Listener *******"
+            return False
         try:
             return self.on_data_(data)
         except KeyboardInterrupt:
@@ -211,7 +267,11 @@ class Listener(StreamListener):
         print "user.name:", userName
         userGeo = None
         if userLoc != None:
-            userGeo = getGeo(userLoc)
+            if USE_GEOCODE:
+                userGeo = getGeo(userLoc)
+            else:
+                print "*** not using GEOCODE now ***"
+
         #if id:
         #    lobj = lookup(int(id))
         if self.logFile:
@@ -302,14 +362,16 @@ def runLoop():
     while True:
         global KILLED
         try:
+            waitForStartCondition()
             run()
         except KeyboardInterrupt:
             return
         except:
+            print "Some bad error... \07\07\07"
             traceback.print_exc()
         if KILLED:
             return
-        print "Some bad error... restarting now\07\07\07"
+        print ".......restarting listener now"
 
 
 if __name__ == '__main__':

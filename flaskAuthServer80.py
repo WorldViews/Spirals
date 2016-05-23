@@ -12,6 +12,8 @@ from flask_socketio import SocketIO, emit
 
 TABLE_NAMES = ["chat", "notes", "periscope"]
 
+DB_REQUEST_TIMES = {}
+
 rdb = None
 try:
     import rethinkdb as rdb
@@ -216,8 +218,10 @@ def addComment(etype):
 
 @app.route('/db/<path:etype>')
 def query(etype):
+    global DB_REQUEST_TIMES
     print "query", etype
     t = time.time()
+    DB_REQUEST_TIMES[etype] = t
     if rdb == None:
         return flask.jsonify({'error': 'No DB', 't': t, 'records': []})
     args = request.args
@@ -251,6 +255,11 @@ def query(etype):
            't' : t,
            'records': items}
     return flask.jsonify(obj)
+
+@app.route('/dbstats/')
+def dbstats():
+    return flask.jsonify(DB_REQUEST_TIMES)
+
 
 ###################################################################
 #
