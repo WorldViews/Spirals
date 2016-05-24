@@ -1,6 +1,7 @@
 
 WV.Note = {};
 WV.noteWidget = null;
+WV.Note.currentNote = null;
 
 WV.Note.watch = function()
 {
@@ -20,6 +21,7 @@ WV.Note.sendNote = function(lon, lat, str)
     msg.lat = lat;
     msg.text = str;
     wvCom.sendNote(msg);
+    return msg;
 }
 
 
@@ -90,37 +92,58 @@ WV.Note.handleData = function(data, layerName)
 WV.Note.postComment = function(text)
 {
     report("**** postComment: "+text);
-    var noteId = WV.noteWidget.noteId;
-    if (noteId == null) {
-	report("no node id");
-	return;
+    var w = WV.noteWidget;
+    var noteId = w.noteId;
+    if (noteId == null) { // This is a brand new note...
+	msg = WV.Note.sendNote(w.lon, w.lat, text);
+	w.noteId = msg.id;
     }
-    var url = "/comment/notes?parent="+noteId+"&comment="+text;
-    report("url: "+url);
-    WV.getJSON(url, function(x) { 
-	    report("post successful");
-	});
+    else { // This is a comment on existing note...
+	var url = "/comment/notes?parent="+noteId+"&comment="+text;
+	report("url: "+url);
+	WV.getJSON(url, function(x) { 
+		report("post successful");
+	    });
+    }
 }
 
-WV.Note.pickHandler = function(rec)
+WV.Note.getNoteWidget = function()
 {
-    report("WV.Note.pickHandler: "+JSON.stringify(rec));
     if (WV.noteWidget == null) {
 	WV.noteWidget = new WV.WindowWidget("note");
 	WV.noteWidget.noteId = null;
 	WV.noteWidget.handleInput = WV.Note.postComment;
     }
+    return WV.noteWidget;
+}
+
+WV.Note.pickHandler = function(rec)
+{
+    report("WV.Note.pickHandler: "+JSON.stringify(rec));
+    WV.Note.getNoteWidget();
     var text = rec.text;
+    text += '<hr style="margin-left:5px;width:80%;">\n';
     if (rec.comments) {
 	for (var i=0; i<rec.comments.length; i++) {
 	    var comment = rec.comments[i];
 	    var ctext = comment;
 	    text = text + "<br>\n" + ctext;
+	    text += '<hr style="margin-left:5px;width:20%;">\n';
 	}
     }
     WV.noteWidget.setText(text);
     WV.noteWidget.noteId = rec.id;
     WV.noteWidget.show();
+}
+
+WV.Note.initNote = function(lon, lat)
+{
+    var w = WV.Note.getNoteWidget();
+    w.setText("");
+    w.noteId = null;
+    w.lon = lon;
+    w.lat = lat;
+    w.show();
 }
 
 WV.Note.hide = function()

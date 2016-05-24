@@ -521,7 +521,8 @@ WV.handleNoteClick = function(e)
 	var lon = Cesium.Math.toDegrees(gpos.longitude);
 	var lat = Cesium.Math.toDegrees(gpos.latitude);
 	report("picked: "+lon+" "+lat);
-	WV.Note.sendNote(lon, lat, "This is a note made at "+new Date());
+	WV.Note.initNote(lon, lat);
+	//WV.Note.sendNote(lon, lat, "This is a note made at "+new Date());
     }
     else {
 	report("no intersect...");

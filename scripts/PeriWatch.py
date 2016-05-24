@@ -49,7 +49,8 @@ lasts for RUN_DURATION seconds.
 """
 LAST_START_TIME = time.time()
 RUN_DURATION = 5*60            # How long to run after processing started
-HIBERNATION_TIME = 30*60       # How long to hibernate after paused
+#HIBERNATION_TIME = 30*60       # How long to hibernate after paused
+HIBERNATION_TIME = 1E10         # How long to hibernate after paused
 
 def getDBStats():
     statsUrl = "http://localhost/dbstats"

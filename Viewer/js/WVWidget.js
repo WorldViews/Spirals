@@ -68,27 +68,11 @@ WV.WindowWidget = function(name)
 		}
 		return false;
 	});
-	//$(dismissId).click(function(e) {
-	//	WV.setChatVisibility(false);
-	//});
 	$(dismissId).click(function(e) {
 		inst.dismiss(); 
 	    });
-	$(titleId).on('mousedown', function(e) {
-		report("mouse down on "+name);
-		var offs0 = $(windowId).offset();
-		var p0 = {x: e.pageX, y: e.pageY};
-		report(" offset: "+offs0.top+" "+offs0.left);
-		$(windowId).on('mousemove', function(e) {
-	            $(windowId).offset({
-			top: offs0.top + (e.pageY - p0.y),
-			left: offs0.left + (e.pageX-p0.x)
-		    }).on('mouseup', function() {
-			report("mouseup");
-			$(windowId).off('mousemove');
-		    });
-                });
-		e.preventDefault();
+	$(windowId).draggable({
+		cancel: textId+",input,textarea,button,select,option"
 	    });
     }
 
@@ -125,27 +109,15 @@ WV.WindowWidget = function(name)
     rig();
 }
 
-/*
-WV.iframeWidgetTemplate =
-' <div class="video-window" id="|NAME|Window">\n' +
-'    <div class="video-title" id="|NAME|Title" style="background-color:grey">|NAME|    \n'+
-'       <button id="|NAME|Dismiss">x</button>\n' +
-'    </div>\n' +
-'     <div class="video-body" id="|NAME|Div">\n' +
-'        <iframe class="video-body" id="|NAME|Iframe" ></iframe>\n' +
-'     </div>\n' +
-' </div>\n';
-*/
-
 
 WV.iframeWidgetTemplate =
-' <div class="video-window" id="|NAME|Window">\n' +
+' <div class="iframe-window" id="|NAME|Window">\n' +
 '    <div style="background-color:grey" id="|NAME|Title">\n' +
 '      <span class="chat-title" id="|NAME|Title" style="background-color:grey">|NAME|:</span>\n' +
 '      <button id="|NAME|Dismiss" style="height:15px;float:right;"></button>\n' +
 '    </div>\n' +
-'     <div class="video-body" id="|NAME|Div">\n' +
-'        <iframe class="video-body" id="|NAME|Iframe" ></iframe>\n' +
+'     <div class="iframe-body" id="|NAME|Div">\n' +
+'        <iframe class="iframe-body" id="|NAME|Iframe" ></iframe>\n' +
 '     </div>\n' +
 ' </div>\n';
 
@@ -172,8 +144,13 @@ WV.IframeWidget = function(name)
 
     function rig() {
 	$(dismissId).click(function(e) {
+		inst.setSrc("about:blank");
 		inst.dismiss(); 
 	    });
+	$(windowId).draggable({
+		cancel: divId+",input,textarea,button,select,option"
+	    });
+	/*
 	$(titleId).on('mousedown', function(e) {
 		report("mouse down on "+name);
 		var offs0 = $(windowId).offset();
@@ -181,8 +158,8 @@ WV.IframeWidget = function(name)
 		report(" offset: "+offs0.top+" "+offs0.left);
 		$(windowId).on('mousemove', function(e) {
 	            $(windowId).offset({
-			top: offs0.top + (e.pageY - p0.y),
-			left: offs0.left + (e.pageX-p0.x)
+			top:  offs0.top  + (e.pageY - p0.y),
+			left: offs0.left + (e.pageX - p0.x)
 		    }).on('mouseup', function() {
 			report("mouseup");
 			$(windowId).off('mousemove');
@@ -190,6 +167,7 @@ WV.IframeWidget = function(name)
                 });
 		e.preventDefault();
 	    });
+	*/
     }
 
     this.setSrc = function(url) {
