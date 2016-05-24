@@ -1,7 +1,8 @@
 """
 This is a version of the flask server with users and
-authentication, and also it is registerable or trackable.
+authentication, but not registerable or trackable.
 """
+
 import json, time, traceback
 import flask
 
@@ -12,7 +13,6 @@ from flask.ext.security import Security, SQLAlchemyUserDatastore, \
 from flask import Flask, render_template, send_file, redirect, \
                   jsonify, send_from_directory, request
 from flask_socketio import SocketIO, emit
-from flask_mail import Mail
 
 TABLE_NAMES = ["chat", "notes", "periscope"]
 
@@ -32,19 +32,7 @@ app.debug = True
 #app.debug = False
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wv.db'
-
-app.config['SECURITY_TRACKABLE'] = True
-app.config['SECURITY_REGISTERABLE'] = True
-app.config['SECURITY_EMAIL_SENDER'] = 'no-reply@pollywss.paldeploy.com'
-
-app.config['MAIL_SERVER'] = '192.168.20.18'
-app.config['MAIL_PORT'] = 25
-#app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'flycam'
-app.config['MAIL_PASSWORD'] = 'flyspec'
-mail = Mail(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
 
 socketio = SocketIO(app)
 
@@ -68,13 +56,6 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
-    last_login_at = db.Column(db.DateTime())
-    current_login_at = db.Column(db.DateTime())
-    # Why 45 characters for IP Address ?
-    # See http://stackoverflow.com/questions/166132/maximum-length-of-the-textual-representation-of-an-ipv6-address/166157#166157
-    last_login_ip = db.Column(db.String(45))
-    current_login_ip = db.Column(db.String(45))
-    login_count = db.Column(db.Integer)
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
 
@@ -88,9 +69,6 @@ def create_user():
     print "------------------------------------------"
     print "Creating tables and user entries"
     db.create_all()
-    if User.query.count() > 0:
-        print ">>>>>>>>>> Tables already initialized.... <<<<<<<<<<<"
-        return
     user_datastore.create_user(email='donkimber@gmail.com',
                                password='xxx',
                                name="Don")
@@ -103,9 +81,6 @@ def create_user():
     user_datastore.create_user(email='doczeno@yahoo.com',
                                password='xxx',
                                name="doczeno")
-    user_datastore.create_user(email='vaughan@fxpal.com',
-                               password='xxx',
-                               name="Jim")
     db.session.commit()
     print "------------------------------------------"
 
