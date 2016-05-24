@@ -125,10 +125,24 @@ WV.WindowWidget = function(name)
     rig();
 }
 
+/*
 WV.iframeWidgetTemplate =
 ' <div class="video-window" id="|NAME|Window">\n' +
 '    <div class="video-title" id="|NAME|Title" style="background-color:grey">|NAME|    \n'+
 '       <button id="|NAME|Dismiss">x</button>\n' +
+'    </div>\n' +
+'     <div class="video-body" id="|NAME|Div">\n' +
+'        <iframe class="video-body" id="|NAME|Iframe" ></iframe>\n' +
+'     </div>\n' +
+' </div>\n';
+*/
+
+
+WV.iframeWidgetTemplate =
+' <div class="video-window" id="|NAME|Window">\n' +
+'    <div style="background-color:grey" id="|NAME|Title">\n' +
+'      <span class="chat-title" id="|NAME|Title" style="background-color:grey">|NAME|:</span>\n' +
+'      <button id="|NAME|Dismiss" style="height:15px;float:right;"></button>\n' +
 '    </div>\n' +
 '     <div class="video-body" id="|NAME|Div">\n' +
 '        <iframe class="video-body" id="|NAME|Iframe" ></iframe>\n' +
