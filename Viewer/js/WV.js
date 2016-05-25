@@ -103,7 +103,7 @@ function WVLayer(spec)
 			    {dataFile: layer.dataFile});
 	}
 	if (name == "photos")
-	    getTwitterImages();
+	    WV.getTwitterImages();
 	if (name == "people")
 	    WV.watchPeople();
 	if (name == "sharecam") {
@@ -131,7 +131,7 @@ function WVLayer(spec)
 		this.loaderFun();
 	    }
 	    else {
-		setObjsAttr(this.billboards, "show", true);
+		WV.setBillboardsVisibility(this.billboards, true);
 	    }
 	}
 	else {
@@ -139,7 +139,7 @@ function WVLayer(spec)
 		report("calling hideFun for "+this.name);
 		this.hideFun();
 	    }
-	    setObjsAttr(this.billboards, "show", false);
+	    WV.setBillboardsVisibility(this.billboards, false);
 	}
         var id = "cb_"+this.name;
 	$("#"+id).prop('checked', this.visible);
@@ -182,15 +182,15 @@ function handleVideoRecs(data, layerName)
 
 function setObjsAttr(objs, attr, val)
 {
-    //report("setObjsAttr "+attr+" "+val+" objs: "+objs);
-    for (id in objs) {
-	//report("set objs["+id+"]."+attr+" = "+val);
-	objs[id][attr] = val;
-    }
+    report("************************************************");
+    report("***  change to WV.setBillboardsVisibility   ****");
+    report("************************************************");
+    report("setObjsAttr "+attr+" "+val+" objs: "+objs);
+    WV.setBillboardsVisibility(objs, val);
 }
 
 
-function getTwitterImages(url)
+WV.getTwitterImages = function(url)
 {
     report("***** getTwitterImages ******");
     var layer = WV.layers["photos"];
@@ -289,7 +289,7 @@ function handleHTMLRecs(data, layerName)
     }
 }
 
-function setupCesium()
+WV.setupCesium = function()
 {
     // If the mouse is over the billboard, change its scale and color
     var handler = new Cesium.ScreenSpaceEventHandler(WV.scene.canvas);
@@ -454,17 +454,17 @@ WV.getJSON = function(url, handler)
   coded into this program, but could be loaded from the server
   and user specific.
  */
-function getLayers()
+WV.getLayers = function()
 {
     //$.getJSON(WV.layersUrl, setupLayers);
-    WV.getJSON(WV.layersUrl, setupLayers);
+    WV.getJSON(WV.layersUrl, WV.setupLayers);
     //setupLayers(WV.LAYER_DATA);
 }
 
 /*
   This creates the Jquery UI for showing layers with checkboxes.
  */
-function setupLayers(layerData)
+WV.setupLayers = function(layerData)
 {
     var layers = layerData.layers;
     var layersDiv = $("#layersDiv");
@@ -600,8 +600,8 @@ $(document).ready(function() {
     if (userName) {
 	WV.myName = userName;
     }
-    getLayers();
-    setupCesium();
+    WV.getLayers();
+    WV.setupCesium();
     WV.getLocation();
     setTimeout(reportStatus, WV.statusInterval);
     //WV.addSVGBillboard("Miami", -80.12, 25.46, 1000000, 50);

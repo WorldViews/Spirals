@@ -135,7 +135,7 @@ WV.hidePeople = function()
 WV.setPeopleVisibility = function(v)
 {
     var layer = WV.layers["people"];
-    setObjsAttr(layer.tethers, "show", v);
-    setObjsAttr(layer.curPosBillboards, "show", v);
+    WV.setBillboardsVisibility(layer.curPosBillboards, v);
+    WV.setObjsAttr(layer.tethers, "show", v);
 }
 
