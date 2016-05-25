@@ -24,7 +24,9 @@ def makeTrans(inputPath, outputPath, size=None):
 if __name__ == '__main__':
 #    makeTrans("../Viewer/temple.png", "../Viewer/temple_trans.png")
 #    makeTrans("../Viewer/jumpChat0.png", "../Viewer/jumpChat.png")
-    makeTrans("../Viewer/images/drone0.png",
-              "../Viewer/images/drone.png", (200,200))
+#    makeTrans("../Viewer/images/drone0.png",
+#              "../Viewer/images/drone.png", (200,200))
+    makeTrans("../Viewer/images/redQmark.png",
+              "../Viewer/images/redQmark.png")
 
 

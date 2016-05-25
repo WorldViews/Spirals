@@ -106,8 +106,9 @@ function WVLayer(spec)
 	    WV.getIndoorMapData();
 	if (name == "chat")
 	    WV.watchChat();
-	if (name == "notes")
+	if (name == "notes") {
 	    WV.Note.watch();
+	}
     }
 
     this.setVisibility = function(visible) {
@@ -165,6 +166,7 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
        color : Cesium.Color.WHITE,
        id : id
     });
+    b.unselectedScale = scale;
     return b;
 }
 
@@ -179,7 +181,7 @@ WV.replace = function(str, a, b)
 
 //http://stackoverflow.com/questions/24869733/how-to-draw-custom-dynamic-billboards-in-cesium-js
 //WV.addSVGBillboard = function(text, lon, lat, h, size, color, entities)
-WV.addSVGBillboard = function(lon, lat, opts, entities)
+WV.addSVGBillboard = function(lon, lat, id, opts, entities)
 {
     if (!opts)
 	opts = {'h': 1000000, 'width': 100, 'height': 100, 'color': 'yellow'};
@@ -198,11 +200,17 @@ WV.addSVGBillboard = function(lon, lat, opts, entities)
     var cy = Math.floor(height/2);
     var r = Math.floor(0.45*width);
     var svgDataDeclare = "data:image/svg+xml,";
-    var svgPrefix = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="|WIDTH|px" height="|HEIGHT|px" xml:space="preserve">';
-    var svgSuffix = "</svg>";
-    var svgCircle = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="1" fill="|COLOR|" /> ';
-    var svgRect = '<rect x="|RX|" y="|RY|" width="|RW|" height="|RH|" stroke="black" stroke-width="1" fill="|COLOR|" /> ';
-    var svgText   = '<text x="|TX|" y="|TY|">|TEXT|</text>\n ';
+    var svgPrefix = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="|WIDTH|px" height="|HEIGHT|px" xml:space="preserve">\n';
+    var svgSuffix = "</svg>\n";
+    var svgCircle = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="1" fill="|COLOR|" />\n';
+    var svgRect = '<rect x="|RX|" y="|RY|" width="|RW|" height="|RH|" stroke="black" stroke-width="1" fill="|COLOR|" />\n';
+    //var svgText   = '<text x="|TX|" y="|TY|">|TEXT|</text>\n ';
+    var svgTextStart = '<g transform="translate(0,0)"><text x="|TX|" y="|TY|" style="font-size:12px">\n ';
+    //var svgTArea    = ' <textArea x="4" y="10" width="90px" height="80px">What goes\nhere???</textArea>\n';
+    var svgTspan1    = ' <tspan x="4px" y="12px">Note</tspan>\n';
+    var svgTspan2    = ' <tspan x="4px" dy="1em">...</tspan>\n';
+    var svgTextEnd   = '</text></g>\n ';
+    var svgText = svgTextStart+svgTspan1+svgTspan2+svgTextEnd;
     var svgString = svgPrefix +
     //              svgCircle +
                     svgRect   + 
@@ -224,13 +232,14 @@ WV.addSVGBillboard = function(lon, lat, opts, entities)
    
    // create the cesium entity
    var svgEntityImage = svgDataDeclare + svgString;
-   report("svgString: "+svgString);
+   report("svgString:\n"+svgString);
    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h);
    report(" pos: "+JSON.stringify(pos));
    if (!entities)
        entities = WV.viewer.entities;
    var b = WV.viewer.entities.add({
 	   position: pos,
+	   id: id,
            billboard: { image: svgEntityImage }
      });
    // test the image in a dialog
@@ -413,7 +422,8 @@ function setupCesium()
         var pickedObject = WV.scene.pick(movement.endPosition);
 	if (!Cesium.defined(pickedObject)) {
             if (WV.currentBillboard)
-                WV.currentBillboard.scale = WV.bbScaleUnselected;
+                //WV.currentBillboard.scale = WV.bbScaleUnselected;
+                WV.currentBillboard.scale = WV.currentBillboard.unselectedScale;
             WV.currentBillboard = null;
             return;
         }
@@ -429,11 +439,12 @@ function setupCesium()
         //report("move over id "+id);
         var b = layer.billboards[id];
         if (WV.currentBillboard && b != WV.currentBillboard) {
-            WV.currentBillboard.scale = WV.bbScaleUnselected;
+            WV.currentBillboard.scale = WV.currentBillboard.unselectedScale;
         }
         WV.currentBillboard = b;
         //report("b.scale "+b.scale);
-        b.scale = WV.bbScaleSelected;
+        //b.scale = WV.bbScaleSelected;
+        b.scale = 1.5*b.unselectedScale;
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     handler.setInputAction(function(e) {
         report("click.....");
@@ -443,7 +454,12 @@ function setupCesium()
         }
         cpo = pickedObject;
         var id = pickedObject.id;
-	var layerName = WV.recs[id].layerName;
+	var rec = WV.recs[id];
+	if (!rec) {
+	    report("Cannot find rec");
+	    return;
+	}
+	var layerName = rec.layerName;
 	var layer = WV.layers[layerName];
         report("click picked..... pickedObject._id "+id);
         var rec = layer.recs[id];

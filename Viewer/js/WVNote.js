@@ -57,11 +57,12 @@ WV.Note.handleData = function(data, layerName)
         layer.recs[id] = rec;
 	WV.recs[id] = rec;
 	scale = WV.bbScaleUnselected;
-        var imageUrl = "images/note.png";
+        //var imageUrl = "images/note.png";
+        var imageUrl = "images/redQmark.png";
 	if (rec.comments) {
 	    report("comments:" + JSON.stringify(rec.comments));
 	    //scale *= rec.comments.length;
-	    var imageUrl = "images/noteWithReply.png";
+	    var imageUrl = "images/orangeQmark.png";
 	    //scale *= 2;
 	}
 	h = 100000;
@@ -78,8 +79,9 @@ WV.Note.handleData = function(data, layerName)
 	    var color = "rgb(250,250,0)";
 	    if (rec.comments)
 		color = "rgb(200,160,50)";
-	    var opts = {text: rec.text, h: h, width: 200, height: 30, color: color}
-	    var b = WV.addSVGBillboard(lon, lat, opts);
+	    var str = "Hello World\nHow are you?";
+	    var opts = {text: str, h: h, width: 50, height: 30, color: color}
+	    var b = WV.addSVGBillboard(lon, lat, id, opts);
 	}
 	report("b: "+b);
         layer.billboards[id] = b;
