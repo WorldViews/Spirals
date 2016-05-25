@@ -1,6 +1,53 @@
+/*
+This module has code for creating billboards and tethers.
+Tethers are lines drawn from billboards to points on the ground.
+ */
+
+WV.tetherPolylines = null;
+
+WV.getTetherPolylines = function()
+{
+    WV.tetherPolylines = WV.entities;
+    return WV.tetherPolylines;
+}
+
+WV.getTetherPoints = function(lat, lon, h0, h1)
+{
+    report("lat,lon 0: "+lat+" "+lon+" h0: "+h0+"   h1: "+h1);
+    var positions = [Cesium.Cartesian3.fromDegrees(lon, lat, h0),
+		     Cesium.Cartesian3.fromDegrees(lon, lat, h1)];
+    return positions;
+}
+
+WV.getTetherPoints2 = function(lat0, lon0, h0, lat1, lon1, h1)
+{
+    report("lat,lon 0: "+lat0+" "+lon0+" "+h0);
+    report("lat,lon 1: "+lat1+" "+lon1+" "+h1);
+    var positions = [Cesium.Cartesian3.fromDegrees(lon0, lat0, 0),
+		     Cesium.Cartesian3.fromDegrees(lon1, lat1, h1),
+		     Cesium.Cartesian3.fromDegrees(lon1, lat1, 0)];
+    return positions;
+}
+
+WV.getTether = function(tetherId, points)
+{
+    report("WV.getTether id: "+tetherId+" "+JSON.stringify(points));
+    var material = new Cesium.PolylineGlowMaterialProperty({
+	    color : Cesium.Color.RED,
+	    glowPower : 0.15});
+    var opts = { positions : points,
+		 id: tetherId,
+		 width : 3.0,
+		 material : material };
+    var tether = null;
+    var polylines = WV.getTetherPolylines();
+    tether = polylines.add({polyline: opts});
+    tether = tether.polyline;
+    return tether;
+}
 
 
-WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height)
+WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height, useTether)
 {
     WV.numBillboards++;
     //report("Adding billboard "+WV.numBillboards);
@@ -24,11 +71,13 @@ WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height)
        id : id
     });
     b.unselectedScale = scale;
-    if (1) {
+    b.tether = null;
+    if (useTether) {
 	var tetherId = "tether_"+id;
 	report("adding tether "+tetherId);
-	var points = WV.getTetherPoints(lat, lon, 0, lat, lon, height);
+	var points = WV.getTetherPoints(lat, lon, 0, height);
 	var tether = WV.getTether(tetherId, points);
+	b.tether = tether;
 	//layer.tethers[id] = tether;
     }
     return b;
@@ -115,5 +164,51 @@ WV.addSVGBillboard = function(lon, lat, id, opts, entities)
    */
    return b;
 }
+
+/*
+xlines = null;
+
+function drawPoly(lt0, ln0, lt1,ln1)
+{
+    report(">>>> drawLine "+lt0+" "+ln0+" <--> "+lt1+" "+ln1);
+    //   points = [Cesium.Cartesian3.fromDegrees(45, -100, 1000),
+    //      Cesium.Cartesian3.fromDegrees(46, -170, 1000)]
+    var points = [Cesium.Cartesian3.fromDegrees(ln0, lt0, 1000),
+		  Cesium.Cartesian3.fromDegrees(ln1, lt1, 1000000)];
+
+    var col = xlines;
+    //    var polyLine = WV.entities.add({
+    var polyLine = col.add({
+	    polyline : {
+		positions : points,
+		width : 3.0,
+		material : new Cesium.PolylineGlowMaterialProperty({
+			//color : Cesium.Color.DEEPSKYBLUE,
+			color : Cesium.Color.GREEN,
+			glowPower : 0.15
+		    })
+	    }
+	});
+    xp = polyLine;
+    return polyLine;
+    
+}
+
+drawLine = drawPoly;
+function drawLines()
+{
+    drawLine(0, 0, 80, 0);
+    drawLine(45,-100, 45, -160);
+    drawLine(55, 30, 55, 80);
+}
+
+function tests()
+{
+    xlines = WV.entities;
+    //xlines = new Cesium.PolylineCollection();
+    //WV.entities.add(xlines);
+    drawLines();
+}
+*/
 
 

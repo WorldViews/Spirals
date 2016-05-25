@@ -71,6 +71,9 @@ function WVLayer(spec)
 {
     var name = spec.name;
     this.visible = false;
+    this.scale = 0.2;
+    this.height = 100000;
+    this.showTethers = false;
     for (var key in spec) {
 	this[key] = spec[key];
     }
@@ -152,15 +155,7 @@ function handleVideoRecs(data, layerName)
     layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
     WV.scene.primitives.add(layer.bbCollection);
-    var recs = null;
-    try {
-	recs = data.records;
-    }
-    catch (err) {
-	recs = data;
-    }
-    if (recs == null)
-	recs = data;
+    var recs = WV.getRecords(data);
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	rec.layerName = layerName;
@@ -178,13 +173,8 @@ function handleVideoRecs(data, layerName)
         id = layerName+"_"+rec.id;
         layer.recs[id] = rec;
 	WV.recs[id] = rec;
-	scale = WV.bbScaleUnselected;
-	if (layer.scale)
-	    scale = layer.scale;
-	h = 100000;
-	if (layer.height)
-	    h = layer.height;
-        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id,
+				layer.scale, layer.height, layer.showTethers);
         layer.billboards[id] = b;
     }
 }
@@ -253,7 +243,8 @@ function handleImageRecs(recs)
         //imageUrl = "image1.jpg";
         var lon = ispec.lonlat[0];
         var lat = ispec.lonlat[1];
-        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id);
+        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id,
+				layer.scale, layer.height, layer.showTethers);
         layer.billboards[id] = b;
 	b.show = layer.visible;
 	b._wvid = id;
@@ -275,15 +266,7 @@ function handleHTMLRecs(data, layerName)
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
-    var recs = null;
-    try {
-	recs = data.records;
-    }
-    catch (err) {
-	recs = data;
-    }
-    if (recs == null)
-	recs = data;
+    var recs = WV.getRecords(data);
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	report("rec:\n"+WV.toJSON(rec));
@@ -297,13 +280,11 @@ function handleHTMLRecs(data, layerName)
         id = layerName+"_"+rec.id;
         layer.recs[id] = rec;
 	WV.recs[id] = rec;
-	scale = WV.bbScaleUnselected;
-	if (layer.scale)
-	    scale = layer.scale;
 	h = 100000;
 	if (layer.height)
 	    h = layer.height;
-        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl,
+				id, layer.scale, h, layer.showTethers);
         layer.billboards[id] = b;
     }
 }

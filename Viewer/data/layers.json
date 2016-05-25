@@ -60,6 +60,9 @@
           "name": "photos",
           "description": "Recently tweeted images",
 	  "maxNum": 100,
+	  "scale": 0.2,
+	  "height": 4000000,
+	  "showTethers": false,
 	  "imageServer": "/"
        },
        {
@@ -97,6 +100,7 @@
 	  "iconUrl": "images/enockicon.png",
 	  "height": 2000000,
 	  "scale": 0.2,
+	  "showTethers": true,
 	  "mediaType": "html",
 	  "dataFile": "data/beyondthefence_data.json",
 	  "visible": false
