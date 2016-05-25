@@ -68,7 +68,7 @@ WV.ShareCam.handleData = function(data, layerName)
 	WV.recs[id] = rec;
 	var b = layer.billboards[id];
 	if (b == null) {
-	    var ob = addBillboard(layer.bbCollection, lat, lon,
+	    var ob = WV.addBillboard(layer.bbCollection, lat, lon,
 				    iconUrl, id, scale, height);
 	    layer.billboards[id] = ob;
 	}

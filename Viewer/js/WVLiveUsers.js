@@ -1,6 +1,41 @@
 
 WV.tetherPolylines = null;
 
+WV.getTetherPolylines = function()
+{
+    WV.tetherPolylines = WV.entities;
+    return WV.tetherPolylines;
+}
+
+
+WV.getTetherPoints = function(lat0, lon0, h0, lat1, lon1, h1)
+{
+    report("lat,lon 0: "+lat0+" "+lon0+" "+h0);
+    report("lat,lon 1: "+lat1+" "+lon1+" "+h1);
+    var positions = [Cesium.Cartesian3.fromDegrees(lon0, lat0, 0),
+		     Cesium.Cartesian3.fromDegrees(lon1, lat1, h1),
+		     Cesium.Cartesian3.fromDegrees(lon1, lat1, 0)];
+    return positions;
+}
+
+WV.getTether = function(tetherId, points)
+{
+    report("WV.getTether id: "+tetherId+" "+JSON.stringify(points));
+    var material = new Cesium.PolylineGlowMaterialProperty({
+	    color : Cesium.Color.RED,
+	    glowPower : 0.15});
+    var opts = { positions : points,
+		 id: tetherId,
+		 width : 3.0,
+		 material : material };
+    var tether = null;
+    var polylines = WV.getTetherPolylines();
+    tether = polylines.add({polyline: opts});
+    tether = tether.polyline;
+    return tether;
+}
+
+
 WV.shownUserTimeout = 10; // How recently a user must have
                           // posted to be shown here
 
@@ -53,37 +88,21 @@ function tests()
 WV.watchPeople = function()
 {
     //tests();
-    //WV.tetherPolylines = new Cesium.PolylineCollection();
-    //WV.entities.add(WV.tetherPolylines);
-    WV.tetherPolylines = WV.entities;
     var data = [
        {
 	   't': 1E100,
 	   'op': 'create',
 	   'id': 'person1', 
 	   'origin': [0, 0],
-	   'curPos': [0, 0, 1000000]
+	   'curPos': [10, 25, 10000000]
        }
     ]
-    //    if (WV.thisPersonData)
-    //	data.push(WV.thisPersonData);
     WV.handlePeopleData(data, "people");
     var layer = WV.layers["people"];
     layer.visible = true;
     layer.hideFun = WV.hidePeople;
     //layer.polylines = new Cesium.PolylineCollection();
     wvCom.subscribe("people", WV.handlePeopleData);
-}
-
-
-WV.getTetherPoints = function(lat0, lon0, h0, lat1, lon1, h1)
-{
-    report("lat,lon 0: "+lat0+" "+lon0+" "+h0);
-    report("lat,lon 1: "+lat1+" "+lon1+" "+h1);
-    var positions = [Cesium.Cartesian3.fromDegrees(lon0, lat0, 0),
-		     Cesium.Cartesian3.fromDegrees(lon1, lat1, h1),
-		     Cesium.Cartesian3.fromDegrees(lon1, lat1, 0)];
-    return positions;
 }
 
 WV.handlePeopleData = function(data, name)
@@ -94,8 +113,6 @@ WV.handlePeopleData = function(data, name)
     if (!layer.visible) {
 	return;
     }
-    WV.setPeopleVisibility(true);
-    //    WV.setTethersVisibility(true);
     //    WV.setPeopleBillboardsVisibility(true);
     if (layer.recs == null) {
 	report("initing PeopleData layer");
@@ -106,18 +123,21 @@ WV.handlePeopleData = function(data, name)
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
+    WV.setPeopleVisibility(true);
+    //    WV.setTethersVisibility(true);
     var originImageUrl = "person0.png";
     //var curPosImageUrl = "eagle1.png";
     var curPosImageUrl = "eye3.png";
     var recs = data;
     var t = WV.getClockTime();
+    //var polylines = WV.getTetherPolylines();
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	if (rec.userId == WV.myId) {
 	    //report("******** SKIPPING MY OWN RECORD *********");
 	    continue;
 	}
-        //report("rec "+i+" "+JSON.stringify(rec));
+        report("rec "+i+" "+JSON.stringify(rec));
         layer.numObjs++;
 	if (rec.origin == null) {
 	    report("no origin");
@@ -150,31 +170,20 @@ WV.handlePeopleData = function(data, name)
 	var originScale = 0.25;
 	var curPosScale = 0.1;
 	//var height = 300000;
-	var points = WV.getTetherPoints(lat0, lon0, height0, lat, lon, h1);
 	var b = layer.originBillboards[id];
+	var points = WV.getTetherPoints(lat0, lon0, height0, lat, lon, h1);
 	if (showOriginBillboards && b == null) {
-	    var ob = addBillboard(layer.bbCollection, lat0, lon0,
+	    var ob = WV.addBillboard(layer.bbCollection, lat0, lon0,
 				    originImageUrl, id, originScale, height0);
 	    layer.originBillboards[id] = ob;
 	}
 	var cb = layer.curPosBillboards[id];
 	if (cb == null) {
-	    cb = addBillboard(layer.bbCollection, lat, lon,
+	    cb = WV.addBillboard(layer.bbCollection, lat, lon,
 			      curPosImageUrl, id, curPosScale, h1);
 	    layer.curPosBillboards[id] = cb;
 	    var tetherId = "tether_"+rec.userId;
-	    var material = new Cesium.PolylineGlowMaterialProperty({
-		    color : Cesium.Color.RED,
-		    glowPower : 0.15});
-	    var opts = { positions : points,
-			 id: tetherId,
-			 width : 3.0,
-			 material : material };
-	    var tether = null;
-	    if (WV.tetherPolylines != null) {
-		tether = WV.tetherPolylines.add({polyline: opts});
-		tether = tether.polyline;
-	    }
+	    var tether = WV.getTether(tetherId, points);
 	    layer.tethers[id] = tether;
 	}
 	else {
@@ -190,9 +199,8 @@ WV.handlePeopleData = function(data, name)
     for (var id in layer.recs) {
 	var rec = layer.recs[id];
 	var dt = t - rec.t;
-	report("dt: "+dt);
+	//report("dt: "+dt);
 	if (dt < WV.shownUserTimeout) {
-	    report("skipping new views...");
 	    continue;
 	}
 	//TODO: Should actually delete these, not just hide them

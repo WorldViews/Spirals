@@ -6,7 +6,7 @@
 
 //if (!report)
 //    report = function(str) { console.log(str); }
-function report(str) { console.log(str); }
+//function report(str) { console.log(str); }
 
 WVYT = {}
 WVYT.videoId = null;

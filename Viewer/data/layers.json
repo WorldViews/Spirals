@@ -95,6 +95,8 @@
           "name": "beyondthefence",
           "description": "Enock's Blog",
 	  "iconUrl": "images/enockicon.png",
+	  "height": 2000000,
+	  "scale": 0.2,
 	  "mediaType": "html",
 	  "dataFile": "data/beyondthefence_data.json",
 	  "visible": false

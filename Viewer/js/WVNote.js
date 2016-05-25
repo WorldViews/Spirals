@@ -73,7 +73,7 @@ WV.Note.handleData = function(data, layerName)
 	    b.show = false; //TODO: delete it...
 	}
 	if (1) {
-	    b = addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
+	    b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id, scale, h);
 	}
 	else {
 	    var color = "rgb(250,250,0)";
