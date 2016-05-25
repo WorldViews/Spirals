@@ -78,8 +78,8 @@ WV.watchPeople = function()
 
 WV.getTetherPoints = function(lat0, lon0, h0, lat1, lon1, h1)
 {
-    report("lat,lon 0: "+lat0+" "+lon0);
-    report("lat,lon 1: "+lat1+" "+lon1);
+    report("lat,lon 0: "+lat0+" "+lon0+" "+h0);
+    report("lat,lon 1: "+lat1+" "+lon1+" "+h1);
     var positions = [Cesium.Cartesian3.fromDegrees(lon0, lat0, 0),
 		     Cesium.Cartesian3.fromDegrees(lon1, lat1, h1),
 		     Cesium.Cartesian3.fromDegrees(lon1, lat1, 0)];

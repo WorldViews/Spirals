@@ -167,6 +167,28 @@ function addBillboard(bbCollection, lat, lon, imgUrl, id, scale, height)
        id : id
     });
     b.unselectedScale = scale;
+    if (0) {
+	var tetherId = "tether_"+id;
+	report("adding tether "+tetherId);
+	var points = WV.getTetherPoints(lat, lon, 10*height, lat, lon, 0);
+	var material = new Cesium.PolylineGlowMaterialProperty({
+		color : Cesium.Color.RED,
+		glowPower : 0.15});
+	var opts = { positions : points,
+		     id: tetherId,
+		     width : 3.0,
+		     material : material };
+	var tether = null;
+	if (WV.tetherPolylines != null) {
+	    tether = WV.tetherPolylines.add({polyline: opts});
+	    tether = tether.polyline;
+	    tether.show = true;
+	}
+	else {
+	    report("*** no tetherPolylines...");
+	}
+	//layer.tethers[id] = tether;
+    }
     return b;
 }
 
