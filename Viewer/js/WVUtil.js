@@ -1,4 +1,8 @@
 
+function report(str)
+{
+    console.log(str);
+}
 
 WV.toDMYHMS = function(t)
 {

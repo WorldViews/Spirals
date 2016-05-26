@@ -34,8 +34,8 @@
           "description": "Temples",
 	  "maxNum": 5000,
 	  "visible": false,
-	  "height": 10000,
-	  "scale": 0.1,
+	  "xxxheight": 10000,
+	  "scale": 0.06,
 	  "iconUrl": "temple_trans.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/temples_data.json"
@@ -81,14 +81,6 @@
 	  "visible": true
        },
        {
-          "name": "pages",
-          "description": "Geo tagged HTML pages",
-	  "maxNum": 100,
-	  "mediaType": "html",
-	  "dataFile": "data/pages_data.json",
-	  "visible": false
-       },
-       {
           "name": "zilong",
           "description": "Zilong's Journey",
 	  "iconUrl": "yinyang.png",
@@ -100,8 +92,8 @@
           "name": "beyondthefence",
           "description": "Enock's Blog",
 	  "iconUrl": "images/enockicon.png",
-	  "height": 2000000,
-	  "scale": 0.2,
+	  "height": 500000,
+	  "scale": 0.15,
 	  "showTethers": true,
 	  "mediaType": "html",
 	  "dataFile": "data/beyondthefence_data.json",
@@ -120,8 +112,14 @@
        },
        {
           "name": "indoorMaps",
-	  "url": "data/indoormaps_data.json",
+	  "dataFile": "data/indoormaps_data.json",
           "description": "Indoor maps"
+       },
+       {
+          "name": "robots",
+	  "mediaType": "robots",
+	  "dataFile": "data/robots_data.json",
+          "description": "Telepresence Robots"
        },
        {
           "name": "chat",

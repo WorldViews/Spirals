@@ -68,6 +68,9 @@
 <script src="js/WVLiveUsers.js"></script>
 <script src="js/WVIndoorMaps.js"></script>
 <script src="js/WVYT.js"></script>
+<script src="js/WVRobots.js"></script>
+<script src="js/math3d.js"></script>
+<script src="js/WVCoordSys.js"></script>
 <script>
 // You could specify a different layers url if you want
 //WV.layersUrl = "data/myLayers.json";
@@ -75,6 +78,7 @@ WV.useSocketIO = true;
 WV.statusInterval = 500;
 {% if current_user.name %}
 WV.myName="{{ current_user.name }}";
+WV.myId="{{ current_user.email }}";
 {% endif %}
 </script>
 </body>

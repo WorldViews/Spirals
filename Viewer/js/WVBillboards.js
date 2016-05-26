@@ -3,14 +3,16 @@ This module has code for creating billboards and tethers.
 Tethers are lines drawn from billboards to points on the ground.
  */
 
-WV.setBillboardsVisibility = function(objs, val)
+WV.setBillboardsVisibility = function(objs, val, tval)
 {
-    report("setObjsAttr "+val+" objs: "+objs);
+    if (tval == null)
+	tval = val;
+    report("setObjsAttr val: "+val+" tval: "+tval+"  objs: "+objs);
     for (id in objs) {
 	//report("set objs["+id+"]."+attr+" = "+val);
 	objs[id].show = val;
 	if (objs[id].tether)
-	    objs[id].tether.show = val;
+	    objs[id].tether.show = tval;
     }
 }
 
@@ -96,12 +98,14 @@ WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height, us
     });
     b.unselectedScale = scale;
     b.tether = null;
-    if (useTether) {
+    var alwaysAddTether = true;
+    if (alwaysAddTether || useTether) {
 	var tetherId = "tether_"+id;
 	report("adding tether "+tetherId);
 	var points = WV.getTetherPoints(lat, lon, 0, height);
 	var tether = WV.getTether(tetherId, points);
 	b.tether = tether;
+	tether.show = useTether;
 	//layer.tethers[id] = tether;
     }
     return b;

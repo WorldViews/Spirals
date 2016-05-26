@@ -1,0 +1,23 @@
+<html>
+<head>
+</head>
+<tail>
+<script>
+WV = {};
+</script>
+<script src="js/math3d.js"></script>
+<script src="js/WVUtil.js"></script>
+<script src="js/WVCoordSys.js"></script>
+TestGeoMath
+<script>
+var pts = [[0,0,0], [10,0,0], [10,10,0], [0, 10,0]];
+
+for (var i=0; i<pts.length; i++) {
+    report("pts: "+pts[i]);
+    var lla = WV.xyzToLla(pts[i], "PAL");
+    report("lla: "+lla);			    
+}
+
+</script>
+</tail>
+</html>

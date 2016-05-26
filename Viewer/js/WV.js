@@ -103,6 +103,12 @@ function WVLayer(spec)
 			    handleHTMLRecs,
 			    {dataFile: layer.dataFile});
 	}
+	if (layer.mediaType == "robots") {
+	    layer.clickHandler = WV.Robots.handleClick;
+	    wvCom.subscribe(name,
+			    WV.Robots.handleRecs,
+			    {dataFile: layer.dataFile});
+	}
 	if (name == "photos")
 	    WV.getTwitterImages();
 	if (name == "people")
@@ -132,7 +138,7 @@ function WVLayer(spec)
 		this.loaderFun();
 	    }
 	    else {
-		WV.setBillboardsVisibility(this.billboards, true);
+		WV.setBillboardsVisibility(this.billboards, true, this.showTethers);
 	    }
 	}
 	else {
@@ -298,9 +304,13 @@ WV.setupCesium = function()
     handler.setInputAction(function(movement) {
         var pickedObject = WV.scene.pick(movement.endPosition);
 	if (!Cesium.defined(pickedObject)) {
-            if (WV.currentBillboard)
+            if (WV.currentBillboard) {
                 //WV.currentBillboard.scale = WV.bbScaleUnselected;
                 WV.currentBillboard.scale = WV.currentBillboard.unselectedScale;
+		if (WV.currentBillboard.tether) {
+		    //WV.currentBillboard.tether.show = false;
+		}
+	    }
             WV.currentBillboard = null;
             return;
         }
@@ -317,11 +327,21 @@ WV.setupCesium = function()
         var b = layer.billboards[id];
         if (WV.currentBillboard && b != WV.currentBillboard) {
             WV.currentBillboard.scale = WV.currentBillboard.unselectedScale;
+	    if (WV.currentBillboard.tether) {
+		//WV.currentBillboard.tether.show = false;
+	    }
         }
         WV.currentBillboard = b;
         //report("b.scale "+b.scale);
         //b.scale = WV.bbScaleSelected;
         b.scale = 1.5*b.unselectedScale;
+	if (b.tether) {
+	    b.tether.show = true;
+	}
+	else {
+	    // could have made tethers lazy and add
+	    // here as needed.   Maybe do that later.
+	}
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     handler.setInputAction(function(e) {
         report("left down.....");
@@ -363,7 +383,7 @@ WV.setupCesium = function()
 	}
 	var layerName = rec.layerName;
 	var layer = WV.layers[layerName];
-        report("click picked..... pickedObject._id "+id);
+        report("click picked..... pickedObject._id "+id+ " layer: "+layerName);
         var rec = layer.recs[id];
 	layer.clickHandler(rec);
         //WV.playVid(rec);

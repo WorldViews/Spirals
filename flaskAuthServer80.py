@@ -17,6 +17,7 @@ from flask_mail import Mail
 TABLE_NAMES = ["chat", "notes", "periscope"]
 
 DB_REQUEST_TIMES = {}
+USER_TIMES = {}
 
 rdb = None
 try:
@@ -106,6 +107,9 @@ def create_user():
     user_datastore.create_user(email='vaughan@fxpal.com',
                                password='xxx',
                                name="Jim")
+    user_datastore.create_user(email='indrajeet.khater@gmail.com',
+                               password='xxx',
+                               name="Teddy")
     db.session.commit()
     print "------------------------------------------"
 
@@ -300,14 +304,19 @@ are requested.
 def dbstats():
     return flask.jsonify(DB_REQUEST_TIMES)
 
+@app.route('/userstats/')
+def userstats():
+    return flask.jsonify(USER_TIMES)
+
+
 
 ###################################################################
 #
 # SocketIO bindings
 #
-@socketio.on('my event')
-def test_message(message):
-    emit('my response', {'data': 'got it!'})
+#@socketio.on('my event')
+#def test_message(message):
+#    emit('my response', {'data': 'got it!'})
 
 @socketio.on('chat')
 def handle_chat(msg):
@@ -323,12 +332,14 @@ def handle_notes(msg):
 
 @socketio.on('people')
 def handle_people(msg):
-    #print "handle_people:", msg
+    print "handle_people:", msg
     emit('people', msg, broadcast=True)
+    obj = json.loads(msg)
+    USER_TIMES[obj['userId']] = obj
 
 @socketio.on('sharecam')
 def handle_sharecam(msg):
-    #print "handle_people:", msg
+    #print "handle_sharecam:", msg
     emit('sharecam', msg, broadcast=True)
 
 def addMsgStrToDB(msgStr, etype):

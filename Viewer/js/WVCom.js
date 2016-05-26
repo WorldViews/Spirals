@@ -109,6 +109,8 @@ WV.Watcher.prototype.pollHandler = function(data)
 
 WV.WVCom.prototype.subscribe = function(evType, handler, opts)
 {
+    report(">>>> WVCom.subscribe "+evType+" "+opts);
+    xxopts = opts;
     report("WVCom.subscribe "+evType+" "+JSON.stringify(opts));
     if (opts == null)
 	opts = {};

@@ -1,0 +1,42 @@
+{
+    "name": "robots",
+    "records": [
+       {
+          "type": "CoordinateSystem",
+	  "coordSys": "PAL",
+          "lat": 37.4058539,
+	  "lon": -122.1507537,
+	  "alt": 41.0,
+	  "heading": 32.0
+       },
+       {
+         "type": "robot",
+         "robotType": "beam",
+         "description": "FXPAL Beam 1",
+	 "coordSys": "PAL",
+	 "position": [25,15,0],
+         "id": "1",
+         "lat": 44.404459,
+         "lon": -70.789881,
+         "url": "https://fxpal.com"
+       },
+       {
+          "type": "robot",
+          "robotType": "double",
+          "description": "FXPAL Double 1",
+          "id": "2", 
+          "lat": 43.938128,
+          "lon": -70.908677,
+          "url": "https://fxpal.com"
+       },
+       {
+          "type": "robot",
+          "robotType": "jarvis",
+          "description": "Jarvis",
+          "id": "3", 
+          "lat": 37.748536,
+          "lon": -119.559886,
+          "url": "https://fxpal.com"
+       }
+    ]
+}
