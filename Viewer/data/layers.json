@@ -45,6 +45,7 @@
           "description": "Surfing videos",
 	  "maxNum": 8000,
 	  "visible": false,
+	  "scale": 0.06,
 	  "iconUrl": "surfing.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/surfing_data.json"
