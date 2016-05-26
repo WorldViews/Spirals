@@ -107,13 +107,10 @@ $(document).ready(function()
     WV.chatWidget.dismiss = WV.hideChat;
     WV.chatWidget.handleInput = WV.postChatMessage;
 
-    WV.pageWidget = new WV.IframeWidget("page");
-    //WV.pageWidget.show();
-    WV.pageWidget.hide();
-    WV.pageWidget.setSrc("http://fxpal.com");
     //WV.noteWidget = new ChatWidget("note");
     //WV.commentWidget = new ChatWidget("comment");
     //    WV.noteWidget = new ChatWidget("note");
 });
+
 
 

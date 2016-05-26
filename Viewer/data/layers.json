@@ -5,7 +5,7 @@
           "description": "Drone videos",
 	  "maxNum": 500,
 	  "visible": false,
-	  "iconUrl": "images/drone.png",
+	  "iconUrl": "images/orangeDrone.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/tbd_data.json"
        },
@@ -14,7 +14,8 @@
           "description": "Rock climbing",
 	  "visible": false,
 	  "iconUrl": "climber.png",
-	  "height": 4000,
+	  "showTethers": true,
+	  "scale": 0.05,
 	  "mediaType": "youtube",
 	  "dataFile": "data/climbing_data.json"
        },
@@ -23,8 +24,8 @@
           "description": "Hiking",
 	  "maxNum": 5000,
 	  "visible": false,
-	  "height": 2000,
 	  "iconUrl": "hiking.png",
+	  "scale": 0.1,
 	  "mediaType": "youtube",
 	  "dataFile": "data/hiking_data.json"
        },
@@ -34,6 +35,7 @@
 	  "maxNum": 5000,
 	  "visible": false,
 	  "height": 10000,
+	  "scale": 0.1,
 	  "iconUrl": "temple_trans.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/temples_data.json"
@@ -109,6 +111,9 @@
           "name": "periscope",
           "description": "Periscope",
 	  "iconUrl": "images/periscopeIcon.png",
+	  "scale": 0.06,
+	  "height": 500000,
+	  "showTethers": true,
 	  "mediaType": "html",
 	  "xxxdataFile": "data/periscope_data.json",
 	  "visible": false

@@ -183,6 +183,8 @@ WV.IframeWidget = function(name)
     this.hide = function() {
 	report("WV.IframeWidget.hide");
 	$(windowId).hide(100);
+	if (this.onHide)
+	    this.onHide();
     }
 
     this.dismiss = function() {
@@ -192,3 +194,11 @@ WV.IframeWidget = function(name)
     build();
     rig();
 }
+
+
+$(document).ready(function()
+{
+    WV.pageWidget = new WV.IframeWidget("page");
+    WV.pageWidget.hide();
+    WV.pageWidget.setSrc("http://fxpal.com");
+});

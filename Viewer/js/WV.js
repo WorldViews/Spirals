@@ -9,7 +9,7 @@ function report(str)
 WV.screenSpaceEventHandler = null;
 WV.layersUrl = "data/layers.json";
 WV.defaultBillboardIconURL = "/images/mona_cat.jpg";
-WV.playVideoInIframe = false;
+WV.playVideoInIframe = true;
 WV.showPagesInIframe = true;
 WV.prevEndId = null;
 WV.numBillboards = 0;
@@ -85,19 +85,20 @@ function WVLayer(spec)
     this.billboards = null;
     this.bbCollection = null;
     this.pickHandler = WV.simplePickHandler;
+    this.clickHandler = WV.simpleClickHandler;
     WV.layers[name] = this;
 
     this.loaderFun = function() {
 	var layer = WV.layers[this.name];
 	var name = this.name;
 	if (layer.mediaType == "youtube") {
-	    layer.pickHandler = WV.playVid;
+	    layer.clickHandler = WV.playVid;
 	    wvCom.subscribe(name,
 			    handleVideoRecs,
 			    {dataFile: layer.dataFile});
 	}
 	if (layer.mediaType == "html") {
-	    layer.pickHandler = WV.showPage;
+	    layer.clickHandler = WV.showPage;
 	    wvCom.subscribe(name,
 			    handleHTMLRecs,
 			    {dataFile: layer.dataFile});
@@ -107,7 +108,7 @@ function WVLayer(spec)
 	if (name == "people")
 	    WV.watchPeople();
 	if (name == "sharecam") {
-	    layer.pickHandler = WV.ShareCam.handleClick;
+	    layer.clickHandler = WV.ShareCam.handleClick;
 	    WV.ShareCam.watch();
 	}
 	if (name == "indoorMaps")
@@ -323,7 +324,7 @@ WV.setupCesium = function()
         b.scale = 1.5*b.unselectedScale;
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     handler.setInputAction(function(e) {
-        report("click.....");
+        report("left down.....");
         var pickedObject = WV.scene.pick(e.position);
 	if (!Cesium.defined(pickedObject)) {
             return;
@@ -348,9 +349,27 @@ WV.setupCesium = function()
     //handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     handler.setInputAction(function(e) {
+        report("left click.....");
+        var pickedObject = WV.scene.pick(e.position);
+	if (!Cesium.defined(pickedObject)) {
+            return;
+        }
+        cpo = pickedObject;
+        var id = pickedObject.id;
+	var rec = WV.recs[id];
+	if (!rec) {
+	    report("Cannot find rec");
+	    return;
+	}
+	var layerName = rec.layerName;
+	var layer = WV.layers[layerName];
+        report("click picked..... pickedObject._id "+id);
+        var rec = layer.recs[id];
+	layer.clickHandler(rec);
+        //WV.playVid(rec);
 	    report("LEFT_CLICK e: "+JSON.stringify(e));
 	    //WV.viewer.trackedEntity = undefined;
-	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     handler.setInputAction(function(e) {
 	    report("LEFT_DOUBLE_CLICK e: "+JSON.stringify(e));
@@ -365,9 +384,9 @@ WV.playVidInPopup = function(rec)
 {
     var youtubeId = rec.youtubeId;
     var url = "https://www.youtube.com/watch?v="+youtubeId;
-    setTimeout(function() {
-        window.open(url, "DroneVidioView");
-    }, 400);
+    window.open(url, "DroneVidioView");
+    //setTimeout(function() {
+    //}, 400);
 }
 
 WV.playVidInIFrame = function(rec)
@@ -384,10 +403,12 @@ WV.playVidInIFrame = function(rec)
 
 WV.playVid = function(rec)
 {
-    if (WV.playVideoInIframe)
-	WV.playVidInIFrame(rec);
-    else
-	WV.playVidInPopup(rec);
+    setTimeout(function() {
+	if (WV.playVideoInIframe)
+	    WV.playVidInIFrame(rec);
+	else
+	    WV.playVidInPopup(rec);
+	}, 200);
 }
 
 WV.showPage = function(rec)
@@ -424,6 +445,11 @@ WV.handleNoteClick = function(e)
 WV.simplePickHandler = function(rec)
 {
     report("picked record: "+JSON.stringify(rec));
+}
+
+WV.simpleClickHandler = function(rec)
+{
+    report("clicked record: "+JSON.stringify(rec));
 }
 
 /*
