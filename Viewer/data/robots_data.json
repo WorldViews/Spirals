@@ -37,6 +37,28 @@
           "lat": 37.748536,
           "lon": -119.559886,
           "url": "https://fxpal.com"
+       },
+       {
+          "id": "4",
+          "type": "robotTrail",
+          "robotType": "panobot",
+          "description": "PanoBot tour",
+	  "dataUrl": "data/porter_outside1.json",
+	  "coordSys": "PAL",
+          "lat": 37.748536,
+          "lon": -119.559886,
+          "url": "https://fxpal.com"
+       },
+       {
+          "id": "5",
+          "type": "robotTrail",
+          "robotType": "panobot",
+          "description": "PanoBot tour inside PAL.",
+	  "dataUrl": "data/porter_tour_3.json",
+	  "coordSys": "PAL",
+          "lat": 37.748536,
+          "lon": -119.559886,
+          "url": "https://fxpal.com"
        }
     ]
 }
