@@ -6,7 +6,8 @@ import json
 import rethinkdb as rdb
 
 DB_NAME = "test"
-TABLES = ["periscope", "notes", "chat", "replies"]
+TABLES = ["periscope", "notes", "chat", "replies",
+          "periscope_admin"]
 
 class RethinkDB_Admin:
     def createTable(self, tname):
@@ -72,7 +73,7 @@ def optList(x):
         return x
     return []
 
-def testInsert():
+def testInsertComment():
     r = RethinkDB_Admin()
     id = "note_1463090610967_499"
     comment = {'name': 'Don', 'text': 'I agree'}
@@ -97,7 +98,8 @@ if __name__ == '__main__':
     #r.delete()
     #r.create()
     #r.load("backup")
-    testInsert()
+    r.createTable("periscope_admin")
+    #testInsertComment()
 
 
 

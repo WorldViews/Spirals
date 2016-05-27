@@ -5,12 +5,17 @@ from tweepy.streaming import StreamListener
 import time, os, urllib2, json, traceback
 import ImageResizer
 import codecs
-import sys 
+import sys
+import requests
 from threading import Thread
 from unidecode import unidecode
 import socketIO_client
 from WVPoster import WVPoster
 from exceptions import KeyboardInterrupt
+import rethinkdb as rdb
+
+CACHE_USER_LOCATIONS = True
+RETHINK_DB_NAME = "test"
 
 KILLED = False
 USE_GEOCODE = True
@@ -51,6 +56,23 @@ LAST_START_TIME = time.time()
 RUN_DURATION = 5*60            # How long to run after processing started
 #HIBERNATION_TIME = 30*60       # How long to hibernate after paused
 HIBERNATION_TIME = 1E10         # How long to hibernate after paused
+
+"""
+Should get called with a record having an id field
+that is the periscope user name, and a location
+fiend that has lon and lat.
+"""
+def addToPeriscopeAdmin(rec):
+    print "Adding rec to periscope_admin table"
+    tname = "periscope_admin"
+    conn = rdb.connect(db=RETHINK_DB_NAME)
+    recs = rdb.table(tname).insert([rec]).run(conn)
+
+def isPageAccessible(url):
+    print "isPageAccessible", url
+    res = requests.head(url)
+    print "status:", res.status_code
+    return res.status_code == 200
 
 def getDBStats():
     statsUrl = "http://localhost/dbstats"
@@ -263,13 +285,31 @@ class Listener(StreamListener):
         user = obj.get('user')
         print user.keys()
         userLoc = user['location']
-        userName = user['location']
+        userName = user['name']
+        userId = user['id']
         print "user.location:", userLoc
         print "user.name:", userName
+        print "user.id:", userId
+        if periscope_url == None:
+            print "skipping rec with no persiscope_url"
+            return True
+        if not isPageAccessible(periscope_url):
+            print "**** skipping rec with innaccesible periscope_url ****"
+            print "\07\07\07"
+            return True
         userGeo = None
         if userLoc != None:
             if USE_GEOCODE:
                 userGeo = getGeo(userLoc)
+                if CACHE_USER_LOCATIONS:
+                    lobj = {'id': userId,
+                            'lat': userGeo['lat'],
+                            'lon': userGeo['lon'],
+                            'name': userName,
+                            'loc': userLoc,
+                            'complaints': 0,
+                            'lastUrl': periscope_url}
+                    addToPeriscopeAdmin(lobj)
             else:
                 print "*** not using GEOCODE now ***"
 
@@ -282,9 +322,6 @@ class Listener(StreamListener):
             logFile.flush()
         if place == None and geo == None and userGeo == None:
             print "skipping rec with no place"
-            return True
-        if periscope_url == None:
-            print "skipping rec with no persiscope_url"
             return True
         print "*** BINGO ***"
         self.n += 1
@@ -302,6 +339,7 @@ class Listener(StreamListener):
                 'lon': userGeo['lon'],
                 'url': periscope_url}
         pobj['tweet'] = obj
+                    
         if self.DATAFILE_PATH:
             self.records.append(pobj)
             pLayer = {"name": "periscope",

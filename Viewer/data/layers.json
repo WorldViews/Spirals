@@ -5,6 +5,7 @@
           "description": "Drone videos",
 	  "maxNum": 500,
 	  "visible": false,
+	  "scale": 0.12,
 	  "iconUrl": "images/orangeDrone.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/tbd_data.json"
@@ -28,6 +29,17 @@
 	  "scale": 0.1,
 	  "mediaType": "youtube",
 	  "dataFile": "data/hiking_data.json"
+       },
+       {
+          "name": "flyingKite",
+          "description": "Flying Kites",
+          "maxNum": 5000,
+          "visible": false,
+          "xxheight": 10000,
+	  "scale": 0.07,
+          "iconUrl": "images/kite.png",
+          "mediaType": "youtube",
+          "dataFile": "data/FlyingKite_data.json"
        },
        {
           "name": "temples",
@@ -121,6 +133,12 @@
 	  "mediaType": "robots",
 	  "dataFile": "data/robots_data.json",
           "description": "Telepresence Robots"
+       },
+       {
+          "name": "craigslist",
+	  "mediaType": "craigslist",
+	  "dataFile": "data/craigslist_data.json",
+          "description": "Craigslist Events & Housing"
        },
        {
           "name": "chat",

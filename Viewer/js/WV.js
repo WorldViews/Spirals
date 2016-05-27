@@ -109,6 +109,12 @@ function WVLayer(spec)
 			    WV.Robots.handleRecs,
 			    {dataFile: layer.dataFile});
 	}
+	if (layer.mediaType == "craigslist") {
+	    layer.clickHandler = WV.Craigslist.handleClick;
+	    wvCom.subscribe(name,
+			    WV.Craigslist.handleRecs,
+			    {dataFile: layer.dataFile});
+	}
 	if (name == "photos")
 	    WV.getTwitterImages();
 	if (name == "people")
