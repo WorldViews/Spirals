@@ -13,28 +13,8 @@
   <script src="../Cesium/Cesium/Cesium.js"></script>
   <style>
       @import url(../Cesium/Cesium/Widgets/widgets.css);
-      html, body, #cesiumContainer {
-          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
-      }
-
-      .toolbar-left {
-          display: block;
-          position: absolute;
-          padding: 10px;
-          top: 5px;
-          left: 5px;
-          background-color: rgba(50,50,150,0.3);
-      }
-
-      .video-window {
-          display: block;
-          position: absolute;
-          top: 200px;
-          left: 100px;
-      }
-
   </style>
-  <link rel="stylesheet" type="text/css" href="css/chat.css">
+  <link rel="stylesheet" type="text/css" href="css/televiewer.css">
 </head>
 <body>
   <div id="cesiumContainer"></div>
@@ -45,40 +25,27 @@
   </div>
 
   <div id="toolbar"></div>
-
-<!--
-  <div class="chat-window" id="chatWindow">
-    <div class="chat-title" id="chatTitle" style="background-color:grey">Chat:</div>
-    <div class="chat-text" id="chatText"></div>
-    <form action="" id="chatForm">
-      <input id="chatInput" autocomplete="off" style="width: 82%;" />
-      <button>Send</button>
-      <button id="chatDismiss">X</button>
-    </form>
-  </div>
--->
   <div id="notesLayerDiv"></div>
-<!--
--->
 
 <script src="js/WV.js"></script>
 <script src="js/WVUtil.js"></script>
-<script src="js/WVBillboards.js"></script>
 <script src="js/WVFloatingWidget.js"></script>
+<script src="js/WVBillboards.js"></script>
 <script src="js/WVWidget.js"></script>
+<script src="js/WVYT.js"></script>
+
+<script src="js/WVCraigslist.js"></script>
 <script src="js/WVNote.js"></script>
 <script src="js/WVCom.js"></script>
 <script src="js/WVChat.js"></script>
 <script src="js/WVShareCam.js"></script>
 <script src="js/WVLiveUsers.js"></script>
 <script src="js/WVIndoorMaps.js"></script>
-<script src="js/WVYT.js"></script>
 <script>
 // You could specify a different layers url if you want
 //WV.layersUrl = "data/myLayers.json";
 WV.useSocketIO = true;
 WV.statusInterval = 500;
-
 </script>
 </body>
 </html>
