@@ -1,3 +1,9 @@
+/*
+
+TODO: Cleanup namespace usage... move most things to IndoorMaps unless
+higher scope is appropriate.
+ */
+WV.IndoorMaps = {};
 
 WV.geo = function(lon, lat)
 {
@@ -83,27 +89,12 @@ function testy()
 }
 
 
-WV.getIndoorMapData = function()
-{
-    //testy();
-    report("WV.getIndoorMapData");
-    var layer = WV.layers["indoorMaps"];
-    //url = "indoormaps_data.json";
-    url = layer.dataFile;
-    //url = "indoormaps_err_data.json";
-    report("url: "+url);
-    WV.getJSON(url, function(data) {
-	    WV.handleIndoorMapData(data, "indoorMaps");
-	});
-    //WV.handleIndoorMapData(data);
-}
-
-WV.handleIndoorMapData = function(data, name)
+WV.IndoorMaps.handleData = function(data, name)
 {
     //WV.addModel();
     report("handleIndoorMapData");
     var layer = WV.layers["indoorMaps"];
-    layer.showFun = WV.getIndoorMapData;
+    layer.showFun = WV.IndoorMaps.getData;
     layer.visible = true;
     if (layer.recs != null) {
 	//WV.setIndoorMapsVisibility(true);
@@ -173,6 +164,7 @@ WV.handleIndoorMapData = function(data, name)
     }
 }
 
+/*
 WV.showIndoorMaps = function()
 {
     WV.setIndoorMapsVisibility(true);
@@ -182,13 +174,25 @@ WV.hideIndoorMaps = function()
 {
     WV.setIndoorMapsVisibility(false);
 }
+*/
 
-WV.setIndoorMapsVisibility = function(v)
+WV.IndoorMaps.setVisibility = function(v)
 {
     var layer = WV.layers["indoorMaps"];
-    setObjsAttr(layer.ilayers, "show", v);
+    WV.setObjsAttr(layer.ilayers, "show", v);
     //if (v)
     //	setObjsAttr(layer.ilayers, "alpha", 1);
     //else
     //  setObjsAttr(layer.ilayers, "alpha", 0.2);
 }
+
+
+$(document).ready(function()
+{
+    WV.registerLayerType("indoorMaps", {
+         dataHandler: WV.IndoorMaps.handleData,
+         setVisibility: WV.IndoorMaps.setVisibility,
+	     });
+
+});
+

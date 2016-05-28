@@ -1,6 +1,7 @@
 
 WV.ShareCam = {};
 
+/*
 WV.ShareCam.watch = function()
 {
     var data = [
@@ -18,11 +19,9 @@ WV.ShareCam.watch = function()
     WV.ShareCam.handleData(data, "sharecam");
     var layer = WV.layers["sharecam"];
     layer.visible = true;
-    layer.hideFun = WV.ShareCam.hide;
-    //layer.polylines = new Cesium.PolylineCollection();
     wvCom.subscribe("sharecam", WV.ShareCam.handleData);
 }
-
+*/
 
 WV.ShareCam.handleData = function(data, layerName)
 {
@@ -91,11 +90,6 @@ WV.ShareCam.handleData = function(data, layerName)
     }
 }
 
-WV.ShareCam.hide = function()
-{
-    WV.ShareCam.setVisibility(false);
-}
-
 WV.ShareCam.handleClick = function(rec)
 {
     report("ShareCam.handleClick "+JSON.stringify(rec));
@@ -108,13 +102,12 @@ WV.ShareCam.handleClick = function(rec)
     report("ShareCam.JumpChat url: "+url);
     setTimeout(function() {
 		window.open(url, "JumpChat");
-	}, 300);
+	}, 200);
 }
 
-WV.ShareCam.setVisibility = function(v)
-{
-    var layer = WV.layers["people"];
-    setObjsAttr(layer.tethers, "show", v);
-    setObjsAttr(layer.curPosBillboards, "show", v);
-}
-
+$(document).ready(function() {
+    WV.registerLayerType("sharecam", {
+         dataHandler: WV.ShareCam.handleData,
+         clickHandler: WV.ShareCam.handleClick
+	     });
+});

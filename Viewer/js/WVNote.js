@@ -157,6 +157,7 @@ WV.Note.setVisibility = function(v)
 {
     report("WV.Note.setVisibility "+v);
     var layer = WV.layers["notes"];
+    WV.setBillboardsVisibility(layer.billboards, v, v);
     //setObjsAttr(layer.billboards, "show", v);
     if (!WV.noteWidget)
 	return;
@@ -167,4 +168,12 @@ WV.Note.setVisibility = function(v)
 	WV.noteWidget.hide();
     }
 }
+
+$(document).ready(function()
+{
+    WV.registerLayerType("notes", {
+         dataHandler: WV.Note.handleData,
+         setVisibility: WV.Note.setVisibility,
+	     });
+});
 

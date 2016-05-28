@@ -130,13 +130,11 @@
        },
        {
           "name": "robots",
-	  "mediaType": "robots",
 	  "dataFile": "data/robots_data.json",
           "description": "Telepresence Robots"
        },
        {
           "name": "craigslist",
-	  "mediaType": "craigslist",
 	  "dataFile": "data/craigslist_data.json",
           "description": "Craigslist Events & Housing"
        },

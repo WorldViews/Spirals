@@ -7,7 +7,7 @@ WV.setBillboardsVisibility = function(objs, val, tval)
 {
     if (tval == null)
 	tval = val;
-    report("setObjsAttr val: "+val+" tval: "+tval+"  objs: "+objs);
+    report("WV.setBillboardsVisiblity val: "+val+" tval: "+tval+"  objs: "+objs);
     for (id in objs) {
 	//report("set objs["+id+"]."+attr+" = "+val);
 	objs[id].show = val;
@@ -39,7 +39,7 @@ WV.getTetherPolylines = function()
 
 WV.getTetherPoints = function(lat, lon, h0, h1)
 {
-    report("lat,lon 0: "+lat+" "+lon+" h0: "+h0+"   h1: "+h1);
+    //report("lat,lon 0: "+lat+" "+lon+" h0: "+h0+"   h1: "+h1);
     var positions = [Cesium.Cartesian3.fromDegrees(lon, lat, h0),
 		     Cesium.Cartesian3.fromDegrees(lon, lat, h1)];
     return positions;
@@ -47,8 +47,8 @@ WV.getTetherPoints = function(lat, lon, h0, h1)
 
 WV.getTetherPoints2 = function(lat0, lon0, h0, lat1, lon1, h1)
 {
-    report("lat,lon 0: "+lat0+" "+lon0+" "+h0);
-    report("lat,lon 1: "+lat1+" "+lon1+" "+h1);
+    //report("lat,lon 0: "+lat0+" "+lon0+" "+h0);
+    //report("lat,lon 1: "+lat1+" "+lon1+" "+h1);
     var positions = [Cesium.Cartesian3.fromDegrees(lon0, lat0, 0),
 		     Cesium.Cartesian3.fromDegrees(lon1, lat1, h1),
 		     Cesium.Cartesian3.fromDegrees(lon1, lat1, 0)];
@@ -57,7 +57,7 @@ WV.getTetherPoints2 = function(lat0, lon0, h0, lat1, lon1, h1)
 
 WV.getTether = function(tetherId, points)
 {
-    report("WV.getTether id: "+tetherId+" "+JSON.stringify(points));
+    //report("WV.getTether id: "+tetherId+" "+JSON.stringify(points));
     var material = new Cesium.PolylineGlowMaterialProperty({
 	    color : Cesium.Color.RED,
 	    glowPower : 0.15});
@@ -101,7 +101,7 @@ WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height, us
     var alwaysAddTether = true;
     if (alwaysAddTether || useTether) {
 	var tetherId = "tether_"+id;
-	report("adding tether "+tetherId);
+	//report("adding tether "+tetherId);
 	var points = WV.getTetherPoints(lat, lon, 0, height);
 	var tether = WV.getTether(tetherId, points);
 	b.tether = tether;

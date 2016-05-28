@@ -1,30 +1,20 @@
 
 
-WV.chatInitialized = false;
-WV.watchingChat = false;
-WV.showTimeStamps = true;
+WV.Chat = {}
 
-WV.watchChat = function()
-{
-    var layer = WV.layers["chat"];
-    //WV.chatRunning = true;
-    WV.setChatVisibility(true);
-    if (!WV.chatInitialized) {
-	layer.hideFun = WV.hideChat;
-	WV.chatInitialized = true;
-	wvCom.subscribe("chat", WV.handleChatData);
-    }
-}
+WV.Chat.initialized = false;
+WV.Chat.watching = false;
+WV.Chat.showTimeStamps = true;
 
 
-WV.handleChatData = function(data, name)
+WV.Chat.handleData = function(data, name)
 {
     report("handleChatData "+name);
     //report("data: "+WV.toJSON(data));
     var layer = WV.layers["chat"];
-    if (!layer.visible) {
-	return;
-    }
+    //if (!layer.visible) {
+    //	return;
+    //}
     var t = WV.getClockTime();
     var recs = WV.getRecords(data);
     recs.sort(function(a,b) { return a.t-b.t; })
@@ -37,28 +27,28 @@ WV.handleChatData = function(data, name)
 	//report("chat rec: "+JSON.stringify(rec));
 	var dt = t - rec.t;
 	var str = rec.name+": "+rec.text;
-	if (WV.showTimeStamps)
+	if (WV.Chat.showTimeStamps)
 	    str = WV.toTimeStr(rec.t) + " " + str
-	WV.chatWidget.prepend(str+"<br>");
+	WV.Chat.widget.prepend(str+"<br>");
     }
 }
 
-WV.hideChat = function()
+WV.Chat.hide = function()
 {
-    WV.setChatVisibility(false);
+    WV.Chat.setVisibility(false);
 }
 
-WV.setChatVisibility = function(v)
+WV.Chat.setVisibility = function(v)
 {
     var layer = WV.layers["chat"];
     if (v) {
 	report("Show #chatWindow ");
 	$("#cb_chat").prop("checked", true);
 	//$("#chatWindow").show(200);
-	WV.chatWidget.show();
-	if (!WV.watchingChat)
-	    WV.postChatMessage("[joining chat]");
-	WV.watchingChat = true;
+	WV.Chat.widget.show();
+	if (!WV.Chat.watching)
+	    WV.Chat.postMessage("[joining chat]");
+	WV.Chat.watching = true;
 	if (!layer.visible)
 	layer.visible = true;
 	//$("#chatText").append("<br>");
@@ -74,18 +64,18 @@ WV.setChatVisibility = function(v)
 	$("#cb_chat").prop("checked", false);
 	layer.visible = false;
 	//$("#chatWindow").hide(200);
-	WV.chatWidget.hide();
-	if (WV.watchingChat)
-	    WV.postChatMessage("[leaving chat]");
-	WV.watchingChat = false;
+	WV.Chat.widget.hide();
+	if (WV.Chat.watching)
+	    WV.Chat.postMessage("[leaving chat]");
+	WV.Chat.watching = false;
     }
     //
 }
 
 //WV.WVCom.prototype.postMessage = function(text)
-WV.postChatMessage = function(text)
+WV.Chat.postMessage = function(text)
 {
-    var msg = getStatusObj();
+    var msg = WV.getStatusObj();
     msg.text = text;
     msg.type = "chat";
     msg.id = WV.getUniqueId('chat');
@@ -93,24 +83,24 @@ WV.postChatMessage = function(text)
 }
 
 WV.xxxx = 0;
-function chatter()
+WV.chatter = function()
 {
     WV.xxxx++;
-    WV.postChatMessage("hello.  I am sam "+WV.xxxx);
-    setTimeout(chatter, 5000);
+    WV.Chat.postMessage("hello.  I am sam "+WV.xxxx);
+    setTimeout(WV.chatter, 5000);
 }
 
 
 $(document).ready(function()
 {
-    WV.chatWidget = new WV.WindowWidget("chat");
-    WV.chatWidget.dismiss = WV.hideChat;
-    WV.chatWidget.handleInput = WV.postChatMessage;
+    WV.Chat.widget = new WV.WindowWidget("chat");
+    WV.Chat.widget.dismiss = WV.Chat.hide;
+    WV.Chat.widget.handleInput = WV.Chat.postMessage;
 
-    //WV.noteWidget = new ChatWidget("note");
-    //WV.commentWidget = new ChatWidget("comment");
-    //    WV.noteWidget = new ChatWidget("note");
+    WV.registerLayerType("chat", {
+         dataHandler: WV.Chat.handleData,
+         setVisibility: WV.Chat.setVisibility,
+	     });
+
 });
-
-
 

@@ -4,6 +4,44 @@ function report(str)
     console.log(str);
 }
 
+WV.getClockTime = function()
+{
+    return new Date().getTime()/1000.0;
+}
+
+/*
+  Set the give attribute to given value for every element
+  of a dictionary.
+ */
+WV.setObjsAttr = function(objs, attr, val)
+{
+    for (id in objs) {
+	//report("set objs["+id+"]."+attr+" = "+val);
+	objs[id][attr] = val;
+    }
+}
+
+// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+WV.getParameterByName = function(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+WV.toDegrees = function(r)
+{
+    return r*180/Math.PI;
+}
+
+WV.toRadians = function(d)
+{
+    return d*Math.PI/180;
+}
+
 WV.toDMYHMS = function(t)
 {
     var tm = new Date(t*1000);

@@ -16,8 +16,6 @@ WV.numBillboards = 0;
 WV.bbScaleUnselected = 0.08;
 WV.bbScaleSelected = 0.12;
 WV.currentBillboard = null;
-//WV.keepSending = true;
-WV.layers = {};
 WV.viewer = null;
 WV.scene = null;
 WV.thisPersonData = null;
@@ -67,167 +65,21 @@ WV.handleLocation = function(position) {
 			  'origin': WV.origin };
 }
 
-function WVLayer(spec)
-{
-    var name = spec.name;
-    this.visible = false;
-    this.scale = 0.2;
-    this.height = 100000;
-    this.showTethers = false;
-    for (var key in spec) {
-	this[key] = spec[key];
-    }
-    this.showFun = null;
-    this.hideFun = null;
-    this.spec = spec;
-    this.numObjs = 0;
-    this.recs = null;
-    this.billboards = null;
-    this.bbCollection = null;
-    this.pickHandler = WV.simplePickHandler;
-    this.clickHandler = WV.simpleClickHandler;
-    WV.layers[name] = this;
-
-    this.loaderFun = function() {
-	var layer = WV.layers[this.name];
-	var name = this.name;
-	if (layer.mediaType == "youtube") {
-	    layer.clickHandler = WV.playVid;
-	    wvCom.subscribe(name,
-			    handleVideoRecs,
-			    {dataFile: layer.dataFile});
-	}
-	if (layer.mediaType == "html") {
-	    layer.clickHandler = WV.showPage;
-	    wvCom.subscribe(name,
-			    handleHTMLRecs,
-			    {dataFile: layer.dataFile});
-	}
-	if (layer.mediaType == "robots") {
-	    layer.clickHandler = WV.Robots.handleClick;
-	    wvCom.subscribe(name,
-			    WV.Robots.handleRecs,
-			    {dataFile: layer.dataFile});
-	}
-	if (layer.mediaType == "craigslist") {
-	    layer.clickHandler = WV.Craigslist.handleClick;
-	    wvCom.subscribe(name,
-			    WV.Craigslist.handleRecs,
-			    {dataFile: layer.dataFile});
-	}
-	if (name == "photos")
-	    WV.getTwitterImages();
-	if (name == "people")
-	    WV.watchPeople();
-	if (name == "sharecam") {
-	    layer.clickHandler = WV.ShareCam.handleClick;
-	    WV.ShareCam.watch();
-	}
-	if (name == "indoorMaps")
-	    WV.getIndoorMapData();
-	if (name == "chat")
-	    WV.watchChat();
-	if (name == "notes") {
-	    WV.Note.watch();
-	}
-    }
-
-    this.setVisibility = function(visible) {
-	this.visible = visible;
-	report("setVisibility "+this.name+" "+visible);
-	if (visible) {
-	    if (this.showFun) {
-		//report("calling showFun for "+this.name);
-		this.showFun();
-	    }
-	    if (this.billboards == null) {
-		this.loaderFun();
-	    }
-	    else {
-		WV.setBillboardsVisibility(this.billboards, true, this.showTethers);
-	    }
-	}
-	else {
-	    if (this.hideFun) {
-		report("calling hideFun for "+this.name);
-		this.hideFun();
-	    }
-	    WV.setBillboardsVisibility(this.billboards, false);
-	}
-        var id = "cb_"+this.name;
-	$("#"+id).prop('checked', this.visible);
-    }
-}
-
-
-function handleVideoRecs(data, layerName)
-{
-    report("handleVideoRecs "+layerName);
-    var layer = WV.layers[layerName];
-    layer.recs = {};
-    layer.billboards = {};
-    layer.bbCollection = new Cesium.BillboardCollection();
-    WV.scene.primitives.add(layer.bbCollection);
-    var recs = WV.getRecords(data);
-    for (var i=0; i<recs.length; i++) {
-        var rec = recs[i];
-	rec.layerName = layerName;
-	if (!rec.youtubeId) {
-            report("skipping recs with no youtube video");
-        }
-        if (!rec.youtubeId)
-            continue;
-        layer.numObjs++;
-        if (layer.numObjs > layer.maxNum)
-            return;
-        var imageUrl = layer.iconUrl;
-        var lon = rec.lon;
-        var lat = rec.lat;
-        id = layerName+"_"+rec.id;
-        layer.recs[id] = rec;
-	WV.recs[id] = rec;
-        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id,
-				layer.scale, layer.height, layer.showTethers);
-        layer.billboards[id] = b;
-    }
-}
-
-
-function setObjsAttr(objs, attr, val)
-{
-    report("************************************************");
-    report("***  change to WV.setBillboardsVisibility   ****");
-    report("************************************************");
-    report("setObjsAttr "+attr+" "+val+" objs: "+objs);
-    WV.setBillboardsVisibility(objs, val);
-}
-
 
 WV.getTwitterImages = function(url)
 {
     report("***** getTwitterImages ******");
     var layer = WV.layers["photos"];
-    /*
-    if (url) {
-        WV.keepSending = false;
-    }
-    else {
-        //url = layer.imageServer+"imageTweets/?maxNum=10";
-        url = layer.imageServer+"imageTweets/?maxNum=10";
-        if (WV.prevEndId)
-            url += "&prevEndNum="+WV.prevEndId;
-    }
-    */
     if (layer.billboards == null)
 	layer.billboards = {};
     layer.bbCollection = new Cesium.BillboardCollection();
-    WV.getJSON("data/imageTweets_data.json", handleImageRecs);
+    WV.getJSON("data/imageTweets_data.json", WV.handleImageRecs);
     WV.scene.primitives.add(layer.bbCollection);
-    wvCom.subscribe("photos", handleImageRecs);
+    wvCom.subscribe("photos", WV.handleImageRecs);
 }
 
 //function handleImageRecs(data)
-function handleImageRecs(recs)
+WV.handleImageRecs = function(recs)
 {
     report("****** handleImageRecs ******");
     recs = WV.getRecords(recs);
@@ -264,43 +116,10 @@ function handleImageRecs(recs)
 	report("ispec: "+JSON.stringify(ispec));
     }
     if (tailRecs != null) {
-	setTimeout(function() { handleImageRecs(tailRecs); }, 200);
+	setTimeout(function() { WV.handleImageRecs(tailRecs); }, 200);
     }
 }
 
-function handleHTMLRecs(data, layerName)
-{
-    report("*** handleHTMLRecs "+layerName);
-    //report("data:\n"+WV.toJSON(data));
-    var layer = WV.layers[layerName];
-    if (layer.recs == null) {
-	layer.recs = {};
-	layer.billboards = {};
-	layer.bbCollection = new Cesium.BillboardCollection();
-	WV.scene.primitives.add(layer.bbCollection);
-    }
-    var recs = WV.getRecords(data);
-    for (var i=0; i<recs.length; i++) {
-        var rec = recs[i];
-	report("rec:\n"+WV.toJSON(rec));
-	rec.layerName = layerName;
-        layer.numObjs++;
-        if (layer.numObjs > layer.maxNum)
-            return;
-        var imageUrl = layer.iconUrl;
-        var lon = rec.lon;
-        var lat = rec.lat;
-        id = layerName+"_"+rec.id;
-        layer.recs[id] = rec;
-	WV.recs[id] = rec;
-	h = 100000;
-	if (layer.height)
-	    h = layer.height;
-        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl,
-				id, layer.scale, h, layer.showTethers);
-        layer.billboards[id] = b;
-    }
-}
 
 WV.setupCesium = function()
 {
@@ -486,10 +305,6 @@ WV.simpleClickHandler = function(rec)
 WV.getJSON = function(url, handler)
 {
     report(">>>>> getJSON: "+url);
-    //$.getJSON(url, function(data) {
-    //   //report(">>>> got data... calling handler");
-    //   handler(data);
-    //});
     $.ajax({
         url: url,
 	dataType: 'text',
@@ -500,110 +315,13 @@ WV.getJSON = function(url, handler)
 	});
 }
 
-/*
-  This loads the layer information, and then sets up the GUI
-  to show those layers.  For now the layer information is hard
-  coded into this program, but could be loaded from the server
-  and user specific.
- */
-WV.getLayers = function()
-{
-    //$.getJSON(WV.layersUrl, setupLayers);
-    WV.getJSON(WV.layersUrl, WV.setupLayers);
-    //setupLayers(WV.LAYER_DATA);
-}
 
-/*
-  This creates the Jquery UI for showing layers with checkboxes.
- */
-WV.setupLayers = function(layerData)
-{
-    var layers = layerData.layers;
-    var layersDiv = $("#layersDiv");
-    var cbList = $('<div />', { type: 'div', id: 'cbListDiv'}
-                   ).appendTo(layersDiv);
-    //var cbList = $("#cbListDiv");
-    for (var i=0; i<layers.length; i++) {
-        var layer = new WVLayer(layers[i]);
-	var name = layer.name;
-        var id = "cb_"+layer.name;
-        var desc = layer.description;
-        $('<input />',
-            { type: 'checkbox', id: id, value: desc,
-	      click: toggleLayerCB}).appendTo(cbList);
-        $('<label />',
-            { 'for': id, text: desc, style: "color:white" }).appendTo(cbList);
-        $('<br />').appendTo(cbList);
-    }
-    $("#layersLabel").click(function(e) {
-	    report("******** click *******");
-            var txt = $("#layersLabel").html();
-            report("txt: "+txt);
-	    if (txt == "Hide Layers") {
-		$("#layersLabel").html("Show Layers");
-		cbList.hide(100);
-	    }
-	    else {
-		$("#layersLabel").html("Hide Layers");
-		cbList.show(100);
-	    }
-	});
-
-    for (var i=0; i<layers.length; i++) {
-        var layer = WV.layers[layers[i].name];
-	if (layer.visible) {
-	    layer.setVisibility(true);
-	}
-    }
-}
-
-function toggleLayerCB(e)
-{
-    report("e: "+e.target.id);
-    var layer = e.target.id.slice(3);
-    report("checked.... "+$("#"+e.target.id).is(":checked"));
-    toggleLayer(layer);
-}
-
-function toggleLayer(layerName)
-{
-    report("toggleLayer "+layerName);
-    var layer = WV.layers[layerName];
-    var id = "cb_"+layerName;
-    var checked = $("#"+id).is(":checked");
-    report(" checked: "+checked);
-    layer.setVisibility(checked);
-}
-
-WV.getClockTime = function()
-{
-    return new Date().getTime()/1000.0;
-}
-
-function getClockTime()
-{
-    report("**********************************************");
-    report("*** change getClockTIme to WV.getClockTime ***");
-    report("**********************************************");
-    return WV.getClockTime();
-}
-
-function toDegrees(r)
-{
-    return r*180/Math.PI;
-}
-
-function toRadians(d)
-{
-    return d*Math.PI/180;
-}
-
-function getStatusObj()
+WV.getStatusObj = function()
 {
     WV.numPolls++;
     var cpos = WV.viewer.camera.positionCartographic;
-    var clat = toDegrees(cpos.latitude);
-    var clon = toDegrees(cpos.longitude);
+    var clat = WV.toDegrees(cpos.latitude);
+    var clon = WV.toDegrees(cpos.longitude);
     WV.curPos = [clat, clon, cpos.height];
     var t = WV.getClockTime();
     var status = {
@@ -617,24 +335,14 @@ function getStatusObj()
     return status;
 }
 
-function reportStatus()
+WV.reportStatus = function()
 {
 //    report("reportStatus");
-    var status = getStatusObj();
+    var status = WV.getStatusObj();
     wvCom.sendStatus(status);
-    setTimeout(reportStatus, WV.statusInterval);
+    setTimeout(WV.reportStatus, WV.statusInterval);
 }
 
-// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
 
 WV.hideAnimationWidget = function()
 {
@@ -647,7 +355,7 @@ WV.hideAnimationWidget = function()
 $(document).ready(function() {
     report("Starting...");
     wvCom = new WV.WVCom();
-    var userName = getParameterByName("user", document.location.search);
+    var userName = WV.getParameterByName("user", document.location.search);
     report("*********************** userName: "+userName);
     if (userName) {
 	WV.myName = userName;
@@ -655,8 +363,5 @@ $(document).ready(function() {
     WV.getLayers();
     WV.setupCesium();
     WV.getLocation();
-    setTimeout(reportStatus, WV.statusInterval);
-    //WV.addSVGBillboard("Miami", -80.12, 25.46, 1000000, 50);
-    //WV.addSVGBillboard("Over Miami", -80.2, 25.46, 10000);
-    //WV.addSVGBillboard("Midwest", -100.12, 35.46, 1000000);
+    setTimeout(WV.reportStatus, WV.statusInterval);
 });

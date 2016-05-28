@@ -3,6 +3,7 @@
 WV.shownUserTimeout = 10; // How recently a user must have
                           // posted to be shown here
 
+/*
 WV.watchPeople = function()
 {
     var data = [
@@ -21,6 +22,7 @@ WV.watchPeople = function()
     //layer.polylines = new Cesium.PolylineCollection();
     wvCom.subscribe("people", WV.handlePeopleData);
 }
+*/
 
 WV.handlePeopleData = function(data, name)
 {
@@ -48,6 +50,7 @@ WV.handlePeopleData = function(data, name)
     var recs = data;
     var t = WV.getClockTime();
     //var polylines = WV.getTetherPolylines();
+    //report("handlePeopleData num recs: "+recs.length);
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	if (rec.userId == WV.myId) {
@@ -127,15 +130,27 @@ WV.handlePeopleData = function(data, name)
     }
 }
 
+/*
 WV.hidePeople = function()
 {
     WV.setPeopleVisibility(false);
 }
+*/
 
 WV.setPeopleVisibility = function(v)
 {
+    report("WV.setPeopleVisiblity "+v);
     var layer = WV.layers["people"];
+    layer.visible = v;
     WV.setBillboardsVisibility(layer.curPosBillboards, v);
     WV.setObjsAttr(layer.tethers, "show", v);
 }
+
+$(document).ready(function()
+{
+    WV.registerLayerType("people", {
+         dataHandler: WV.handlePeopleData,
+         setVisibility: WV.setPeopleVisibility,
+	     });
+});
 

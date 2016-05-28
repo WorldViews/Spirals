@@ -1,27 +1,5 @@
 
-
 WV.Robots = {}
-
-/*
-WV.Robots.watch = function()
-{
-    var data = [
-       {
-	   't': 1E100,
-	   'op': 'create',
-	   'id': 'person1', 
-	   'origin': [0, 0],
-	   'curPos': [10, 25, 10000000]
-       }
-    ]
-    WV.Robots.handleData(data, "robots");
-    var layer = WV.layers["robots"];
-    layer.visible = true;
-    layer.hideFun = WV.Robots.hide;
-    //layer.polylines = new Cesium.PolylineCollection();
-    wvCom.subscribe("robots", WV.Robots.handleData);
-}
-*/
 
 WV.Robots.handleRecs = function(data, name)
 {
@@ -39,7 +17,7 @@ WV.Robots.handleRecs = function(data, name)
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
-    WV.Robots.setVisibility(true);
+    layer.setVisibility(true);
     var imageUrl = layer.imageUrl;
     var recs = WV.getRecords(data);
     var t = WV.getClockTime();
@@ -122,7 +100,7 @@ WV.Robots.handleTrailData = function(layer, rec, data)
 	var tr = recs[i];
 	var pos = tr.pos;
 	var lla = WV.xyzToLla(tr.pos, coordSys);
-	report(" "+i+"  "+pos+"  "+lla);
+	//report(" "+i+"  "+pos+"  "+lla);
 	points.push(Cesium.Cartesian3.fromDegrees(lla[1], lla[0], 0));
     }
     var material = new Cesium.PolylineGlowMaterialProperty({
@@ -145,19 +123,11 @@ WV.Robots.handleClick = function(rec)
     report("WV.Robots.handleClick rec: "+WV.toJSON(rec));
 }
 
-WV.Robots.show = function()
-{
-    WV.Robots.setVisibility(true);
-}
+$(document).ready(function() {
+    WV.registerLayerType("robots", {
+         dataHandler: WV.Robots.handleRecs,
+         clickHandler: WV.Robots.handleClick
+	     });
+});
 
-WV.Robots.hide = function()
-{
-    WV.Robots.setVisibility(false);
-}
-
-WV.Robots.setVisibility = function(v)
-{
-    var layer = WV.layers["robots"];
-    WV.setBillboardsVisibility(layer.billboards, v, v);
-}
 

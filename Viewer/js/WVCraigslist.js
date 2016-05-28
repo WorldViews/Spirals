@@ -18,7 +18,8 @@ WV.Craigslist.handleRecs = function(data, name)
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
-    WV.Craigslist.setVisibility(true);
+    layer.setVisibility(true);
+    //WV.Craigslist.setVisibility(true);
     var imageUrl = layer.imageUrl;
     var recs = WV.getRecords(data);
     var t = WV.getClockTime();
@@ -77,6 +78,7 @@ WV.Craigslist.handleClick = function(rec)
     window.open(rec.url, "HTMLPages");
 }
 
+/*
 WV.Craigslist.show = function()
 {
     WV.Craigslist.setVisibility(true);
@@ -92,4 +94,14 @@ WV.Craigslist.setVisibility = function(v)
     var layer = WV.layers["craigslist"];
     WV.setBillboardsVisibility(layer.billboards, v, v);
 }
+*/
+
+$(document).ready(function() {
+    WV.registerLayerType("craigslist", {
+         dataHandler: WV.Craigslist.handleRecs,
+         clickHandler: WV.Craigslist.handleClick,
+	 setVisibility: WV.Chat.setVisibility
+	     });
+});
+
 
