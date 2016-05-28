@@ -3,7 +3,7 @@
        {
           "name": "drones",
           "description": "Drone videos",
-	  "maxNum": 500,
+	  "maxNum": 501,
 	  "visible": false,
 	  "scale": 0.12,
 	  "iconUrl": "images/orangeDrone.png",
