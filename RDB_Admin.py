@@ -6,8 +6,7 @@ import json
 import rethinkdb as rdb
 
 DB_NAME = "test"
-TABLES = ["periscope", "notes", "chat", "replies",
-          "periscope_admin"]
+TABLES = ["periscope", "notes", "chat", "periscope_admin"]
 
 class RethinkDB_Admin:
     def createTable(self, tname):

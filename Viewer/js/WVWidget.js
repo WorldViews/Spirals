@@ -87,7 +87,7 @@ WV.WindowWidget = function(name)
     }
 
     this.show = function() {
-	report("WV.ChatWidget.show");
+	report("WV.Widget.show");
 	$(windowId).show(100);
     }
 

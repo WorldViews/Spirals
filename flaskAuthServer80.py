@@ -234,6 +234,15 @@ def addComment(etype):
     comment = req['comment']
     print "parentId:", parentId
     print "comment:", comment
+    if type(comment) in [type("str"), type(u"str")]:
+        cObj = {'text': comment,
+                'type': 'comment',
+                't': time.time()}
+        if 'userId' in req:
+            cObj['userId'] = req['userId']
+        if 'name' in req:
+            cObj['name'] = req['name']
+        comment = cObj
     note = getNote(parentId)
     print "note:", note
     comments = note.get("comments", [])
@@ -252,7 +261,7 @@ def addComment(etype):
     print "**** addToDB"
     replaceObjToDB(note, etype)
     print
-    return "OK"
+    return flask.jsonify({'status': 'OK'})
 
 @app.route('/db/<path:etype>')
 def query(etype):

@@ -14,7 +14,7 @@ WV.Note.watch = function()
 
 WV.Note.sendNote = function(lon, lat, str)
 {
-    var msg = getStatusObj();
+    var msg = WV.getStatusObj();
     msg.type = 'notes';
     msg.id = WV.getUniqueId('note');
     msg.lon = lon;
@@ -28,7 +28,7 @@ WV.Note.sendNote = function(lon, lat, str)
 // THis code is very generic and should be inherited...
 WV.Note.handleData = function(data, layerName)
 {
-    report("handleNoteData "+JSON.stringify(data));
+    //report("handleNoteData "+JSON.stringify(data));
     var layer = WV.layers[layerName];
     if (layer.recs == null) {
 	layer.recs = {};
@@ -41,6 +41,7 @@ WV.Note.handleData = function(data, layerName)
     var recs = WV.getRecords(data);
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
+	report("handleNote: rec: "+WV.toJSON(rec));
 	rec.layerName = layerName;
         layer.numObjs++;
         if (layer.numObjs > layer.maxNum)
@@ -60,7 +61,7 @@ WV.Note.handleData = function(data, layerName)
         //var imageUrl = "images/note.png";
         var imageUrl = "images/redQmark.png";
 	if (rec.comments) {
-	    report("comments:" + JSON.stringify(rec.comments));
+	    //report("comments:" + JSON.stringify(rec.comments));
 	    //scale *= rec.comments.length;
 	    var imageUrl = "images/orangeQmark.png";
 	    //scale *= 2;
@@ -102,6 +103,9 @@ WV.Note.postComment = function(text)
     }
     else { // This is a comment on existing note...
 	var url = "/comment/notes?parent="+noteId+"&comment="+text;
+	url += "&userId="+WV.myId;
+	url += "&name="+WV.myName;
+	url += "&commentId="+WV.getUniqueId("comment");
 	report("url: "+url);
 	WV.getJSON(url, function(x) { 
 		report("post successful");
@@ -121,15 +125,23 @@ WV.Note.getNoteWidget = function()
 
 WV.Note.pickHandler = function(rec)
 {
-    report("WV.Note.pickHandler: "+JSON.stringify(rec));
+    WV.Note.showNoteInWidget(rec);
+}
+
+WV.Note.showNoteInWidget = function(rec)
+{
+    report("WV.Note.showNoteInWidget: "+WV.toJSON(rec));
     WV.Note.getNoteWidget();
-    var text = rec.text;
+    var text = rec.text +"<br>\n";
+    text += "&nbsp;&nbsp;&nbsp;&nbsp;- "+rec.name +"<br>\n";
     text += '<hr style="margin-left:5px;width:80%;">\n';
     if (rec.comments) {
 	for (var i=0; i<rec.comments.length; i++) {
 	    var comment = rec.comments[i];
-	    var ctext = comment;
-	    text = text + "<br>\n" + ctext;
+	    var ctext = comment.text;
+	    text = text + "<br>\n" + ctext +"<br>\n";
+	    if (comment.name)
+	    	text += "&nbsp;&nbsp;&nbsp;&nbsp;- "+comment.name +"<br>\n";
 	    text += '<hr style="margin-left:5px;width:20%;">\n';
 	}
     }

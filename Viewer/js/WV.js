@@ -210,7 +210,8 @@ WV.setupCesium = function()
 	var layer = WV.layers[layerName];
         report("click picked..... pickedObject._id "+id+ " layer: "+layerName);
         var rec = layer.recs[id];
-	layer.clickHandler(rec);
+	if (layer.clickHandler)
+	    layer.clickHandler(rec);
         //WV.playVid(rec);
 	    report("LEFT_CLICK e: "+JSON.stringify(e));
 	    //WV.viewer.trackedEntity = undefined;
