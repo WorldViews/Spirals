@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+  <script>tinymce.init({ selector:'textarea' });</script>
+</head>
+<body>
+  <div id="note1"></div>
+<form id="form1">
+  <textarea id="ta1">Easy (and free!) You should check out our premium features.</textarea>
+  <button>Done</button>
+</form>
+<script>
+function report(str) { console.log(str); }
+
+$("#form1").submit(function() {
+   report("submit");
+   //var hstr = $("#ta1").html();
+   var hstr = tinymce.activeEditor.getContent();
+   report("hstr: "+hstr);
+   $("#note1").html(hstr);
+   tinymce.activeEditor.setContent("");
+   $("#ta1").html("");
+   return false;
+});
+
+$("#xxdone").click(function()
+{
+   var hstr = $("#ta1").html();
+   report("hstr: "+hstr);
+   $("#note1").html(hstr);
+   $("#ta1").html("");
+}
+)
+
+</script>
+</body>
+</html>
