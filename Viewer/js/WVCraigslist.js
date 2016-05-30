@@ -99,8 +99,7 @@ WV.Craigslist.setVisibility = function(v)
 $(document).ready(function() {
     WV.registerLayerType("craigslist", {
          dataHandler: WV.Craigslist.handleRecs,
-         clickHandler: WV.Craigslist.handleClick,
-	 setVisibility: WV.Chat.setVisibility
+         clickHandler: WV.Craigslist.handleClick
 	     });
 });
 
