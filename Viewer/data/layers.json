@@ -91,7 +91,7 @@
           "description": "Shared Camera Guides",
 	  "iconUrl": "jumpchat.png",
 	  "maxNum": 100,
-	  "visible": true
+	  "visible": false
        },
        {
           "name": "zilong",

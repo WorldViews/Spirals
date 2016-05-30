@@ -22,6 +22,7 @@ WV.LayerType = function(name, opts)
 {
     this.name = name;
     WV.layerTypes[name] = this;
+    this.initFun = opts.initFun;
     this.dataHandler = opts.dataHandler;
     this.clickHandler = opts.clickHandler;
     this.setVisibility = opts.setVisibility;
@@ -65,7 +66,15 @@ WV.Layer = function(spec)
 	this.mediaType = name;
     }
     if (this.mediaType) {
+	report("mediaType:"+this.mediaType);
 	this.layerType = WV.layerTypes[this.mediaType];
+	if (this.layerType) {
+	    if (this.layerType.initFun)
+		this.layerType.initFun(this);
+	}
+	else {
+	    report("***** No layerType for layer "+name);
+	}
     }
     else {
 	report("***** No mediaType for layer "+name);
