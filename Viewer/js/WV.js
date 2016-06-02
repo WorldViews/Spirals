@@ -353,6 +353,37 @@ WV.hideAnimationWidget = function()
 	WV.viewer.timeline.destroy();
 }
 
+WV.createModel = function(url, height) {
+    var viewer = WV.viewer;
+    //viewer.entities.removeAll();
+
+    var position = Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, height);
+    var heading = Cesium.Math.toRadians(135);
+    var pitch = 0;
+    var roll = 0;
+    var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
+
+    var entity = viewer.entities.add({
+        name : url,
+        position : position,
+        orientation : orientation,
+        model : {
+            uri : url,
+            minimumPixelSize : 128,
+            maximumScale : 20000
+        }
+    });
+    viewer.trackedEntity = entity;
+}
+
+function testJunk()
+{
+    WV.createModel('../static/models/CesiumAir/Cesium_Air.glb', 5000.0);
+    WV.createModel('../static/models/CesiumGround/Cesium_Ground.glb', 0);
+    WV.createModel('../static/models/CesiumMilkTruck/CesiumMilkTruck-kmc.glb', 0);
+    WV.createModel('../static/models/CesiumMan/Cesium_Man.glb', 0);
+};
+
 $(document).ready(function() {
     report("Starting...");
     wvCom = new WV.WVCom();
@@ -369,4 +400,5 @@ $(document).ready(function() {
     WV.setupCesium();
     WV.getLocation();
     setTimeout(WV.reportStatus, WV.statusInterval);
+    //testJunk();
 });

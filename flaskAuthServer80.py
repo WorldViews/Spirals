@@ -189,6 +189,11 @@ def send_play(path):
     print "send_play", path
     return send_from_directory('play', path)
 
+@app.route('/static/<path:path>')
+def send_static(path):
+    print "send_static", path
+    return send_from_directory('static', path)
+
 @app.route('/log')
 @login_required
 def log_on():

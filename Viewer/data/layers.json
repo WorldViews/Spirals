@@ -113,6 +113,15 @@
 	  "visible": false
        },
        {
+          "name": "tripitinerary",
+          "description": "Enock's Cross Country Trip",
+	  "iconUrl": "images/roadtrip.ico",
+	  "mediaType": "html",
+	  "dataFile": "data/tripitinerary_data.json",
+	  "visible": false
+       },
+
+       {
           "name": "periscope",
           "description": "Periscope",
 	  "iconUrl": "images/periscopeIcon.png",
