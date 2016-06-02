@@ -76,7 +76,7 @@ WV.DynYouTube.handleRecs = function(data, layerName)
     var recs = data.records;
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
-	report("rec: "+WV.toJSON(rec));
+	report("dynYouTube rec: "+WV.toJSON(rec));
 	rec.layerName = layerName;
 	rec.youtubeId = rec.videoId;
 	if (!rec.youtubeId) {
@@ -88,6 +88,11 @@ WV.DynYouTube.handleRecs = function(data, layerName)
             return;
         //var imageUrl = layer.iconUrl;
         var imageUrl = "images/videoLogo.png";
+	if (0) {
+	    var imgStr = '<img src="'+rec.thumbNailURL+'">';
+	    report("imgStr: "+imgStr);
+	    $("#layersDiv").append(imgStr+"\n");
+	}
 	var scale = 0.1;
         var lon = rec.lon;
         var lat = rec.lat;

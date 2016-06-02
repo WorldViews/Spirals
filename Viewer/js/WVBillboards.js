@@ -145,6 +145,8 @@ WV.addSVGBillboard = function(lon, lat, id, opts, entities)
     var svgSuffix = "</svg>\n";
     var svgCircle = '<circle cx="|CX|" cy="|CY|" r="|R|" stroke="black" stroke-width="1" fill="|COLOR|" />\n';
     var svgRect = '<rect x="|RX|" y="|RY|" width="|RW|" height="|RH|" stroke="black" stroke-width="1" fill="|COLOR|" />\n';
+    //var svgImage = '<image xlink:href="https://i.ytimg.com/vi/bt3nmb_wisE/default.jpg" x="0" y="0" height="100" width="100" />\n';
+    var svgImage = '<image xlink:href="http://localhost/Viewer/images/kite2.png" x="0" y="0" height="200" width="200" />\n';
     //var svgText   = '<text x="|TX|" y="|TY|">|TEXT|</text>\n ';
     var svgTextStart = '<g transform="translate(0,0)"><text x="|TX|" y="|TY|" style="font-size:12px">\n ';
     //var svgTArea    = ' <textArea x="4" y="10" width="90px" height="80px">What goes\nhere???</textArea>\n';
@@ -156,6 +158,7 @@ WV.addSVGBillboard = function(lon, lat, id, opts, entities)
     //              svgCircle +
                     svgRect   + 
                     svgText   +
+    //              svgImage  + 
                     svgSuffix;
     svgString = WV.replace(svgString, "|RX|", ""+0);
     svgString = WV.replace(svgString, "|RY|", ""+0);
