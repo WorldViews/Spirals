@@ -356,10 +356,14 @@ WV.hideAnimationWidget = function()
 $(document).ready(function() {
     report("Starting...");
     wvCom = new WV.WVCom();
+    var layersName = WV.getParameterByName("layers", document.location.search);
     var userName = WV.getParameterByName("user", document.location.search);
     report("*********************** userName: "+userName);
     if (userName) {
 	WV.myName = userName;
+    }
+    if (layersName) {
+	WV.layersUrl = "data/"+layersName+".json";
     }
     WV.getLayers();
     WV.setupCesium();

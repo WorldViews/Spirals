@@ -82,6 +82,11 @@ def send_page(path):
     print "send_page", path
     return send_from_directory('Cesium', path)
 
+@app.route('/play/<path:path>')
+def send_play(path):
+    print "send_play", path
+    return send_from_directory('play', path)
+
 """
 This URL is a gateway for posting to SIO
 """

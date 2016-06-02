@@ -1,10 +1,8 @@
 
 WV.ShareCam = {};
 
-
 WV.ShareCam.initLayer = function(layer)
 {
-    report("******** <<<<<< YAHOO!!! >>>>> ************");
     report("layer: "+WV.toJSON(layer));
     report("initing PeopleData layer");
     layer.recs = {};

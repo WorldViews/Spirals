@@ -42,6 +42,7 @@ WV.registerLayerType = function(name, opts)
 WV.Layer = function(spec)
 {
     var name = spec.name;
+    report("***** WV.Layer name: "+name);
     this.visible = false;
     this.scale = 0.2;
     this.height = 100000;
@@ -61,6 +62,7 @@ WV.Layer = function(spec)
     this.clickHandler = WV.simpleClickHandler;
     WV.layers[name] = this;
     this.layerType = null;
+    var inst = this;
     if (!this.mediaType) { // Is this a good idea?  Maybe its too loose.
 	report("***** No mediaType for layer "+name+" using mediaType="+name);
 	this.mediaType = name;
@@ -69,8 +71,10 @@ WV.Layer = function(spec)
 	report("mediaType:"+this.mediaType);
 	this.layerType = WV.layerTypes[this.mediaType];
 	if (this.layerType) {
-	    if (this.layerType.initFun)
-		this.layerType.initFun(this);
+	    if (this.layerType.initFun) {
+		report("calling initFun "+inst);
+		this.layerType.initFun(inst);
+	    }
 	}
 	else {
 	    report("***** No layerType for layer "+name);
@@ -114,7 +118,7 @@ WV.Layer = function(spec)
 	if (visible) {
 	    if (this.showFun) {
 		//report("calling showFun for "+this.name);
-		this.showFun();
+		this.showFun(this);
 	    }
 	    if (this.billboards == null) {
 		this.loaderFun();
@@ -126,7 +130,7 @@ WV.Layer = function(spec)
 	else {
 	    if (this.hideFun) {
 		report("calling hideFun for "+this.name);
-		this.hideFun();
+		this.hideFun(this);
 	    }
 	    WV.setBillboardsVisibility(this.billboards, false);
 	}
@@ -148,12 +152,11 @@ WV.handleVideoRecs = function(data, layerName)
     for (var i=0; i<recs.length; i++) {
         var rec = recs[i];
 	rec.layerName = layerName;
+        layer.numObjs++;
 	if (!rec.youtubeId) {
             report("skipping recs with no youtube video");
-        }
-        if (!rec.youtubeId)
             continue;
-        layer.numObjs++;
+        }
         if (layer.numObjs > layer.maxNum)
             return;
         var imageUrl = layer.iconUrl;
@@ -230,12 +233,17 @@ WV.setupLayers = function(layerData)
         var layer = new WV.Layer(layers[i]);
 	var name = layer.name;
         var id = "cb_"+layer.name;
+        var uiDivId = "ui_div_"+layer.name;
+	layer.uiDivId = uiDivId;
+	//report("setupLayers layer: "+WV.toJSON(layer));
         var desc = layer.description;
         $('<input />',
             { type: 'checkbox', id: id, value: desc,
 	      click: WV.Layer.toggleCB}).appendTo(cbList);
         $('<label />',
             { 'for': id, text: desc, style: "color:white" }).appendTo(cbList);
+        $('<div />',
+	  { id: uiDivId, show: 0, style: "color:white;display:none;" }).appendTo(cbList);
         $('<br />').appendTo(cbList);
     }
     $("#layersLabel").click(function(e) {

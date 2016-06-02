@@ -140,7 +140,7 @@
        },
        {
           "name": "dynYouTube",
-          "description": "YouTube Search"
+          "description": "YouTube Query"
        },
        {
           "name": "chat",
