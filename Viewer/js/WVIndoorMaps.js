@@ -10,7 +10,7 @@ WV.geo = function(lon, lat)
     return new Cesium.Cartographic(lon, lat, 0);
 }
 
-WV.addModel = function()
+WV.IndoorMaps.addModel = function()
 {
    var position = Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, 10);
    var heading = Cesium.Math.toRadians(135);
@@ -91,7 +91,7 @@ function testy()
 
 WV.IndoorMaps.handleData = function(data, name)
 {
-    //WV.addModel();
+    //WV.IndoorMaps.addModel();
     report("handleIndoorMapData");
     var layer = WV.layers["indoorMaps"];
     layer.showFun = WV.IndoorMaps.getData;

@@ -353,35 +353,62 @@ WV.hideAnimationWidget = function()
 	WV.viewer.timeline.destroy();
 }
 
-WV.createModel = function(url, height) {
+WV.createModel = function(entities, opts)
+{
+    var name = opts.name;
+    var url = opts.url;
+    var lat = opts.lat;
+    var lon = opts.lon;
+    var height = opts.height || 0;
+    var heading = opts.heading || 0;
+    var pitch = opts.pitch || 0;
+    var roll = opts.roll || 0;
+    var scale = opts.scale || 1.0;
+    report("----------- WV.createModel -------------");
+    report("WV.createModel "+name+" url: "+url+" lat: "+lat+" lon: "+lon+"  ht: "+height);
+    report("     heading: "+heading+" pitch: "+pitch+" roll: "+roll);
     var viewer = WV.viewer;
     //viewer.entities.removeAll();
-
-    var position = Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, height);
-    var heading = Cesium.Math.toRadians(135);
-    var pitch = 0;
-    var roll = 0;
+    var position = Cesium.Cartesian3.fromDegrees(lon, lat, height);
     var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
 
-    var entity = viewer.entities.add({
+    var entity = entities.add({
         name : url,
         position : position,
         orientation : orientation,
         model : {
             uri : url,
-            minimumPixelSize : 128,
+            scale: scale,
+	    //            minimumPixelSize : 128,
+            minimumPixelSize : 8,
             maximumScale : 20000
         }
     });
-    viewer.trackedEntity = entity;
+    return entity;
+    //viewer.trackedEntity = entity;
+}
+
+WV.addModel = function(collection, name, url, lat, lon, h)
+{
+    report("----------- WV.addModel -------------");
+    if (!collection)
+	collection = WV.viewer.entities;
+    e = WV.createModel(collection, name, url, lat, lon, h);
+    return e;
 }
 
 function testJunk()
 {
-    WV.createModel('../static/models/CesiumAir/Cesium_Air.glb', 5000.0);
-    WV.createModel('../static/models/CesiumGround/Cesium_Ground.glb', 0);
-    WV.createModel('../static/models/CesiumMilkTruck/CesiumMilkTruck-kmc.glb', 0);
-    WV.createModel('../static/models/CesiumMan/Cesium_Man.glb', 0);
+    report("----------- testJunk -------------");
+    var entities = WV.viewer.entities;
+    var lon = -123.0744619;
+    var lat = 44.0503706;
+    WV.addModel(null, "Airplane", '../static/models/CesiumAir/Cesium_Air.glb', lat, lon, 5000.0);
+    WV.addModel(null, "Gr",       '../static/models/CesiumGround/Cesium_Ground.glb', lat, lon, 0);
+    WV.addModel(null, "Milk",     '../static/models/CesiumMilkTruck/CesiumMilkTruck-kmc.glb', lat, lon, 0);
+    e = 
+    WV.addModel(null, "Man",  '../static/models/CesiumMan/Cesium_Man.glb', lat, lon, 0);
+    WV.viewer.trackedEntity = e;
 };
 
 $(document).ready(function() {

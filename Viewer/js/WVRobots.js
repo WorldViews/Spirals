@@ -35,6 +35,10 @@ WV.Robots.handleRecs = function(data, name)
 	    WV.Robots.addTrail(layer, rec);
 	    continue;
 	}
+	if (rec.type == "model") {
+	    WV.Robots.addModel(layer, rec);
+	    continue;
+	}
         report("rec "+i+" "+JSON.stringify(rec));
         layer.numObjs++;
 	var dt = t - rec.t;
@@ -81,6 +85,28 @@ WV.Robots.handleRecs = function(data, name)
     }
 }
 
+WV.Robots.addModel = function(layer, rec)
+{
+    var opts = {
+	name: rec.name,
+	url: rec.modelUrl,
+	lat: rec.lat,
+	lon: rec.lon,
+	height: rec.height,
+	scale: rec.scale
+    };
+    if (rec.heading != null)
+	opts.heading = WV.toRadians(rec.heading - 90);
+    if (rec.pitch != null)
+	opts.pitch = WV.toRadians(rec.pitch);
+    if (rec.roll != null)
+	opts.roll = WV.toRadians(rec.roll);
+    var e = WV.createModel(WV.viewer.entities, opts);
+    if (rec.track)
+	WV.viewer.trackedEntity = e;
+}
+
+
 WV.Robots.addTrail = function(layer, rec)
 {
     report("WV.Robots.addTrail "+layer.name);
@@ -93,6 +119,9 @@ WV.Robots.addTrail = function(layer, rec)
 WV.Robots.handleTrailData = function(layer, rec, data)
 {
     var recs = data.recs;
+    var h = rec.height;
+    if (!h)
+	h = 2;
     var coordSys = rec.coordSys;
     var points = [];
     var pathId = "robot_path_"+rec.id
@@ -101,7 +130,7 @@ WV.Robots.handleTrailData = function(layer, rec, data)
 	var pos = tr.pos;
 	var lla = WV.xyzToLla(tr.pos, coordSys);
 	//report(" "+i+"  "+pos+"  "+lla);
-	points.push(Cesium.Cartesian3.fromDegrees(lla[1], lla[0], 0));
+	points.push(Cesium.Cartesian3.fromDegrees(lla[1], lla[0], h));
     }
     var material = new Cesium.PolylineGlowMaterialProperty({
 	    color : Cesium.Color.RED,
