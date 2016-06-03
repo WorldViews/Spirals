@@ -30,15 +30,15 @@ WV.statusInterval = 1000;
 var wvCom = null;
 
 WV.viewer = new Cesium.Viewer('cesiumContainer', {
-    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
-        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
-	enablePickFeatures: false
-    }),
+	//    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+	//        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
+	//	enablePickFeatures: false
+	//    }),
     animation: false,
     timeline : false,
     //animation: true,
     //timeline : true,
-    baseLayerPicker : false
+    baseLayerPicker : true
 });
 WV.entities = WV.viewer.entities;
 WV.scene = WV.viewer.scene;				 
