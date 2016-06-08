@@ -191,6 +191,12 @@ WV.handleHTMLRecs = function(data, layerName)
         layer.numObjs++;
         if (layer.numObjs > layer.maxNum)
             return;
+	if (rec.recType == "KML") {
+	    var url = rec.url;
+	    report("Adding KML "+url);
+	    var obj = WV.addKML(url);
+	    continue;
+	}
         var imageUrl = layer.iconUrl;
         var lon = rec.lon;
         var lat = rec.lat;

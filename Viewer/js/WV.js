@@ -416,6 +416,29 @@ function testJunk()
     WV.viewer.trackedEntity = e;
 };
 
+WV.addKML = function(url, opts)
+{
+    report("addKML "+url);
+    var options = {
+	camera : WV.viewer.scene.camera,
+	canvas : WV.viewer.scene.canvas
+    };
+    WV.viewer.camera.flyHome(5);
+    //WV.viewer.dataSources.add(Cesium.KmlDataSource.load('data/kml/Enocks Cross Country Trip.kml', options));
+    WV.viewer.dataSources.add(Cesium.KmlDataSource.load(url, options));
+}
+
+function testJunk2()
+{
+    options = {
+	camera : WV.viewer.scene.camera,
+	canvas : WV.viewer.scene.canvas
+    };
+
+    //WV.viewer.dataSources.add(Cesium.KmlDataSource.load('data/kml/gdpPerCapita2008.kmz', options));
+    WV.viewer.dataSources.add(Cesium.KmlDataSource.load('data/kml/Enocks Cross Country Trip.kml', options));
+}
+
 $(document).ready(function() {
     report("Starting...");
     wvCom = new WV.WVCom();
@@ -433,4 +456,5 @@ $(document).ready(function() {
     WV.getLocation();
     setTimeout(WV.reportStatus, WV.statusInterval);
     //testJunk();
+    //testJunk2();
 });

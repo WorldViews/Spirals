@@ -160,6 +160,13 @@
           "name": "notes",
           "description": "Notes",
 	  "visible": false
+       },
+       {
+	  "mediaType": "html",
+	  "dataFile": "data/GDP_data.json",
+          "name": "GDP",
+          "description": "Per Capita GDP",
+	  "visible": false
        }
     ]
 }
