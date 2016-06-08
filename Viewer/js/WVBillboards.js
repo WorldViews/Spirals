@@ -98,6 +98,9 @@ WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height, us
     });
     b.unselectedScale = scale;
     b.tether = null;
+    b.trueLat = lat;
+    b.trueLon = lon;
+    b.neighbors = null;
     var alwaysAddTether = true;
     if (alwaysAddTether || useTether) {
 	var tetherId = "tether_"+id;

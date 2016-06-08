@@ -1,12 +1,34 @@
 
 WV.ShareCam = {};
 
+WV.ShareCam.dist2 = function(a,b)
+{
+    //report("dist2 a: "+a+"   b: "+b);
+    var dlat = a.trueLat-b.trueLat;
+    var dlon = a.trueLon-b.trueLon;
+    var d2 = dlat*dlat + dlon*dlon;
+    //report("d: "+d2);
+    return d2;
+}
+
+WV.ShareCam.dist = function(a,b)
+{
+    //report("dist2 a: "+a+"   b: "+b);
+    var dlat = a.trueLat-b.trueLat;
+    var dlon = a.trueLon-b.trueLon;
+    var d2 = dlat*dlat + dlon*dlon;
+    //report("d: "+d2);
+    return Math.sqrt(d2);
+}
+
 WV.ShareCam.initLayer = function(layer)
 {
     report("layer: "+WV.toJSON(layer));
     report("initing PeopleData layer");
     layer.recs = {};
     layer.billboards = {};
+    layer.picbillboards = {};
+    layer.kdTree = null;
     layer.bbCollection = new Cesium.BillboardCollection();
     WV.scene.primitives.add(layer.bbCollection);
     layer.showFun = function() {
@@ -123,24 +145,26 @@ WV.ShareCam.watchForPics = function(layer)
     //var layer = WV.layers["sharecam"];
     var fetchRecentUrl = "https://sharedcam.paldeploy.com/recent/" +
                                WV.ShareCam.newest_photo_hash + "?json=true";
-                WV.getJSON( fetchRecentUrl, function(data) {
-		    try{ 
-			WV.ShareCam.handleShareCamData(data, layer);
-		    }
-		    catch (err) {
-			report("error: "+err);
-		    }
-		    if (WV.ShareCam.keepPolling)
-			setTimeout(function() {
-				WV.ShareCam.watchForPics(layer)}, 4000);
-	        });
+    WV.getJSON( fetchRecentUrl, function(data) {
+	    try{ 
+		WV.ShareCam.handleShareCamData(data, layer);
+	    }
+	    catch (err) {
+		report("error: "+err);
+	    }
+	    if (WV.ShareCam.keepPolling)
+		setTimeout(function() {
+			WV.ShareCam.watchForPics(layer)}, 4000);
+    });
 }
 
 
 WV.ShareCam.handleShareCamData = function( objs, layer ) {
       var layerName = layer.name;
       report("WV.ShareCam.handleShareCamData "+layerName);
+      //report("num objs "+objs.length);
       var t0 = WV.getClockTime();
+      var numNew = 0;
       for(var i=0; i<objs.length; i++) {
           var obj = objs[i];
           var hash = obj.hash;
@@ -158,15 +182,15 @@ WV.ShareCam.handleShareCamData = function( objs, layer ) {
           }
           var lat = metadata.latitude;
           var lon = metadata.longitude;
-          report("obj "+i+": "+JSON.stringify(obj));
+          //report("obj "+i+": "+JSON.stringify(obj));
 	  var dateUploadedStr = obj.date_uploaded;
-	  report("dateUploadedStr: "+dateUploadedStr);
+	  //report("dateUploadedStr: "+dateUploadedStr);
 	  var t = new Date(dateUploadedStr).getTime()/1000.0;
-	  report("t: "+t);
+	  //report("t: "+t);
 	  var age = t0 - t;
 	  var ageInDays = age/(24*60*60);
-	  report("ageInDays: "+ageInDays);
-	  if (ageInDays > 60) {
+	  //report("ageInDays: "+ageInDays);
+	  if (ageInDays > 600) {
 	      report("Picture too old... skipping...");
 	      continue;
 	  }
@@ -174,6 +198,8 @@ WV.ShareCam.handleShareCamData = function( objs, layer ) {
           //report("latLon: "+lat+" "+lon);
           if (!lat || !lon)
              continue;
+	  lat = eval(lat) + 0.000001*(Math.random() - 0.5);
+	  lon = eval(lon) + 0.000001*(Math.random() - 0.5);
 	  rec = obj;
 	  rec.t = t0;
 	  rec.layerName = layerName;
@@ -183,22 +209,110 @@ WV.ShareCam.handleShareCamData = function( objs, layer ) {
 	  var id = "scp_"+hash;
 	  layer.recs[id] = rec;
 	  WV.recs[id] = rec;
-	  var b = layer.billboards[id];
-	  scale = .6;
-	  //height = 1500000;
-	  height = 10000;
+	  scale = .2;
+	  height = 50000;
+	  var b = layer.picbillboards[id];
 	  if (b == null) {
 	      var ob = WV.addBillboard(layer.bbCollection, lat, lon,
 				       imgUrl, id, scale, height);
-	    layer.billboards[id] = ob;
+	      layer.picbillboards[id] = ob;
+	      numNew += 1;
 	  }
 	  else {
 	      report("billboard exists "+id);
 	      var pos = Cesium.Cartesian3.fromDegrees(lon, lat, height);
-	      layer.billboards[id].position = pos;
+	      layer.picbillboards[id].position = pos;
 	  }
       }
+      if (numNew > 0) {
+	  WV.ShareCam.adjustPositions(layer, layer.picbillboards);
+      }
       //console.log( "Load was performed. New max content id", WV.ShareCam.newest_photo_hash );
+}
+
+var APO = null;
+
+WV.ShareCam.adjustPositions = function(layer, bbsDict)
+{
+    report("================================================================");
+    report("Setting neighbors:");
+    var t0 = WV.getClockTime();
+    var bbs = [];
+    for (var id in bbsDict) {
+	    bbs.push(bbsDict[id]);
+    }
+    report("creating kdTree");
+    layer.kdTree = new kdTree(bbs, WV.ShareCam.dist, ["trueLat", "trueLon"]);
+    var t1 = WV.getClockTime();
+    report("got tree in "+(t1-t0)+" secs.");
+    for (var i=0; i<bbs.length; i++) {
+	var bb = bbs[i];
+	var neighbors = layer.kdTree.nearest(bb, 20, 0.01);
+	//report("  num neighbors: "+neighbors.length);
+	bb.neighbors = neighbors;
+    }
+    var t2 = WV.getClockTime();
+    report("found neighbors for "+bbs.length+" recs in "+(t2-t1)+" secs.");
+    var numAdjusts = 5;
+    for (var k=0; k<numAdjusts; k++) {
+	WV.ShareCam.adjustPositionsOnce(bbs);
+	var t3 = WV.getClockTime();
+	report("adjustedPositions in "+(t3-t2)+" secs.");
+	t2 = t3;
+    }
+    var t4 = WV.getClockTime();
+    report("total processing of "+bbs.length+" recs in "+(t4-t1)+" secs.");
+    // for debugging...
+    BBS = bbs;
+    APO = function() {
+	WV.ShareCam.adjustPositionsOnce(bbs);
+    };
+}
+
+WV.ShareCam.adjustPositionsOnce = function(bbs)
+{
+    var i;
+    for (i=0; i<bbs.length; i++) {
+	bbs[i].force = [0,0,0];
+    }
+    for (i=0; i<bbs.length; i++) {
+	var bbi = bbs[i];
+	//report("bbi: "+bbi+" "+bbi.position);
+	for (var j=0; j<bbi.neighbors.length; j++) {
+	    var bbj = bbi.neighbors[j][0];
+	    //report("bbi: "+bbi+" "+bbi.position+"   "+JSON.stringify(bbi.position));
+	    var d = bbi.neighbors[j][1];
+	    var a = 2.0/(d + 0.01);
+	    //report("   d: "+d+"    bbj: "+bbj+" "+bbj.position);
+	    var dx = bbi.position.x - bbj.position.x;
+	    var dy = bbi.position.y - bbj.position.y;
+	    var dz = bbi.position.z - bbj.position.z;
+	    var Z = Math.sqrt(dx*dx + dy*dy + dz*dz);
+	    if (Z == 0) {
+		//report("bbi "+i+"  bbj "+j+"  identical");
+		continue;
+	    }
+	    bbi.force[0] = a*dx/Z;
+	    bbi.force[1] = a*dy/Z;
+	    bbi.force[2] = a*dz/Z;
+	    //report("   force: "+bbi.force);
+	}
+    }
+    for (i=0; i<bbs.length; i++) {
+	var bbi = bbs[i];
+	//report("  "+i+" "+bbi.force);
+	bbi.position.x += bbi.force[0];
+	bbi.position.y += bbi.force[1];
+	bbi.position.z += bbi.force[2];
+	if (bbi.tether) {
+	    var pos = bbi.tether.positions.getValue();
+	    var p1 = Cesium.Cartesian3.fromDegrees(bbi.trueLon, bbi.trueLat, 0);
+	    var p2 = Cesium.Cartesian3.fromElements(bbi.position.x, bbi.position.y, bbi.position.z);
+	    //report("p1: "+p1+"   p2: "+p2);
+	    var positions = [p1, p2]
+	    bbi.tether.positions = positions;
+	}
+    }
 }
 
 

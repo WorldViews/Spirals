@@ -130,7 +130,6 @@ WV.setupCesium = function()
         var pickedObject = WV.scene.pick(movement.endPosition);
 	if (!Cesium.defined(pickedObject)) {
             if (WV.currentBillboard) {
-                //WV.currentBillboard.scale = WV.bbScaleUnselected;
                 WV.currentBillboard.scale = WV.currentBillboard.unselectedScale;
 		if (WV.currentBillboard.tether) {
 		    //WV.currentBillboard.tether.show = false;
@@ -150,6 +149,10 @@ WV.setupCesium = function()
 	var layer = WV.layers[layerName];
         //report("move over id "+id);
         var b = layer.billboards[id];
+	if (b == null) {
+	    report("*** hack for picbillboards... ***");
+	    b = layer.picbillboards[id];
+	}
         if (WV.currentBillboard && b != WV.currentBillboard) {
             WV.currentBillboard.scale = WV.currentBillboard.unselectedScale;
 	    if (WV.currentBillboard.tether) {

@@ -97,11 +97,16 @@ WV.DynYouTube.handleRecs = function(data, layerName)
         var lon = rec.lon;
         var lat = rec.lat;
         id = layerName+"_"+rec.videoId;
-        layer.recs[id] = rec;
-	WV.recs[id] = rec;
-        var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id,
-				scale, layer.height, layer.showTethers);
-        layer.billboards[id] = b;
+	if (layer.recs[id]) {
+	    report("already have id: "+id);
+	}
+	else {
+	    layer.recs[id] = rec;
+	    WV.recs[id] = rec;
+	    var b = WV.addBillboard(layer.bbCollection, lat, lon, imageUrl, id,
+				    scale, layer.height, layer.showTethers);
+	    layer.billboards[id] = b;
+	}
     }
 }
 
