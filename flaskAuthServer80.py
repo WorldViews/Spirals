@@ -126,7 +126,7 @@ def getNote(id):
 def index():
     print "index ****"
     page = "index.html"
-    if socket.gethostname() == "tours.xcloude.fxpal.net":
+    if socket.gethostname() == "tours.xcloud.fxpal.net":
         page = "landing.html"
     return send_file(page)
 
