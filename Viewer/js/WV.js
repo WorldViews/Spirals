@@ -29,6 +29,8 @@ WV.useSocketIO = false;
 WV.statusInterval = 1000;
 var wvCom = null;
 
+Cesium.BingMapsApi.defaultKey = "ApkF-vdI2ix3rcw-JCklfZG98zznVZfuAzRGf1khbyRZrev_qYq032B23YtYa-eX";
+
 WV.viewer = new Cesium.Viewer('cesiumContainer', {
 	//    imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
 	//        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
