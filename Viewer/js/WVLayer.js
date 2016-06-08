@@ -58,6 +58,7 @@ WV.Layer = function(spec)
     this.recs = null;
     this.billboards = null;
     this.bbCollection = null;
+    this.dataSources = [];
     this.pickHandler = WV.simplePickHandler;
     this.clickHandler = WV.simpleClickHandler;
     WV.layers[name] = this;
@@ -126,6 +127,10 @@ WV.Layer = function(spec)
 	    else {
 		WV.setBillboardsVisibility(this.billboards, true, this.showTethers);
 	    }
+	    for (var i=0; i<this.dataSources.length; i++) {
+		var ds = this.dataSources[i];
+		WV.addDataSource(ds);
+	    }
 	}
 	else {
 	    if (this.hideFun) {
@@ -133,6 +138,10 @@ WV.Layer = function(spec)
 		this.hideFun(this);
 	    }
 	    WV.setBillboardsVisibility(this.billboards, false);
+	    for (var i=0; i<this.dataSources.length; i++) {
+		var ds = this.dataSources[i];
+		WV.removeDataSource(ds);
+	    }
 	}
         var id = "cb_"+this.name;
 	$("#"+id).prop('checked', this.visible);
@@ -194,7 +203,10 @@ WV.handleHTMLRecs = function(data, layerName)
 	if (rec.recType == "KML") {
 	    var url = rec.url;
 	    report("Adding KML "+url);
-	    var obj = WV.addKML(url);
+	    var dsPromise = WV.addKML(url);
+	    dsPromise.then(function(ds) {
+		    layer.dataSources.push(ds);
+		});
 	    continue;
 	}
         var imageUrl = layer.iconUrl;

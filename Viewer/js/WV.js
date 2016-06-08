@@ -425,7 +425,22 @@ WV.addKML = function(url, opts)
     };
     WV.viewer.camera.flyHome(5);
     //WV.viewer.dataSources.add(Cesium.KmlDataSource.load('data/kml/Enocks Cross Country Trip.kml', options));
-    WV.viewer.dataSources.add(Cesium.KmlDataSource.load(url, options));
+    var ds = WV.viewer.dataSources.add(Cesium.KmlDataSource.load(url, options));
+    return ds;
+}
+
+WV.addDataSource = function(dataSource)
+{
+    report("addDataSource "+dataSource);
+    WV.viewer.dataSources.add(dataSource);
+}
+
+WV.removeDataSource = function(dataSource)
+{
+    report("removeDataSource "+dataSource);
+    var i = WV.viewer.dataSources.indexOf(dataSource);
+    report(" dataSource index: "+i);
+    WV.viewer.dataSources.remove(dataSource);
 }
 
 function testJunk2()
