@@ -2,7 +2,7 @@
 This is a version of the flask server with users and
 authentication, and also it is registerable or trackable.
 """
-import json, time, traceback
+import json, time, traceback, socket
 import flask
 
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -125,7 +125,10 @@ def getNote(id):
 @app.route('/')
 def index():
     print "index ****"
-    return send_file('index.html')
+    page = "index.html"
+    if socket.gethostname() == "tours.xcloude.fxpal.net":
+        page = "landing.html"
+    return send_file(page)
 
 
 """
