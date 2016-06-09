@@ -6,9 +6,11 @@ class WVPoster:
             self.server = "http://%s" % host
         else:
             self.server = "http://%s:%d" % (host, port)
+        print "WVPoster server:", self.server
 
     def postToSIO(self, name, obj):
         url = self.server+"/sioput/"+name
+        print "postToSIO url", url
         #print "posting", name, obj, url
         r = requests.post(url, data=json.dumps({'etype': name, 'obj': obj}))
         #print r.status_code, r.reason
