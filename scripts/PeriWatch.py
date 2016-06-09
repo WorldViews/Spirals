@@ -9,7 +9,7 @@ import sys
 import requests
 from threading import Thread
 from unidecode import unidecode
-import socketIO_client
+#import socketIO_client
 from WVPoster import WVPoster
 from exceptions import KeyboardInterrupt
 import rethinkdb as rdb
