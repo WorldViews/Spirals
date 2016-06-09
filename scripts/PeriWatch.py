@@ -14,6 +14,9 @@ from WVPoster import WVPoster
 from exceptions import KeyboardInterrupt
 import rethinkdb as rdb
 
+SERVER_HOST = "localhost"
+SERVER_PORT = 80
+
 CACHE_USER_LOCATIONS = True
 RETHINK_DB_NAME = "test"
 
@@ -78,7 +81,8 @@ def isPageAccessible(url):
     return res.status_code == 200
 
 def getDBStats():
-    statsUrl = "http://localhost/dbstats"
+#    statsUrl = "http://localhost/dbstats"
+    statsUrl = "http://%s:%s/dbstats" % (SERVER_HOST, SERVER_PORT)
     try:
         uos = urllib2.urlopen(statsUrl)
         jbuf = uos.read()
@@ -214,7 +218,7 @@ class Listener(StreamListener):
     recs = {}
     n = 0
     k = 0
-    wvPoster = WVPoster()
+    wvPoster = WVPoster(SERVER_HOST, SERVER_PORT)
     #sio = SIO()
     #sio.runInThread()
 
