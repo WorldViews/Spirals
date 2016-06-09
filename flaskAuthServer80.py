@@ -309,7 +309,7 @@ def query(etype):
         recs = q.run(conn)
     except:
         traceback.print_exc()
-        return
+        return flask.jsonify({})
     items = list(recs)
     obj = {'type': etype,
            't' : t,

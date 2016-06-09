@@ -29,7 +29,7 @@ sys.stdout = UTF8Writer(sys.stdout)
 #IMAGE_DIR = "C:/kimber/WorldViews/twitter_images"
 IMAGE_DIR = "../images/twitter_images"
 LOG_DIR = None
-LOG_DIR = "../logs"
+#LOG_DIR = "../logs"
 CONFIG_PATH = "C:/kimber/WorldViews/twitter_auth_config.py"
 if not os.path.exists(CONFIG_PATH):
     CONFIG_PATH = "/home/flycam/config/twitter_auth_config.py"
@@ -45,7 +45,7 @@ csecret = config['csecret']
 atoken = config['atoken']
 asecret = config['asecret']
 GOOGLE_API_KEY = config['GOOGLE_API_KEY']
-GOOGLE_API_KEY = "AIzaSyAAJmB1YoCDbgWILLWFPBR4UABC4RAwvX8"
+#GOOGLE_API_KEY = "AIzaSyAAJmB1YoCDbgWILLWFPBR4UABC4RAwvX8"
 
 print "ckey", ckey
 print "csecret", csecret
@@ -119,6 +119,7 @@ def waitForStartCondition():
         if dt > HIBERNATION_TIME:
             break
         print "pause..."
+        sys.stdout.flush()
         time.sleep(2)
     LAST_START_TIME = time.time()
     return True
@@ -389,7 +390,8 @@ class TwitterWatcher:
         self.twitterStream = Stream(auth, Listener())
         API = tweepy.API(auth)
         verifyDir(IMAGE_DIR)
-        verifyDir(LOG_DIR)
+        if LOG_DIR:
+            verifyDir(LOG_DIR)
 
     def run(self):
         pattern = ["#Periscope"]
