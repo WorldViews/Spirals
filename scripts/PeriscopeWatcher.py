@@ -5,7 +5,7 @@ from tweepy.streaming import StreamListener
 import os, urllib2, json, traceback
 import ImageResizer
 import codecs
-import sys 
+import sys, os
 API = None
 UTF8Writer = codecs.getwriter('utf8')
 sys.stdout = UTF8Writer(sys.stdout)
@@ -14,6 +14,8 @@ ofile = UTF8Writer(file("pw.txt", "w"))
 #IMAGE_DIR = "C:/kimber/WorldViews/twitter_images"
 IMAGE_DIR = "../images/twitter_images"
 CONFIG_PATH = "C:/kimber/WorldViews/twitter_auth_config.py"
+if not os.path.exists(CONFIG_PATH):
+    CONFIG_PATH = "/home/flycam/config/twitter_auth_config.py"
 """
 You can get authentication values at twitter developer website https://dev.twitter.com/
 """
