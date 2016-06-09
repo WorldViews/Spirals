@@ -83,6 +83,7 @@ def isPageAccessible(url):
 def getDBStats():
 #    statsUrl = "http://localhost/dbstats"
     statsUrl = "http://%s:%s/dbstats" % (SERVER_HOST, SERVER_PORT)
+    print "getDBStats statsUrl:", statsUrl
     try:
         uos = urllib2.urlopen(statsUrl)
         jbuf = uos.read()
