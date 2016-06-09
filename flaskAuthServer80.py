@@ -4,6 +4,7 @@ authentication, and also it is registerable or trackable.
 """
 import json, time, traceback, socket
 import flask
+import Queue
 
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import Security, SQLAlchemyUserDatastore, \
@@ -19,14 +20,34 @@ TABLE_NAMES = ["chat", "notes", "periscope"]
 DB_REQUEST_TIMES = {}
 USER_TIMES = {}
 
+NUM_CONNS = 5
+POOL = Queue.Queue(NUM_CONNS)
+
 rdb = None
 try:
     import rethinkdb as rdb
     #rdb.connect('localhost', 28015).repl()
-    conn = rdb.connect(db='test')
+    for i in range(NUM_CONNS):
+        print "Getting connection"
+        conn_ = rdb.connect(db='test')
+        POOL.put(conn_)
+    print "**** Connection pool has %d connections ****" % POOL.qsize()
 except:
+    traceback.print_exc()
     print "*** Running without DB ***"
     rdb = None
+
+def getConn():
+    print "getConn..."
+    conn = POOL.get()
+    cnt = POOL.qsize()
+    print "POOL count", cnt, " conn:", conn
+    return conn
+
+def releaseConn(conn):
+    print "releasing Conn:", conn
+    POOL.put(conn)
+    return
 
 app = Flask(__name__, static_url_path='')
 app.debug = True
@@ -116,9 +137,15 @@ def create_user():
 
 def getObj(id, tname):
     print "getObj", id, tname
-    recs = rdb.table(tname).filter({'id': id}).run(conn)
-    return recs.next()
-    
+    obj = None
+    try:
+        conn = getConn()
+        recs = rdb.table(tname).filter({'id': id}).run(conn)
+        obj = recs.next()
+    finally:
+        releaseConn(conn)
+    return obj
+
 def getNote(id):
     return getObj(id, 'notes')
     
@@ -262,9 +289,6 @@ def addComment(etype):
     comments.append(comment)
     print "comments:", comments
     note['comments'] = comments
-    #q = rdb.table("notes").filter({"id":id})
-    #q = q.update({"comments": comments})
-    #q.run(conn)
     jObj = json.dumps(note)
     print "etype:", etype
     print "jObj:", jObj
@@ -286,10 +310,6 @@ def query(etype):
         return flask.jsonify({'error': 'No DB', 't': t, 'records': []})
     args = request.args
     id = args.get("id", None)
-    #if id != None:
-    #    recs = rdb.table(etype).filter({'id': id}).run(conn)
-    #    obj = recs.next()
-    #    return flask.jsonify(obj)
     tMin = args.get("tMin", None)
     limit = args.get("limit", None)
     if limit != None:
@@ -306,7 +326,12 @@ def query(etype):
         if limit != None:
             q = q.limit(limit)
         print q
-        recs = q.run(conn)
+        try:
+            conn = getConn()
+            recs = q.run(conn)
+            items = list(recs)
+        finally:
+            releaseConn(conn)
     except:
         traceback.print_exc()
         return flask.jsonify({})
@@ -372,7 +397,11 @@ def addMsgStrToDB(msgStr, etype):
     obj = json.loads(msgStr)
     if rdb == None:
         print "*** not connected to DB ***"
-    rdb.table(etype).insert(obj).run(conn)
+    try:
+        conn = getConn()
+        rdb.table(etype).insert(obj).run(conn)
+    finally:
+        releaseConn(conn)
 
 def addObjToDB(obj, etype):
     print "add Obj to DB:", etype
@@ -380,8 +409,12 @@ def addObjToDB(obj, etype):
     if etype not in TABLE_NAMES:
         print "**** addObjToDB: unknown table:", etype
         return
-    rc = rdb.table(etype).insert(obj).run(conn)
-    print "Completed insert", rc
+    try:
+        conn = getConn()
+        rc = rdb.table(etype).insert(obj).run(conn)
+        print "Completed insert", rc
+    finally:
+        releaseConn(conn)
 
 def replaceObjToDB(obj, etype):
     print "add Obj to DB:", etype
@@ -389,7 +422,11 @@ def replaceObjToDB(obj, etype):
     if etype not in TABLE_NAMES:
         print "**** addObjToDB: unknown table:", etype
         return
-    rc = rdb.table(etype).replace(obj).run(conn)
+    try:
+        conn = getConn()
+        rc = rdb.table(etype).replace(obj).run(conn)
+    finally:
+        releaseConn(conn)
     print "Completed insert", rc
 
 def run():
