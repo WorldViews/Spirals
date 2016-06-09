@@ -140,8 +140,15 @@
        },
        {
           "name": "robots",
+          "mediaType": "robots",
 	  "dataFile": "data/robots_data.json",
           "description": "Telepresence Robots"
+       },
+       {
+          "name": "porterModel",
+	  "mediaType": "robots",
+	  "dataFile": "data/porter_data.json",
+          "description": "Porter Model"
        },
        {
           "name": "craigslist",

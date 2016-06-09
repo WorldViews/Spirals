@@ -28,6 +28,9 @@ IMAGE_DIR = "../images/twitter_images"
 LOG_DIR = None
 LOG_DIR = "../logs"
 CONFIG_PATH = "C:/kimber/WorldViews/twitter_auth_config.py"
+if not os.path.exists(CONFIG_PATH):
+    CONFIG_PATH = "/home/flycam/config/twitter_auth_config.py"
+
 """
 You can get authentication values at twitter developer website https://dev.twitter.com/
 """

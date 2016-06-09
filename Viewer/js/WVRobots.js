@@ -3,8 +3,9 @@ WV.Robots = {}
 
 WV.Robots.handleRecs = function(data, name)
 {
-    report("WV.Robots.handleRecs");
-    var layer = WV.layers["robots"];
+    report("WV.Robots.handleRecs "+name);
+    //var layer = WV.layers["robots"];
+    var layer = WV.layers[name];
     if (!layer.visible) {
 	return;
     }
@@ -37,6 +38,10 @@ WV.Robots.handleRecs = function(data, name)
 	}
 	if (rec.type == "model") {
 	    WV.Robots.addModel(layer, rec);
+	    continue;
+	}
+	if (rec.type) {
+	    report("WV.Robots.Unknown rec.type: "+rec.type);
 	    continue;
 	}
         report("rec "+i+" "+JSON.stringify(rec));
@@ -152,11 +157,11 @@ WV.Robots.handleClick = function(rec)
     report("WV.Robots.handleClick rec: "+WV.toJSON(rec));
 }
 
-$(document).ready(function() {
-    WV.registerLayerType("robots", {
-         dataHandler: WV.Robots.handleRecs,
-         clickHandler: WV.Robots.handleClick
-	     });
+
+WV.registerLayerType("robots", {
+	dataHandler: WV.Robots.handleRecs,
+	clickHandler: WV.Robots.handleClick
 });
+
 
 
