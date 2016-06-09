@@ -354,7 +354,7 @@ def handle_notes(msg):
 
 @socketio.on('people')
 def handle_people(msg):
-    print "handle_people:", msg
+    #print "handle_people:", msg
     emit('people', msg, broadcast=True)
     obj = json.loads(msg)
     USER_TIMES[obj['userId']] = obj
