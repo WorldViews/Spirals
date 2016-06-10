@@ -107,8 +107,10 @@ WV.Robots.addModel = function(layer, rec)
     if (rec.roll != null)
 	opts.roll = WV.toRadians(rec.roll);
     var e = WV.createModel(WV.viewer.entities, opts);
-    if (rec.track)
-	WV.viewer.trackedEntity = e;
+    if (rec.track) {
+	//WV.viewer.trackedEntity = e;
+	WV.viewer.flyTo(e, {duration: 5});
+    }
 }
 
 
