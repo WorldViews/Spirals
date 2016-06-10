@@ -33,7 +33,7 @@ LOG_DIR = None
 if 'WV_HOME' in os.environ:
     CONFIG_PATH = os.path.join(os.environ['WV_HOME'], "config/AUTH.CONFIG.py")
 else:
-    CONFIG_PATH = "../config/ADMIN_CONFIG.py"
+    CONFIG_PATH = "config/ADMIN_CONFIG.py"
 print "Config path:", CONFIG_PATH
 #if not os.path.exists(CONFIG_PATH):
 #    CONFIG_PATH = "/home/flycam/config/twitter_auth_config.py"
