@@ -5,7 +5,7 @@ from tweepy.streaming import StreamListener
 import time, os, urllib2, json, traceback
 import ImageResizer
 import codecs
-import sys
+import os, sys
 import requests
 from threading import Thread
 from unidecode import unidecode
@@ -30,9 +30,13 @@ sys.stdout = UTF8Writer(sys.stdout)
 IMAGE_DIR = "../images/twitter_images"
 LOG_DIR = None
 #LOG_DIR = "../logs"
-CONFIG_PATH = "C:/kimber/WorldViews/twitter_auth_config.py"
-if not os.path.exists(CONFIG_PATH):
-    CONFIG_PATH = "/home/flycam/config/twitter_auth_config.py"
+if 'WV_HOME' in os.environ:
+    CONFIG_PATH = os.path.join(os.environ['WV_HOME'], "config/AUTH.CONFIG.py")
+else:
+    CONFIG_PATH = "../config/ADMIN_CONFIG.py"
+print "Config path:", CONFIG_PATH
+#if not os.path.exists(CONFIG_PATH):
+#    CONFIG_PATH = "/home/flycam/config/twitter_auth_config.py"
 
 """
 You can get authentication values at twitter developer website https://dev.twitter.com/
