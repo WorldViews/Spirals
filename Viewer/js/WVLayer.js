@@ -59,6 +59,7 @@ WV.Layer = function(spec)
     this.billboards = null;
     this.bbCollection = null;
     this.dataSources = [];
+    this.models = [];
     this.pickHandler = WV.simplePickHandler;
     this.clickHandler = WV.simpleClickHandler;
     WV.layers[name] = this;
@@ -131,6 +132,10 @@ WV.Layer = function(spec)
 		var ds = this.dataSources[i];
 		WV.addDataSource(ds);
 	    }
+	    for (var i=0; i<this.models.length; i++) {
+		var model = this.models[i];
+		WV.entities.add(model);
+	    }
 	}
 	else {
 	    if (this.hideFun) {
@@ -141,6 +146,10 @@ WV.Layer = function(spec)
 	    for (var i=0; i<this.dataSources.length; i++) {
 		var ds = this.dataSources[i];
 		WV.removeDataSource(ds);
+	    }
+	    for (var i=0; i<this.models.length; i++) {
+		var model = this.models[i];
+		WV.entities.remove(model);
 	    }
 	}
         var id = "cb_"+this.name;

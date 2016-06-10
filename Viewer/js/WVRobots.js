@@ -111,6 +111,7 @@ WV.Robots.addModel = function(layer, rec)
 	//WV.viewer.trackedEntity = e;
 	WV.viewer.flyTo(e, {duration: 5});
     }
+    layer.models.push(e)
 }
 
 
