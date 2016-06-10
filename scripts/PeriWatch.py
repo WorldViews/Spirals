@@ -31,7 +31,7 @@ IMAGE_DIR = "../images/twitter_images"
 LOG_DIR = None
 #LOG_DIR = "../logs"
 if 'WV_HOME' in os.environ:
-    CONFIG_PATH = os.path.join(os.environ['WV_HOME'], "config/AUTH.CONFIG.py")
+    CONFIG_PATH = os.path.join(os.environ['WV_HOME'], "config/ADMIN_CONFIG.py")
 else:
     CONFIG_PATH = "config/ADMIN_CONFIG.py"
 print "Config path:", CONFIG_PATH
