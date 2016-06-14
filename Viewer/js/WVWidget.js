@@ -202,5 +202,6 @@ $(document).ready(function()
 {
     WV.pageWidget = new WV.IframeWidget("page");
     WV.pageWidget.hide();
-    WV.pageWidget.setSrc("http://fxpal.com");
+    //WV.pageWidget.setSrc("http://fxpal.com");
+    WV.pageWidget.setSrc("/static/blank.html");
 });
