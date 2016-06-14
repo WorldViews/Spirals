@@ -125,6 +125,9 @@ WV.WVCom.prototype.subscribe = function(evType, handler, opts)
     else {
 	typeObj.watcher = new WV.Watcher(this, evType);
     }
+    if (evType == "robots") {
+	typeObj.watcher = new WV.Watcher(this, evType);
+    }
     if (evType == "notes" || evType == "chat" || evType == "periscope") {
 	var url = "/db/"+evType;
 	if (evType == "periscope") {

@@ -134,7 +134,8 @@ WV.Layer = function(spec)
 	    }
 	    for (var i=0; i<this.models.length; i++) {
 		var model = this.models[i];
-		WV.entities.add(model);
+		if (!WV.entities.contains(model))
+		    WV.entities.add(model);
 	    }
 	}
 	else {

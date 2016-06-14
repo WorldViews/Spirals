@@ -18,12 +18,15 @@ WV.Robots.handleRecs = function(data, name)
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
+    report("setting Visibility on");
     layer.setVisibility(true);
     var imageUrl = layer.imageUrl;
     var recs = WV.getRecords(data);
     var t = WV.getClockTime();
+    report("t: "+t);
     //var polylines = WV.getTetherPolylines();
     for (var i=0; i<recs.length; i++) {
+	report("rec: "+WV.toJSON(rec));
         var rec = recs[i];
 	rec.layerName = "robots";
 	if (rec.type == "CoordinateSystem") {
@@ -40,7 +43,7 @@ WV.Robots.handleRecs = function(data, name)
 	    WV.Robots.addModel(layer, rec);
 	    continue;
 	}
-	if (rec.type) {
+	if (rec.type != "robot") {
 	    report("WV.Robots.Unknown rec.type: "+rec.type);
 	    continue;
 	}
@@ -76,16 +79,20 @@ WV.Robots.handleRecs = function(data, name)
 	WV.recs[id] = rec;
 	var curPosScale = 0.1;
 	var b = layer.billboards[id];
+	report("robot id: "+id+" "+lat+" "+lon);
 	if (b == null) {
 	    b = WV.addBillboard(layer.bbCollection, lat, lon,
-				 imageUrl, id, scale, h, false);
+				 imageUrl, id, scale, h, true);
 	    layer.billboards[id] = b;
 	}
 	else {
 	    report("billboard exists "+id);
-	    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h1);
-	    layer.billboards[id].position = pos;
-	    layer.billboards[id].show = true;
+	    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h);
+	    b.position = pos;
+	    b.show = true;
+	    var points = WV.getTetherPoints(lat, lon, 0, h);
+	    b.tether.positions = points;
+	    b.tether.show = true;
 	}
     }
 }
@@ -107,9 +114,11 @@ WV.Robots.addModel = function(layer, rec)
     if (rec.roll != null)
 	opts.roll = WV.toRadians(rec.roll);
     var e = WV.createModel(WV.viewer.entities, opts);
-    if (rec.track) {
+    if (rec.flyTo) {
 	//WV.viewer.trackedEntity = e;
-	WV.viewer.flyTo(e, {duration: 5});
+	var dur = rec.flyTo;
+	report("flyTo dur: "+dur);
+	WV.viewer.flyTo(e, {duration: dur});
     }
     layer.models.push(e)
 }
