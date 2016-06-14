@@ -18,15 +18,15 @@ WV.Robots.handleRecs = function(data, name)
 	layer.bbCollection = new Cesium.BillboardCollection();
 	WV.scene.primitives.add(layer.bbCollection);
     }
-    report("setting Visibility on");
-    layer.setVisibility(true);
+    //report("setting Visibility on");
+    if (!layer.visible)
+	layer.setVisibility(true);
     var imageUrl = layer.imageUrl;
     var recs = WV.getRecords(data);
     var t = WV.getClockTime();
-    report("t: "+t);
+    //report("t: "+t);
     //var polylines = WV.getTetherPolylines();
     for (var i=0; i<recs.length; i++) {
-	report("rec: "+WV.toJSON(rec));
         var rec = recs[i];
 	rec.layerName = "robots";
 	if (rec.type == "CoordinateSystem") {
@@ -47,7 +47,7 @@ WV.Robots.handleRecs = function(data, name)
 	    report("WV.Robots.Unknown rec.type: "+rec.type);
 	    continue;
 	}
-        report("rec "+i+" "+JSON.stringify(rec));
+        //report("rec "+i+" "+JSON.stringify(rec));
         layer.numObjs++;
 	var dt = t - rec.t;
 	var lat, lon;
@@ -79,20 +79,23 @@ WV.Robots.handleRecs = function(data, name)
 	WV.recs[id] = rec;
 	var curPosScale = 0.1;
 	var b = layer.billboards[id];
-	report("robot id: "+id+" "+lat+" "+lon);
+	//report("robot id: "+id+" "+lat+" "+lon);
 	if (b == null) {
 	    b = WV.addBillboard(layer.bbCollection, lat, lon,
-				 imageUrl, id, scale, h, true);
+				imageUrl, id, scale, h, true, true);
 	    layer.billboards[id] = b;
 	}
 	else {
-	    report("billboard exists "+id);
+	    //report("billboard exists "+id);
+	    WV.updateBillboard(b, lat, lon, h);
+	    /*
 	    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h);
 	    b.position = pos;
 	    b.show = true;
 	    var points = WV.getTetherPoints(lat, lon, 0, h);
 	    b.tether.positions = points;
 	    b.tether.show = true;
+	    */
 	}
     }
 }

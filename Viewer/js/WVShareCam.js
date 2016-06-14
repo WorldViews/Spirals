@@ -315,7 +315,6 @@ WV.ShareCam.adjustPositionsOnce = function(bbs)
     }
 }
 
-
 $(document).ready(function() {
     WV.registerLayerType("sharecam", {
          initFun: WV.ShareCam.initLayer,

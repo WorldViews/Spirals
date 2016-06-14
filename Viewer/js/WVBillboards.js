@@ -7,7 +7,7 @@ WV.setBillboardsVisibility = function(objs, val, tval)
 {
     if (tval == null)
 	tval = val;
-    report("WV.setBillboardsVisiblity val: "+val+" tval: "+tval+"  objs: "+objs);
+    //report("WV.setBillboardsVisiblity val: "+val+" tval: "+tval+"  objs: "+objs);
     for (id in objs) {
 	//report("set objs["+id+"]."+attr+" = "+val);
 	objs[id].show = val;
@@ -72,8 +72,30 @@ WV.getTether = function(tetherId, points)
     return tether;
 }
 
+WV.defaultAnchorURL = "/images/mona_cat.jpg";
 
-WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height, useTether)
+WV.addBillboard0 = function(bbCollection, id, lat, lon, imgUrl, scale, height)
+{
+    //report("Adding billboard "+WV.numBillboards);
+    // Example 1:  Add a billboard, specifying all the default values.
+    var b = bbCollection.add({
+       show : true,
+       position : Cesium.Cartesian3.fromDegrees(lon, lat, height),
+       pixelOffset : Cesium.Cartesian2.ZERO,
+       eyeOffset : Cesium.Cartesian3.ZERO,
+       horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+       verticalOrigin : Cesium.VerticalOrigin.CENTER,
+       scale : scale,
+       image : imgUrl,
+       color : Cesium.Color.WHITE,
+       id : id
+    });
+    return b;
+}
+
+
+WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height,
+			   useTether, useAnchor)
 {
     WV.numBillboards++;
     //report("Adding billboard "+WV.numBillboards);
@@ -111,7 +133,33 @@ WV.addBillboard = function(bbCollection, lat, lon, imgUrl, id, scale, height, us
 	tether.show = useTether;
 	//layer.tethers[id] = tether;
     }
+    var alwaysAddAnchor = false;
+    if (alwaysAddAnchor || useAnchor) {
+	var anchorId = "anchor_icon_"+id;
+	report("creating anchor "+anchorId);
+	var ab = WV.addBillboard0(bbCollection, anchorId,
+				  lat, lon, 
+				  WV.defaultAnchorIconURL, 0.2, 1);
+	b.anchor = ab;
+    }
     return b;
+}
+
+WV.updateBillboard = function(billboard, lat, lon, h)
+{
+    var b = billboard;
+    var pos = Cesium.Cartesian3.fromDegrees(lon, lat, h);
+    b.position = pos;
+    b.show = true;
+    if (b.tether) {
+	var points = WV.getTetherPoints(lat, lon, 0, h);
+	b.tether.positions = points;
+	b.tether.show = true;
+    }
+    if (b.anchor) {
+	var pos = Cesium.Cartesian3.fromDegrees(lon, lat, 1);
+	b.anchor.position = pos;
+    }
 }
 
 WV.replace = function(str, a, b)

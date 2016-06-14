@@ -3,8 +3,10 @@ import sys, time
 from math import sin,cos
 import WVPoster
 
+SLEEP_TIME = 0.1
+
 def run():
-    wvp = WVPoster.WVPoster()
+    wvp = WVPoster.WVPoster("tours.paldeploy.com")
     i = 0
     while 1:
         i += 1
@@ -17,7 +19,8 @@ def run():
                'position': [x, y, 0]}
         print "posting", obj
         wvp.postToSIO("robots", obj)
-        time.sleep(1)
+        print "Sleeping for", SLEEP_TIME
+        time.sleep(SLEEP_TIME)
 
 
 if __name__ == '__main__':

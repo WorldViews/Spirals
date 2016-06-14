@@ -9,6 +9,7 @@ function report(str)
 WV.screenSpaceEventHandler = null;
 WV.layersUrl = "data/layers.json";
 WV.defaultBillboardIconURL = "/images/mona_cat.jpg";
+WV.defaultAnchorIconURL = "/Viewer/images/purplePlacemark.png";
 WV.playVideoInIframe = true;
 WV.showPagesInIframe = true;
 WV.prevEndId = null;
