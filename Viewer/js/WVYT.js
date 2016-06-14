@@ -95,5 +95,6 @@ $(document).ready(function()
     WV.youtubeWidget = new WV.IframeWidget("video");
     WV.youtubeWidget.hide();
     WV.youtubeWidget.onHide = WVYT.stopVideo;
-    WV.youtubeWidget.setSrc("about:blank");
+    //WV.youtubeWidget.setSrc("about:blank");
+    WV.youtubeWidget.setSrc("/static/blank.html");
 });

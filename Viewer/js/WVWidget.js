@@ -144,7 +144,8 @@ WV.IframeWidget = function(name)
 
     function rig() {
 	$(dismissId).click(function(e) {
-		inst.setSrc("about:blank");
+		//inst.setSrc("about:blank");
+		inst.setSrc("/static/blank.html");
 		inst.dismiss(); 
 	    });
 	$(windowId).draggable({
@@ -172,6 +173,7 @@ WV.IframeWidget = function(name)
 
     this.setSrc = function(url) {
 	report("setSrc "+url);
+	//console.trace();
 	$(iframeId).attr('src', url);
     }
 
