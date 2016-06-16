@@ -4,8 +4,6 @@
        {
           "type": "CoordinateSystem",
 	  "coordSys": "PAL",
-          "xlat":  37.40581,
-	  "xlon": -122.15080,
           "lat":  37.40583,
 	  "lon": -122.15080,
 	  "alt": 41.0,
@@ -17,7 +15,7 @@
          "description": "FXPAL Beam 1",
 	 "coordSys": "PAL",
 	 "position": [25,15,0],
-         "id": "1",
+         "id": "pal_robot_beam1",
          "lat": 44.404459,
          "lon": -70.789881,
          "url": "https://fxpal.com"
@@ -26,7 +24,8 @@
           "type": "robot",
           "robotType": "double",
           "description": "FXPAL Double 1",
-          "id": "2", 
+          "id": "pal_robot_double1",
+	  "coordSys": "PAL",
           "lat": 43.938128,
           "lon": -70.908677,
           "url": "https://fxpal.com"
@@ -35,7 +34,7 @@
           "type": "robot",
           "robotType": "jarvis",
           "description": "Jarvis",
-          "id": "3", 
+          "id": "3",
           "lat": 37.748536,
           "lon": -119.559886,
           "url": "https://fxpal.com"
@@ -69,7 +68,21 @@
 	  "scale": 53,
 	  "height": 0.2,
 	  "heading": 33.2,
-	  "track": true
+	  "flyTo": 3
+       },
+       {
+          "id": "9",
+	  "type": "xmodel",
+	  "xmodelUrl": "../static/models/YMMBuilding.glb",
+	  "modelUrl": "../static/models/YMM.glb",
+          "lat":  37.40583,
+	  "lon": -122.15080,
+	  "alt": 41.0,
+	  "heading": 32.0,
+	  "scale": 1,
+	  "height": 0.2,
+	  "heading": 33.2,
+	  "flyTo": 6
        }
     ]
 }
