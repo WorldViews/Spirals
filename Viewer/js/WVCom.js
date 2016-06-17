@@ -28,7 +28,7 @@ WV.WVCom = function()
 
 WV.sharecamHandler = function(msg)
 {
-    report("sharecam: "+msg);
+    //report("sharecam: "+msg);
 }
 
 WV.Watcher = function(wvCom, evType)

@@ -127,6 +127,9 @@ WV.Layer = function(spec)
 	    }
 	    else {
 		WV.setBillboardsVisibility(this.billboards, true, this.showTethers);
+		if (this.picbillboards) {
+		    WV.setBillboardsVisibility(this.picbillboards, true, true);
+		}
 	    }
 	    for (var i=0; i<this.dataSources.length; i++) {
 		var ds = this.dataSources[i];
@@ -144,6 +147,9 @@ WV.Layer = function(spec)
 		this.hideFun(this);
 	    }
 	    WV.setBillboardsVisibility(this.billboards, false);
+	    if (this.picbillboards) {
+		WV.setBillboardsVisibility(this.picbillboards, false, false);
+	    }
 	    for (var i=0; i<this.dataSources.length; i++) {
 		var ds = this.dataSources[i];
 		WV.removeDataSource(ds);

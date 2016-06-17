@@ -97,6 +97,32 @@ WV.getUniqueId = function(name)
     return id;
 }
 
+
+/*
+  determine whether two lists of points are the same.
+*/
+WV.eqPoints = function(a1, a2)
+{
+    if (a1 == null || a2 == null) {
+	return false;
+    }
+    if (a1.length != a2.length) {
+	return false;
+    }
+    for (var i=0; i<a1.length; i++) {
+	if (a1[i].x != a2[i].x ||
+	    a1[i].y != a2[i].y ||
+	    a1[i].z != a2[i].z) {
+	    return false;
+	}
+    }
+    return true;
+}
+
+
+/*
+  if arg is array, return it, otherwise get .records field.
+ */
 WV.getRecords = function(v)
 {
     if (v instanceof Array)

@@ -114,6 +114,7 @@ WV.ShareCam.handleData = function(data, layerName)
     */
 }
 
+/*
 WV.ShareCam.handleClick = function(rec)
 {
     report("ShareCam.handleClick "+JSON.stringify(rec));
@@ -127,6 +128,32 @@ WV.ShareCam.handleClick = function(rec)
     setTimeout(function() {
 		window.open(url, "JumpChat");
 	}, 200);
+}
+*/
+WV.ShareCam.handleClick = function(rec)
+{
+    report("ShareCam.handleClick "+JSON.stringify(rec));
+    var room = rec.room;
+    if (room) {
+	var url = "https://jumpchat.paldeploy.com/sharedcam/?room="+room;
+	report("ShareCam.JumpChat url: "+url);
+	setTimeout(function() {
+		window.open(url, "JumpChat");
+	    }, 200);
+    }
+    else {
+	var hash = rec.hash;
+	if (!hash) {
+	    report("No hash and no room... skipping this");
+	    return;
+	}
+	url = "https://sharedcam.paldeploy.com/photo/"+hash;
+	//WV.showPage({'url': url});
+	setTimeout(function() {
+		window.open(url, "Photos");
+	    }, 200);
+	return;
+    }
 }
 
 /******************************************************************
@@ -188,8 +215,13 @@ WV.ShareCam.handleShareCamData = function( objs, layer ) {
 	  var t = new Date(dateUploadedStr).getTime()/1000.0;
 	  //report("t: "+t);
 	  var age = t0 - t;
+	  var ageInMinutes = age/60;
 	  var ageInDays = age/(24*60*60);
 	  //report("ageInDays: "+ageInDays);
+	  if (ageInMinutes > 90) {
+	      report("Picture too old... skipping...");
+	      continue;
+	  }
 	  if (ageInDays > 600) {
 	      report("Picture too old... skipping...");
 	      continue;

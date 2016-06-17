@@ -148,9 +148,18 @@ WV.setupCesium = function()
 	    report("***** setupCesium no rec for id: "+id);
 	    return;
 	}
-	var layerName = WV.recs[id].layerName;
+	//var layerName = WV.recs[id].layerName;
+	var layerName = rec.layerName;
 	var layer = WV.layers[layerName];
+	if (!layer) {
+	    report("no layer for layerName: "+layerName+" id: "+id+" rec: "+WV.toJSON(rec));
+	    return;
+	}
         //report("move over id "+id);
+	if (!layer.billboards) {
+	    report("no billboards for layer "+layerName);
+	    return;
+	}
         var b = layer.billboards[id];
 	if (b == null) {
 	    report("*** hack for picbillboards... ***");
@@ -189,6 +198,10 @@ WV.setupCesium = function()
 	}
 	var layerName = rec.layerName;
 	var layer = WV.layers[layerName];
+	if (!layer) {
+	    report("no layer for layerName: "+layerName+" id: "+id+" rec: "+WV.toJSON(rec));
+	    return;
+	}
         report("click picked..... pickedObject._id "+id);
         var rec = layer.recs[id];
 	layer.pickHandler(rec);
