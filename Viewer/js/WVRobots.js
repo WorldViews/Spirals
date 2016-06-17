@@ -102,14 +102,20 @@ WV.Robots.handleRecs = function(data, name)
 
 WV.Robots.addModel = function(layer, rec)
 {
+    var id = rec.id;
+    if (!id)
+	id = WV.getUniqueId("model");
+    report(">>>>> addModel "+id);
     var opts = {
 	name: rec.name,
+	//id: id,
 	url: rec.modelUrl,
 	lat: rec.lat,
 	lon: rec.lon,
 	height: rec.height,
 	scale: rec.scale
     };
+    WV.recs[id] = rec;
     if (rec.heading != null)
 	opts.heading = WV.toRadians(rec.heading - 90);
     if (rec.pitch != null)
@@ -117,6 +123,8 @@ WV.Robots.addModel = function(layer, rec)
     if (rec.roll != null)
 	opts.roll = WV.toRadians(rec.roll);
     var e = WV.createModel(WV.viewer.entities, opts);
+    e._WV_rec = rec;
+    LAST_MODEL = e;
     if (rec.flyTo) {
 	//WV.viewer.trackedEntity = e;
 	var dur = rec.flyTo;

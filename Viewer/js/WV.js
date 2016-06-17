@@ -222,7 +222,13 @@ WV.setupCesium = function()
         var id = pickedObject.id;
 	var rec = WV.recs[id];
 	if (!rec) {
-	    report("Cannot find rec");
+	    report("Trying pickedObject._WV_rec");
+	    var rec = pickedObject._WV_rec;
+	}
+	if (!rec) {
+	    report("Cannot find rec for id: "+id);
+	    PICKED_OBJ = pickedObject;
+	    BAD_ID = id;
 	    return;
 	}
 	var layerName = rec.layerName;

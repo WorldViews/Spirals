@@ -100,7 +100,7 @@
        {
           "name": "sharecam",
           "description": "Shared Camera Guides",
-	  "iconUrl": "jumpchat.png",
+	  "iconUrl": "jumpChat.png",
 	  "maxNum": 100,
 	  "visible": false
        },
