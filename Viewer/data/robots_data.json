@@ -18,7 +18,8 @@
          "id": "pal_robot_beam1",
          "lat": 44.404459,
          "lon": -70.789881,
-         "url": "https://fxpal.com"
+         "xurl": "https://suitabletech.com/",
+         "url": "/static/suitable.html"
        },
        {
           "type": "robot",
@@ -28,7 +29,7 @@
 	  "coordSys": "PAL",
           "lat": 43.938128,
           "lon": -70.908677,
-          "url": "https://fxpal.com"
+          "url": "http://www.doublerobotics.com/"
        },
        {
           "type": "robot",

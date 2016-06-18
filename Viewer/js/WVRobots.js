@@ -201,6 +201,10 @@ WV.Robots.handleClick = function(rec, xy, xyz)
     report("WV.Robots.handleClick rec: "+rec);
     report("WV.Robots xy: "+xy+"  "+xyz);
     RECX = rec;
+    if (rec.url) {
+	WV.showPage(rec);
+	return;
+    }
     var res = WV.findNearestPoint(xyz, rec.points);
     var i = res.i;
     var frameRate = 29.97;
