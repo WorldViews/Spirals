@@ -158,6 +158,8 @@ WV.Robots.handleTrailData = function(layer, rec, data)
 	var pos = tr.pos;
 	var lla = WV.xyzToLla(tr.pos, coordSys);
 	//report(" "+i+"  "+pos+"  "+lla);
+	//var xyz = Cesium.Cartesian3.fromDegrees(lla[1], lla[0], h);
+	//points.push(xyz);
 	points.push(Cesium.Cartesian3.fromDegrees(lla[1], lla[0], h));
     }
     var material = new Cesium.PolylineGlowMaterialProperty({
@@ -172,19 +174,51 @@ WV.Robots.handleTrailData = function(layer, rec, data)
     //route = polylines.add({polyline: opts});
     route = polylines.add({polyline: opts, id: pathId});
     route = route.polyline;
-    var obj = {layerName: 'robots', id: pathId, data: data, tourName: rec.tourName};
+    var obj = {layerName: 'robots', id: pathId, data: data, tourName: rec.tourName,
+               points: points};
     WV.recs[pathId] = obj;
     layer.recs[pathId] = obj;
     return route;
 }
 
+WV.findNearestPoint = function(pt, points)
+{
+    report("findNearestPoint: pt: "+pt+" npoints: "+points.length);
+    var d2Min = 1.0E10;
+    var iMin = null;
+    for (var i=0; i<points.length; i++) {
+	var d2 = Cesium.Cartesian3.distanceSquared(pt, points[i]);
+	if (d2 < d2Min) {
+	    d2Min = d2;
+	    iMin = i;
+	}
+    }
+    return {'i': iMin, nearestPt: points[i], 'd': Math.sqrt(d2)};
+}
 
-WV.Robots.handleClick = function(rec)
+WV.Robots.handleClick = function(rec, xy, xyz)
 {
     report("WV.Robots.handleClick rec: "+rec);
+    report("WV.Robots xy: "+xy+"  "+xyz);
     RECX = rec;
+    var res = WV.findNearestPoint(xyz, rec.points);
+    var i = res.i;
+    var frameRate = 29.97;
+    var idx;
+    report("res: "+res);
+    if (i) {
+	var data = rec.data;
+	var startTime = data.startTime;
+	var t = data.recs[i].time;
+	var dt = t - startTime;
+	idx = Math.floor(dt * frameRate);
+	report("dt: "+dt+"   idx: "+idx);
+    }
+    else {
+	report("Cannot find estimate of t:");
+	idx = Math.floor(10*WV.getClockTime()) % 2000;
+    }
     var url = "http://tours.paldeploy.com:8001/pannellum/viewPano.html";
-    var idx = Math.floor(10*WV.getClockTime()) % 2000;
     url += "?imageId="+rec.tourName+"/"+idx;
     WV.showPage({url: url});
 }

@@ -238,6 +238,7 @@ WV.setupCesium = function()
 	if (!Cesium.defined(pickedObject)) {
             return;
         }
+	var pickPos = WV.scene.pickPosition(e.position);
         cpo = pickedObject;
         var id = pickedObject.id;
 	var rec = WV.recs[id];
@@ -261,7 +262,7 @@ WV.setupCesium = function()
         report("click picked..... pickedObject._id "+id+ " layer: "+layerName);
         var rec = layer.recs[id];
 	if (layer.clickHandler)
-	    layer.clickHandler(rec);
+	    layer.clickHandler(rec, e.position, pickPos);
         //WV.playVid(rec);
         report("LEFT_CLICK e: "+JSON.stringify(e));
         //WV.viewer.trackedEntity = undefined;
