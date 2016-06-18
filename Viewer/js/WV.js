@@ -123,6 +123,17 @@ WV.handleImageRecs = function(recs)
     }
 }
 
+function tryToFindRec(obj)
+{
+    report("tryToFindRec: "+obj);
+    if (!obj || !obj.id)
+	return null;
+    id = obj.id._id;
+    report("id "+id);
+    rec = WV.recs[id];
+    report("rec: "+rec);
+    return rec;
+}
 
 WV.setupCesium = function()
 {
@@ -141,7 +152,7 @@ WV.setupCesium = function()
             WV.currentBillboard = null;
             return;
         }
-        mpo = pickedObject;
+        //mpo = pickedObject;
         var id = pickedObject.id;
 	var rec = WV.recs[id];
 	if (rec == null) {
@@ -189,11 +200,20 @@ WV.setupCesium = function()
 	if (!Cesium.defined(pickedObject)) {
             return;
         }
-        cpo = pickedObject;
+        //cpo = pickedObject;
         var id = pickedObject.id;
 	var rec = WV.recs[id];
+	//if (!rec) {
+	//    report("Trying pickedObject._wvRec");
+	//    var rec = pickedObject._wvRec;
+	//}
 	if (!rec) {
-	    report("Cannot find rec");
+	    rec = tryToFindRec(pickedObject);
+	}
+	if (!rec) {
+	    report("Cannot find rec for id: "+id);
+	    PICKED_OBJ = pickedObject;
+	    BAD_ID = id;
 	    return;
 	}
 	var layerName = rec.layerName;
@@ -221,9 +241,14 @@ WV.setupCesium = function()
         cpo = pickedObject;
         var id = pickedObject.id;
 	var rec = WV.recs[id];
+	//if (!rec) {
+	//    report("Trying pickedObject._wvRec");
+	//    var rec = pickedObject._wvRec;
+	//}
 	if (!rec) {
-	    report("Trying pickedObject._WV_rec");
-	    var rec = pickedObject._WV_rec;
+	    rec = tryToFindRec(pickedObject);
+	    if (rec)
+		id = rec.id;
 	}
 	if (!rec) {
 	    report("Cannot find rec for id: "+id);
@@ -238,8 +263,8 @@ WV.setupCesium = function()
 	if (layer.clickHandler)
 	    layer.clickHandler(rec);
         //WV.playVid(rec);
-	    report("LEFT_CLICK e: "+JSON.stringify(e));
-	    //WV.viewer.trackedEntity = undefined;
+        report("LEFT_CLICK e: "+JSON.stringify(e));
+        //WV.viewer.trackedEntity = undefined;
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     handler.setInputAction(function(e) {
@@ -306,6 +331,7 @@ WV.handleNoteClick = function(e)
 	var lat = Cesium.Math.toDegrees(gpos.latitude);
 	report("picked: "+lon+" "+lat);
 	WV.Note.initNote(lon, lat);
+	WV.Note.setVisibility(true);
 	//WV.Note.sendNote(lon, lat, "This is a note made at "+new Date());
     }
     else {

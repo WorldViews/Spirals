@@ -123,7 +123,7 @@ WV.Robots.addModel = function(layer, rec)
     if (rec.roll != null)
 	opts.roll = WV.toRadians(rec.roll);
     var e = WV.createModel(WV.viewer.entities, opts);
-    e._WV_rec = rec;
+    e._wvRec = rec;
     LAST_MODEL = e;
     if (rec.flyTo) {
 	//WV.viewer.trackedEntity = e;
@@ -164,20 +164,29 @@ WV.Robots.handleTrailData = function(layer, rec, data)
 	    color : Cesium.Color.RED,
 	    glowPower : 0.15});
     var opts = { positions : points,
-		 id: pathId,
+		 // id: pathId,
 		 width : 3.0,
 		 material : material };
     var route = null;
     var polylines = WV.getTetherPolylines();
-    route = polylines.add({polyline: opts});
+    //route = polylines.add({polyline: opts});
+    route = polylines.add({polyline: opts, id: pathId});
     route = route.polyline;
+    var obj = {layerName: 'robots', id: pathId, data: data, tourName: rec.tourName};
+    WV.recs[pathId] = obj;
+    layer.recs[pathId] = obj;
     return route;
 }
 
 
 WV.Robots.handleClick = function(rec)
 {
-    report("WV.Robots.handleClick rec: "+WV.toJSON(rec));
+    report("WV.Robots.handleClick rec: "+rec);
+    RECX = rec;
+    var url = "http://tours.paldeploy.com:8001/pannellum/viewPano.html";
+    var idx = Math.floor(10*WV.getClockTime()) % 2000;
+    url += "?imageId="+rec.tourName+"/"+idx;
+    WV.showPage({url: url});
 }
 
 
