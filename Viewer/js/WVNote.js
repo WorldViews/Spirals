@@ -3,6 +3,13 @@ WV.Note = {};
 WV.noteWidget = null;
 WV.Note.currentNote = null;
 
+WV.linkify = function(text) {
+    var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '">' + url + '</a>';
+    });
+}
+
 WV.Note.watch = function()
 {
     report("**** WV.Note.watch ****");
@@ -145,6 +152,7 @@ WV.Note.showNoteInWidget = function(rec)
 	    text += '<hr style="margin-left:5px;width:20%;">\n';
 	}
     }
+    var text = WV.linkify(text);
     WV.noteWidget.setText(text);
     WV.noteWidget.noteId = rec.id;
     WV.noteWidget.show();

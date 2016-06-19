@@ -141,7 +141,7 @@
 	  "height": 500000,
 	  "showTethers": true,
 	  "mediaType": "html",
-	  "xxxdataFile": "data/periscope_data.json",
+	  "dataFile": "data/periscope_data.json",
 	  "visible": false
        },
        {
