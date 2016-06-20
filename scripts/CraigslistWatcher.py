@@ -6,7 +6,8 @@ from craigslist import get_all_sites
 
 print "sites:", get_all_sites()
 
-DEFAULT_OUTPUT_PATH = "../Viewer/data/craigslist_data.json"
+#DEFAULT_OUTPUT_PATH = "../Viewer/data/craigslist_data.json"
+DEFAULT_OUTPUT_PATH = "craigslist_data.json"
 
 class CLWatcher:
     def __init__(self, site="sfbay", autoSave=True, limit=500):
@@ -15,7 +16,7 @@ class CLWatcher:
         self.limit = limit
         self.autoSave = autoSave
 
-    def setSize(self, site):
+    def setSite(self, site):
         self.site = site
 
     def save(self, path=None):
@@ -68,10 +69,14 @@ class CLWatcher:
 
 
 def run():
+    sites = get_all_sites()
     cl = CLWatcher()
-    cl.getHousingPosts()
-    cl.getEvents()
-    #cl.save()
+    for site in sites:
+        print "Processing for", site
+        cl.setSite(site)
+        cl.getHousingPosts()
+        cl.getEvents()
+        cl.save()
 
 if __name__ == '__main__':
     run()
