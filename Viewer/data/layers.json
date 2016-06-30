@@ -151,18 +151,21 @@
        },
        {
           "name": "robots",
+	  "require": "WVRobots.js",
           "mediaType": "robots",
 	  "dataFile": "data/robots_data.json",
           "description": "Telepresence Robots"
        },
        {
           "name": "porterModel",
+	  "require": "WVRobots.js",
 	  "mediaType": "robots",
 	  "dataFile": "data/porter_data.json",
           "description": "Porter Model"
        },
        {
           "name": "craigslist",
+	  "require": "WVCraigslist.js",
 	  "dataFile": "data/craigslist_data.json",
           "description": "Craigslist Events & Housing"
        },
@@ -172,7 +175,8 @@
        },
        {
           "name": "chat",
-          "description": "Chat"
+          "description": "Chat",
+	  "visible": false
        },
        {
           "name": "notes",
@@ -184,6 +188,14 @@
 	  "dataFile": "data/GDP_data.json",
           "name": "GDP",
           "description": "Per Capita GDP",
+	  "visible": false
+       },
+       {
+	  "mediaType": "spirals",
+	  "require": "WVSpirals.js",
+	  "dataFile": "data/spirals_data.json",
+          "name": "Spirals",
+          "description": "Spirals Art Play",
 	  "visible": false
        }
     ]

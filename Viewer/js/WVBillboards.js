@@ -293,4 +293,37 @@ function tests()
 }
 */
 
+WV.addModel = function(layer, rec)
+{
+    var id = rec.id;
+    if (!id)
+	id = WV.getUniqueId("model");
+    report(">>>>> addModel "+id);
+    var opts = {
+	name: rec.name,
+	//id: id,
+	url: rec.modelUrl,
+	lat: rec.lat,
+	lon: rec.lon,
+	height: rec.height,
+	scale: rec.scale
+    };
+    WV.recs[id] = rec;
+    if (rec.heading != null)
+	opts.heading = WV.toRadians(rec.heading - 90);
+    if (rec.pitch != null)
+	opts.pitch = WV.toRadians(rec.pitch);
+    if (rec.roll != null)
+	opts.roll = WV.toRadians(rec.roll);
+    var e = WV.createModel(WV.viewer.entities, opts);
+    e._wvRec = rec;
+    LAST_MODEL = e;
+    if (rec.flyTo) {
+	//WV.viewer.trackedEntity = e;
+	var dur = rec.flyTo;
+	report("flyTo dur: "+dur);
+	WV.viewer.flyTo(e, {duration: dur});
+    }
+    layer.models.push(e)
+}
 

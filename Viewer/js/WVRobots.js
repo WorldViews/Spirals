@@ -40,7 +40,7 @@ WV.Robots.handleRecs = function(data, name)
 	    continue;
 	}
 	if (rec.type == "model") {
-	    WV.Robots.addModel(layer, rec);
+	    WV.addModel(layer, rec);
 	    continue;
 	}
 	if (rec.type != "robot") {
@@ -100,6 +100,9 @@ WV.Robots.handleRecs = function(data, name)
     }
 }
 
+/*
+// moved to WVBillboards.js
+
 WV.Robots.addModel = function(layer, rec)
 {
     var id = rec.id;
@@ -133,7 +136,7 @@ WV.Robots.addModel = function(layer, rec)
     }
     layer.models.push(e)
 }
-
+*/
 
 WV.Robots.addTrail = function(layer, rec)
 {
@@ -227,6 +230,7 @@ WV.Robots.handleClick = function(rec, xy, xyz)
     WV.showPage({url: url});
 }
 
+WV.registerModule("WVRobots.js");
 
 WV.registerLayerType("robots", {
 	dataHandler: WV.Robots.handleRecs,

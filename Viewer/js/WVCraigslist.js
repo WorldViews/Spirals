@@ -78,23 +78,7 @@ WV.Craigslist.handleClick = function(rec)
     window.open(rec.url, "HTMLPages");
 }
 
-/*
-WV.Craigslist.show = function()
-{
-    WV.Craigslist.setVisibility(true);
-}
-
-WV.Craigslist.hide = function()
-{
-    WV.Craigslist.setVisibility(false);
-}
-
-WV.Craigslist.setVisibility = function(v)
-{
-    var layer = WV.layers["craigslist"];
-    WV.setBillboardsVisibility(layer.billboards, v, v);
-}
-*/
+WV.registerModule("WVCraigslist.js");
 
 $(document).ready(function() {
     WV.registerLayerType("craigslist", {

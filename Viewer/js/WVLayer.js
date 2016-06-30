@@ -17,6 +17,10 @@
 
 WV.layerTypes = {};
 WV.layers = {};
+/*
+   Module names should exactly match the javascript filename, including extension.
+ */
+WV.modules = {};
 
 WV.LayerType = function(name, opts)
 {
@@ -37,7 +41,6 @@ WV.registerLayerType = function(name, opts)
     report("WV.registerLayerType "+name+" "+JSON.stringify(opts));
     return new WV.LayerType(name, opts);
 }
-
 
 WV.Layer = function(spec)
 {
@@ -256,30 +259,16 @@ WV.getLayers = function()
 /*
   This creates the Jquery UI for showing layers with checkboxes.
  */
+WV.layersCBList = null;
 WV.setupLayers = function(layerData)
 {
     var layers = layerData.layers;
     var layersDiv = $("#layersDiv");
     var cbList = $('<div />', { type: 'div', id: 'cbListDiv'}
                    ).appendTo(layersDiv);
+    WV.layersCBList = cbList;
     //var cbList = $("#cbListDiv");
-    for (var i=0; i<layers.length; i++) {
-        var layer = new WV.Layer(layers[i]);
-	var name = layer.name;
-        var id = "cb_"+layer.name;
-        var uiDivId = "ui_div_"+layer.name;
-	layer.uiDivId = uiDivId;
-	//report("setupLayers layer: "+WV.toJSON(layer));
-        var desc = layer.description;
-        $('<input />',
-            { type: 'checkbox', id: id, value: desc,
-	      click: WV.Layer.toggleCB}).appendTo(cbList);
-        $('<label />',
-            { 'for': id, text: desc, style: "color:white" }).appendTo(cbList);
-        $('<div />',
-	  { id: uiDivId, show: 0, style: "color:white;display:none;" }).appendTo(cbList);
-        $('<br />').appendTo(cbList);
-    }
+
     $("#layersLabel").click(function(e) {
 	    report("******** click *******");
             var txt = $("#layersLabel").html();
@@ -292,15 +281,94 @@ WV.setupLayers = function(layerData)
 		$("#layersLabel").html("Hide Layers");
 		cbList.show(100);
 	    }
-	});
+    });
 
-    for (var i=0; i<layers.length; i++) {
-        var layer = WV.layers[layers[i].name];
-	if (layer.visible) {
-	    layer.setVisibility(true);
+    layers.forEach(function(spec) {
+	if (spec.require) {
+	    WV.requireModule(spec.require, function() { WV.addLayer(spec); });
 	}
+	else {
+	    WV.addLayer(spec);
+	}
+    });
+}
+
+WV.scriptCompletions = {}
+WV.getModuleName = function(name)
+{
+    var i = name.lastIndexOf("/")
+    if (i >= 0)
+	name = name.slice(i+1);
+    return name;
+}
+
+WV.registerModule = function(name)
+{
+    WV.modules[name] = name;
+}
+
+
+WV.requireModule = function(jsURL, done)
+{
+    report("************ requireModule: "+jsURL+" **********");
+    var name = WV.getModuleName(jsURL);
+    if (WV.modules[name]) {
+	report("already have module "+jsURL);
+	return;
+    }
+    if (!jsURL.startsWith("/"))
+	jsURL = "/Viewer/js/" + jsURL;
+    report("jsURL: "+jsURL+" name: "+WV.getModuleName(jsURL));
+    var completions = WV.scriptCompletions[jsURL];
+    if (completions != null) {
+	completions.push(done);
+	report("*** already loaded "+jsURL);
+	return;
+    }
+    completions = [done];
+    WV.scriptCompletions[jsURL] = completions;
+    $.getScript(jsURL)
+    .done(function(script, textStatus) {
+	    report("************ requireModule script loaded: "+jsURL+" **********");
+	    report("calling completions num: "+completions.length);
+	    completions.forEach(function(doneFun) {
+		    try {
+			doneFun();
+		    }
+		    catch (err) {
+			report("caught error: "+err);
+		    }
+            });
+	    report("finished completions");
+	})
+    .fail(function(jqxhr, settings, exception) {
+	    report("requireCode failed: "+exception);
+	});
+}
+
+WV.addLayer = function(layerSpec)
+{
+    var cbList = WV.layersCBList;
+    var layer = new WV.Layer(layerSpec);
+    var name = layer.name;
+    var id = "cb_"+layer.name;
+    var uiDivId = "ui_div_"+layer.name;
+    layer.uiDivId = uiDivId;
+    //report("setupLayers layer: "+WV.toJSON(layer));
+    var desc = layer.description;
+    $('<input />',
+        { type: 'checkbox', id: id, value: desc,
+	  click: WV.Layer.toggleCB}).appendTo(cbList);
+    $('<label />',
+        { 'for': id, text: desc, style: "color:white" }).appendTo(cbList);
+    $('<div />',
+        { id: uiDivId, show: 0, style: "color:white;display:none;" }).appendTo(cbList);
+    $('<br />').appendTo(cbList);
+    if (layer.visible) {
+	layer.setVisibility(true);
     }
 }
+
 
 WV.Layer.toggleCB = function(e)
 {

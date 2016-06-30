@@ -82,7 +82,7 @@ WV.WindowWidget = function(name)
     }
 
     this.prepend = function(text) {
-	report("prepend "+text);
+	//report("prepend "+text);
 	$(textId).prepend(text);
     }
 
