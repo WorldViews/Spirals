@@ -301,7 +301,7 @@ WV.addModel = function(layer, rec)
     report(">>>>> addModel "+id);
     var opts = {
 	name: rec.name,
-	//id: id,
+	id: id,
 	url: rec.modelUrl,
 	lat: rec.lat,
 	lon: rec.lon,

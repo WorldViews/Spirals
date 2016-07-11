@@ -154,9 +154,20 @@ WV.setupCesium = function()
         }
         //mpo = pickedObject;
         var id = pickedObject.id;
+	_PICKED_OBJ_ = pickedObject;
 	var rec = WV.recs[id];
+	if (rec == null || typeof(id) == "object") {
+	    id = id.id;
+	    rec = WV.recs[id];
+	}
+	if (rec == null) {
+	    report("trying _wvRec");
+	    rec = pickedObject.id._wvRec;
+	}
 	if (rec == null) {
 	    report("***** setupCesium no rec for id: "+id);
+	    //report("***** setupCesium no rec for id: "+JSON.stringify(id));
+	    _ID_ = id;
 	    return;
 	}
 	//var layerName = WV.recs[id].layerName;
@@ -172,9 +183,19 @@ WV.setupCesium = function()
 	    return;
 	}
         var b = layer.billboards[id];
-	if (b == null) {
+	if (b == null && layer.picbillboards) {
 	    report("*** hack for picbillboards... ***");
 	    b = layer.picbillboards[id];
+	    report("b: "+b);
+	}
+	if (b == null) {
+	    report("checking moveHandler for layer "+layerName);
+	    if (layer.moveHandler) {
+		report("calling it...");
+		var pickPos = WV.scene.pickPosition(movement.endPosition);
+		layer.moveHandler(rec, movement.endPosition, pickPos);
+	    }
+	    return;
 	}
         if (WV.currentBillboard && b != WV.currentBillboard) {
             WV.currentBillboard.scale = WV.currentBillboard.unselectedScale;
