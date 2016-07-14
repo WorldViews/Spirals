@@ -28,49 +28,132 @@ class YouTubeScraper:
    def __init__(self):
       self.recs = {}
       self.VIDNUM = 0
-      pass
+      self.youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+                           developerKey=DEVELOPER_KEY)
 
-   def fetch(self, name, query=None, locs=None, dimension="any"):
+   def getChannelId(self, username):
+      # Retrieve the contentDetails part of the channel resource for the
+      # authenticated user's channel.
+      channels_response = self.youtube.channels().list(
+         forUsername="enockglidden",
+         part="contentDetails"
+         ).execute()
+      #print json.dumps(channels_response, indent=True)
+      try:
+         return channels_response["items"][0]["id"]
+      except:
+         return None
+
+   def getChannelVideosForUser(self, username="enockglidden", fname=None):
+      """
+      Find videos for all channels of a given user
+      that have location information available.
+      """
+      self.query = "channelSearch: username=%s" % username
+      if fname == None:
+         fname = "%s_data.json" % username
+      videoIds = []
+      channels_response = self.youtube.channels().list(
+         forUsername=username,
+         part="contentDetails"
+         ).execute()
+
+      print json.dumps(channels_response, indent=True)
+
+      for channel in channels_response["items"]:
+         # From the API response, extract the playlist ID that identifies the list
+         # of videos uploaded to the authenticated user's channel.
+         uploads_list_id = channel["contentDetails"]["relatedPlaylists"]["uploads"]
+
+         print "Videos in list %s" % uploads_list_id
+
+         # Retrieve the list of videos uploaded to the authenticated user's channel.
+         playlistitems_list_request = self.youtube.playlistItems().list(
+            playlistId=uploads_list_id,
+            #part="snippet,recordingDetails",
+            part="snippet",
+            maxResults=50
+            )
+
+         while playlistitems_list_request:
+            playlistitems_list_response = playlistitems_list_request.execute()
+
+            # Print information about each video.
+            for playlist_item in playlistitems_list_response["items"]:
+               title = playlist_item["snippet"]["title"]
+               video_id = playlist_item["snippet"]["resourceId"]["videoId"]
+               print "%s (%s)" % (title, video_id)
+               if 0:
+                  print json.dumps(playlist_item, indent=4, sort_keys=True)
+                  print
+               videoIds.append(video_id)
+               playlistitems_list_request = self.youtube.playlistItems().list_next(
+                  playlistitems_list_request, playlistitems_list_response)
+      video_ids = ",".join(videoIds)
+      print "video_ids:", video_ids
+      self.processIds(video_ids)
+      self.saveRecs(fname)
+
+   def getLocs(self, latMin, lonMin, latMax, lonMax, dlat, dlon):
+      print "getting locs from %s to %s lat in steps of %s and %s to %s lon in steps of %s" % \
+                   (latMin, latMax, dlat, lonMin, lonMax, dlon)
+      locs = []
+      for lat in range(latMin,latMax+dlat,dlat):
+         for lon in range(lonMin,lonMax+dlon,dlon):
+            if lat==0 and lon==0:
+               continue
+            if (lat==-90 or lat==90) and lon != 0:
+               continue
+            locs.append("%.1f,%.1f" % (lat,lon))
+      print "Got %d specific points" % len(locs)
+      return locs
+
+   def fetch(self, name, query=None, locs=None, dimension="any", username=None, channelId=None):
       if query == None:
          query = name
+      if username != None:
+         channelId = self.getChannelId(username)
       fname = "%s_data.json" % name
       if locs == None:
          locs = ["37.42307,-122.08427",
                  "15.0465951,-166.3735415"]
-      if locs == "global":
-         locs = []
-         for lat in range(-90,90+10,10):
-           for lon in range(-180,180,15):
-             if lat==0 and lon==0:
-                continue
-             if (lat==-90 or lat==90) and lon != 0:
-                continue
-             locs.append("%d,%d" % (lat,lon))
+      """
+      These choices are experimental and not very well worked
+      out yet.
+      """
+      if type(locs) in [type("str"), type(u"str")]:
+         if locs.lower() == "global":
+            locs = self.getLocs(-90, -180, 90, 180, 4, 4)
+         if locs.lower() == "us":
+            locs = self.getLocs(36, -123, 44, -66, 1, 1)
       for loc in locs:
          try:
-            self.search(query=query, location=loc, dimension=dimension)
+            self.search(query=query, location=loc, dimension=dimension, channelId=channelId)
          except HttpError, e:
             print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
          except:
             traceback.print_exc()
          self.saveRecs(fname)
 
-   def search(self, query, location, max_results=50, location_radius="1000km", dimension="any"):
+   def search(self, query, location, max_results=50, location_radius="1000km", dimension="any", channelId=None):
       print "query:", query
       print "location:", location
       print "location_radius:", location_radius
       self.query = query
+      """
       youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
                       developerKey=DEVELOPER_KEY)
+      """
 
       # Call the search.list method to retrieve results matching the specified
       # query term.
-      search_response = youtube.search().list(
+      search_response = self.youtube.search().list(
           q=query,
           type="video",
           location=location,
           videoDimension=dimension,
           locationRadius=location_radius,
+          channelId=channelId,
           part="id,snippet",
           maxResults=max_results
       ).execute()
@@ -81,9 +164,12 @@ class YouTubeScraper:
       for search_result in search_response.get("items", []):
          search_videos.append(search_result["id"]["videoId"])
       video_ids = ",".join(search_videos)
+      self.processIds(video_ids)
 
+   def processIds(self, video_ids):
+      print "processIds video_ids:", video_ids
       # Call the videos.list method to retrieve location details for each video.
-      video_response = youtube.videos().list(
+      video_response = self.youtube.videos().list(
          id=video_ids,
          part='snippet, recordingDetails'
       ).execute()
@@ -92,6 +178,12 @@ class YouTubeScraper:
       items = video_response.get("items", [])
       print "Got %d items" % len(items)
       for video_result in items:
+         if "recordingDetails" not in video_result:
+            print "video_result missing recordingDetails for id", video_result["id"]
+            continue
+         if 1:
+            print json.dumps(video_result, indent=4)
+            print
          self.VIDNUM += 1
          #print video_result
          lat = video_result["recordingDetails"]["location"]["latitude"]
@@ -125,15 +217,39 @@ class YouTubeScraper:
 #argparser.add_argument("--location-radius", help="Location radius", default="1000km")
 #argparser.add_argument("--max-results", help="Max results", default=50)
 
-def fetch(name, query=None, loc="global", dimension="any"):
+def fetch(name, query=None, loc="global", dimension="any", username=None):
    ys = YouTubeScraper()
-   ys.fetch(name, query, loc, dimension)
+   ys.fetch(name, query, loc, dimension, username)
 #   ys.fetch(name, query, loc, dimension)
+
+def saveEnocksVideoLayer():
+   ys = YouTubeScraper()
+   ys.getChannelVideosForUser("enockglidden")
+
+def testChannels():
+   ys = YouTubeScraper()
+   usernames = ["enockglidden"]
+   for username in usernames:
+      print "username:", username
+      id = ys.getChannelId(username)
+      print "id:", id
+      ys.getChannelVideosForUser(username)
+      print
+   print
 
 if __name__ == "__main__":
 #   fetch("hiking")
 #   fetch("surfing")
 #   fetch("boating", query="boating|sailing|surfing|waterski -fishing", loc=None)
-   fetch("waterSports3D", query="360 video", loc=None)
+#   fetch("waterSports3D", query="360 video", loc=None)
+#    fetch("test", username="enockglidden", loc="us")
+#    fetch("test", username="enockglidden", loc=["36.98,-122.00"])
+#    fetch("test", query="Wilder Ranch State Park", loc=["36.98418,-122.09912"])
+#   testChannels()
+   saveEnocksVideoLayer()
+
+
+
+
 
 
