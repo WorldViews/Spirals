@@ -128,7 +128,7 @@ class YouTubeScraper:
 def fetch(name, query=None, loc="global", dimension="any"):
    ys = YouTubeScraper()
    ys.fetch(name, query, loc, dimension)
-   ys.fetch(name, query, loc, dimension)
+#   ys.fetch(name, query, loc, dimension)
 
 if __name__ == "__main__":
 #   fetch("hiking")
