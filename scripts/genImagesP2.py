@@ -42,7 +42,7 @@ def genImagePow2(path, opath, ow=None, oh=None, cornerRad=200):
     im = im.resize((ow,oh), Image.ANTIALIAS)
     if cornerRad:
         im = add_corners(im, cornerRad)
-    print path, w, h, ow, oh
+    print "Saving", opath, w, h, ow, oh
     im.save(opath)
 
 def genImagesPow2(inputDir, outputDir):
@@ -62,7 +62,7 @@ def genImagesPow2Rename(inputDir, outputDir, cornerRad=None):
     names = os.listdir(inputDir)
     i = 0
     for name in names:
-        if not name.lower().endswith(".jpg"):
+        if not (name.lower().endswith(".jpg") or name.lower().endswith(".png")):
             continue
         i += 1
         #oname = "image%03d.png"
