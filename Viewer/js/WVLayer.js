@@ -24,12 +24,20 @@ WV.modules = {};
 
 WV.LayerType = function(name, opts)
 {
+    report("new LayerType "+name);
     this.name = name;
     WV.layerTypes[name] = this;
     this.initFun = opts.initFun;
     this.dataHandler = opts.dataHandler;
     this.clickHandler = opts.clickHandler;
+    this.moveHandler = opts.moveHandler;
     this.setVisibility = opts.setVisibility;
+    if (this.moveHandler) {
+	report("Added moveHandler");
+    }
+    else {
+	report("*** No moveHandler");
+    }
     if (!this.dataHandler)
 	report("*** Warning LayerType "+name+"  no dataHandler");
     if (!this.clickHandler)
@@ -38,7 +46,7 @@ WV.LayerType = function(name, opts)
 
 WV.registerLayerType = function(name, opts)
 {
-    report("WV.registerLayerType "+name+" "+JSON.stringify(opts));
+    report("----->>>>> WV.registerLayerType "+name+" "+JSON.stringify(opts));
     return new WV.LayerType(name, opts);
 }
 
@@ -99,6 +107,7 @@ WV.Layer = function(spec)
 	var layerType = this.layerType;
 	if (layerType) {
 	    layer.clickHandler = layerType.clickHandler;
+	    layer.moveHandler = layerType.moveHandler;
 	    report(">>>>>>>> subscribe "+name+" "+this.layerType.name);
 	    wvCom.subscribe(name, layerType.dataHandler, {dataFile: layer.dataFile});
 	}

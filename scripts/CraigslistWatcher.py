@@ -70,7 +70,13 @@ class CLWatcher:
 
 def run():
     sites = get_all_sites()
+    try:
+        sites.remove("newyork")
+        sites.remove("chicago")
+    except:
+        pass
     cl = CLWatcher()
+    print "Sites:", sites
     for site in sites:
         print "Processing for", site
         cl.setSite(site)

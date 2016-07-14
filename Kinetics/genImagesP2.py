@@ -81,12 +81,12 @@ if __name__ == '__main__':
     genImagesPow2Rename("../images", "../imagesPow2")
     genImagesPow2Rename("../images", "../imagesRoundedPow2", cornerRad=200)
 
-    genImagesPow2Rename("../images/Spirals/src", "../images/Spirals/imagesPow2")
-    genImagesPow2Rename("../images/Spirals/src", "../images/Spirals/imagesRoundedPow2",
-                                                                cornerRad=200)
-    """
-
     genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesPow2")
     genImagesPow2Rename("../images/FXPAL/src", "../images/FXPAL/imagesRoundedPow2",
                                                                 cornerRad=200)
+    """
+    genImagesPow2Rename("../images/Spirals/src", "../images/Spirals/imagesPow2")
+    genImagesPow2Rename("../images/Spirals/src", "../images/Spirals/imagesRoundedPow2",
+                                                                cornerRad=200)
+
 

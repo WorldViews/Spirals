@@ -42,6 +42,15 @@
           "dataFile": "data/FlyingKite_data.json"
        },
        {
+          "name": "dancing",
+          "description": "Dancing",
+          "maxNum": 6000,
+	  "scale": 0.07,
+          "iconUrl": "images/dancing_0.png",
+          "mediaType": "youtube",
+          "dataFile": "data/dancing_data.json"
+       },
+       {
           "name": "temples",
           "description": "Temples",
 	  "maxNum": 5000,
@@ -189,6 +198,12 @@
           "name": "GDP",
           "description": "Per Capita GDP",
 	  "visible": false
+       },
+       {
+	  "mediaType": "html",
+	  "dataFile": "data/matt_harding_dancing_data.json",
+          "name": "Dance Around the World",
+          "description": "Dance Around the World"
        },
        {
 	  "mediaType": "spirals",

@@ -230,11 +230,31 @@ WV.Robots.handleClick = function(rec, xy, xyz)
     WV.showPage({url: url});
 }
 
+WV.Robots.moveHandler = function(rec, xy, xyz)
+{
+    report("WV.Robots.handleMove rec: "+rec);
+    report("WV.Robots xy: "+xy+"  "+xyz);
+    if (rec.coordSys) {
+	//var cs = WV.coordinateSystems[rec.coordSys];
+	report("CS "+rec.coordSys);
+	var cart = Cesium.Cartographic.fromCartesian(xyz);
+	report("cart: "+JSON.stringify(cart));
+	var lat = WV.toDegrees(cart.latitude);
+	var lon = WV.toDegrees(cart.longitude);
+	var lla = [lat, lon, cart.height];
+	report("latLonAlt: "+lla);
+	var lxyz = WV.geoPosToXyz(lla, rec.coordSys);
+	report("lxyz: "+lxyz);
+    }
+    RECX = rec;
+}
+
 WV.registerModule("WVRobots.js");
 
 WV.registerLayerType("robots", {
 	dataHandler: WV.Robots.handleRecs,
-	clickHandler: WV.Robots.handleClick
+        clickHandler: WV.Robots.handleClick,
+	moveHandler: WV.Robots.moveHandler
 });
 
 

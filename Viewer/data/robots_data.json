@@ -65,12 +65,14 @@
        {
           "id": "7",
 	  "type": "model",
+	  "name": "PORTER_MAP",
 	  "modelUrl": "../static/models/PorterPAL.glb",
           "lat":  37.40581,
 	  "lon": -122.15080,
 	  "scale": 53,
 	  "height": 0.2,
 	  "heading": 33.2,
+	  "coordSys": "PAL",
 	  "flyTo": 3
        },
        {

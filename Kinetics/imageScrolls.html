@@ -9,7 +9,7 @@
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="js/three.js"></script>
-<script src="js/controls/TrackballControls.js"></script>
+<script src="js/controls/TrackballControls2.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/libs/stats.min.js"></script>
 
@@ -99,6 +99,14 @@ function handleMotion(msg) {
    P.xbias = CRANK_ANGLE;
 //   setHeading(angle);
 }
+
+function handleAdjust(dx, dy) {
+    report("handleAdjust: "+dx+" "+dy);
+    P.xbias = 0.02 * dx;
+    P.theta0 = 0.005 * dy;
+}
+
+TTS.handleAdjust = handleAdjust;
 
 </script>
 </body>
