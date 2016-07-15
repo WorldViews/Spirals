@@ -48,7 +48,7 @@
 	  "scale": 0.07,
           "iconUrl": "images/dancing_0.png",
           "mediaType": "youtube",
-          "dataFile": "data/dancing_data.json"
+          "dataFile": "data/dance_data.json"
        },
        {
           "name": "temples",
