@@ -212,6 +212,24 @@
           "name": "Spirals",
           "description": "Spirals Art Play",
 	  "visible": false
+       },
+	    {
+          "name": "gardens",
+          "description": "Garden Videos",
+	  "maxNum": 8000,
+	  "visible": false,
+	  "iconUrl": "images/flowers.jpg",
+	  "mediaType": "youtube",
+	  "dataFile": "data/gardens_data.json"
+       },
+	   {
+          "name": "enockglidden",
+          "description": "Enock Gliddens Channel Videos",
+	  "maxNum": 8000,
+	  "visible": false,
+	  "iconUrl": "images/enock.png",
+	  "mediaType": "youtube",
+	  "dataFile": "data/enockglidden_data.json"
        }
     ]
 }
