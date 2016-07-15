@@ -1,0 +1,68 @@
+<html>
+<head>
+</head>
+<body>
+Hello This is WikiPlay<br>
+<div id="div1"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+function report(str) { console.log(str); }
+
+var mapsUrl = "https://localwiki.org/api/v4/maps/";
+
+var url = "https://localwiki.org/api/v4/pages/1173/";
+$("#div1").append("Div....:");
+
+function dumpMap(map)
+{
+    report("--------------------------------");
+    report("map");
+    //report("map:" + JSON.stringify(map));
+    for (key in map) {
+       report(""+key+": "+map[key]);
+    }
+    showPage(map.page);
+}
+
+function showPage(url) {
+    $.getJSON(url, function(data) {
+       report("--------------------");
+       report("page");
+       //report("showPage: "+JSON.stringify(data));
+       for (key in data) {
+          if (key != "content")
+              report(""+key+": "+data[key]);
+       }
+       $("#div1").append(data.content);
+       $("#div1").append("<hr>\n");
+    });
+}
+
+function getMaps(url) {
+    $.getJSON(url, function(data) {
+       report("--------------------");
+       report("maps");
+       //report("getMaps: "+JSON.stringify(data));
+       var maps = data.results;
+       report("nMaps: "+maps.length);
+       for (var i=0; i<maps.length; i++) {
+          var map = maps[i];
+          dumpMap(map);
+       }
+    });
+}
+
+/*
+function handler(data)
+{
+   report("handler: "+JSON.stringify(data));
+   $("#div1").append(data.content);
+}
+*/
+getMaps(mapsUrl);
+//showPage(url);
+
+</script>
+</body>
+</html>
