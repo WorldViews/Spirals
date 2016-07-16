@@ -121,4 +121,4 @@ Step 6 run RDB_Admin.py
 Now check localhost:8080 for rethinkdb admin page
 Step 7 re-run flaskServer80.py
 
-Note: We tried using the virtualenv with anaconda to create a clean environment but pip install flask failed. 
+Note: We tried using the virtualenv with anaconda to create a clean environment but pip install flask failed. We also did a pip install basemap to get filterLayer.py to work.

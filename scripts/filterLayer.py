@@ -28,6 +28,8 @@ def filterByLand(path, opath):
 #filterByLand("../Viewer/data/temples0_data.json", "../Viewer/data/temples_data.json")
 #filterByLand("../Viewer/data/hiking0_data.json", "../Viewer/data/hiking_data.json")
 filterByLand("../Viewer/data/gardens0_data.json", "../Viewer/data/gardens_data.json")
+filterByLand("../Viewer/data/surfing0_data.json", "../Viewer/data/surfing_data.json")
+
 
 
 

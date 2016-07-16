@@ -218,7 +218,7 @@
           "description": "Garden Videos",
 	  "maxNum": 8000,
 	  "visible": false,
-	  "iconUrl": "images/flowers.jpg",
+	  "iconUrl": "images/flowers.ico",
 	  "mediaType": "youtube",
 	  "dataFile": "data/gardens_data.json"
        },
