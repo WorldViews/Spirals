@@ -108,6 +108,17 @@ that also includes an OSC server that can receive Kinect messages and
 forward them to any connected websockets.
 
 
+Setting up Windows 10 machine
+=============================
+Step 1 install Anaconda 
+Step 2 pip install Flask-socketio
+Step 3 pip install flask-mail
+Now you should be able to run flaskServer80.py
+but it won't be using the rethinkdb
+Step 4 pip install rethinkdb
+Step 5 install rethinkdb.executable
+Step 6 run RDB_Admin.py
+Now check localhost:8080 for rethinkdb admin page
+Step 7 re-run flaskServer80.py
 
-
-
+Note: We tried using the virtualenv with anaconda to create a clean environment but pip install flask failed. 

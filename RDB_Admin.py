@@ -95,9 +95,9 @@ if __name__ == '__main__':
     r = RethinkDB_Admin()
     #r.dump("backup")
     #r.delete()
-    #r.create()
+    r.create()
     #r.load("backup")
-    r.createTable("periscope_admin")
+    #r.createTable("periscope_admin")
     #testInsertComment()
 
 
