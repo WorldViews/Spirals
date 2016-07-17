@@ -76,10 +76,16 @@ WVYT.stopVideo = function() {
     WVYT.player.stopVideo();
 }
 
-WVYT.playVideo = function(id)
+WVYT.playVideo = function(id, rec)
 {
     report("WVYT.playVideo "+id);
     WV.youtubeWidget.show();
+    if (WVYT.videoId == id && WVYT.player && rec) {
+	var t = rec.t;
+	report("******* seek only ******** "+t);
+	WVYT.player.seekTo(t, true);
+	return;
+    }
     WVYT.videoId = id;
     if (WVYT.player == null) {
 	WVYT.start();

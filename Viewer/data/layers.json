@@ -72,6 +72,16 @@
 	  "dataFile": "data/surfing_data.json"
        },
        {
+          "name": "surfing2",
+          "description": "Surfing videos (all)",
+	  "maxNum": 8000,
+	  "visible": false,
+	  "scale": 0.06,
+	  "iconUrl": "surfing.png",
+	  "mediaType": "youtube",
+	  "dataFile": "data/surfing0_data.json"
+       },
+       {
           "name": "virtualphotowalks",
           "description": "Virtual Photo Walks",
 	  "maxNum": 8000,

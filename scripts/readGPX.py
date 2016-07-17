@@ -49,7 +49,8 @@ def genIndex(path, opath=None):
 
 def test():
     path = "\\\\palnas2\\vol1\\panobot\\videos\\Enock\\Gear 360\\FXPAL_Outside_Walkaround_1.gpx"
-    obj = genIndex(path)
+    opath = "../Viewer/data/paths/FXPAL_Outside_Walkaround_1.json"
+    obj = genIndex(path, opath)
     #print obj
 
 if __name__ == '__main__':

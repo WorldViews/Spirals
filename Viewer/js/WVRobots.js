@@ -154,6 +154,7 @@ WV.Robots.handleTrailData = function(layer, rec, data)
     if (!h)
 	h = 2;
     var coordSys = rec.coordSys;
+    report("handleTrailData "+rec.dataUrl+" coordSys: "+coordSys);
     var points = [];
     var pathId = "robot_path_"+rec.id
     for (var i=0; i<recs.length; i++) {
@@ -165,8 +166,11 @@ WV.Robots.handleTrailData = function(layer, rec, data)
 	//points.push(xyz);
 	points.push(Cesium.Cartesian3.fromDegrees(lla[1], lla[0], h));
     }
+    var color = Cesium.Color.RED;
+    if (rec.youtubeUrl)
+	color = Cesium.Color.BLUE;
     var material = new Cesium.PolylineGlowMaterialProperty({
-	    color : Cesium.Color.RED,
+	    color : color,
 	    glowPower : 0.15});
     var opts = { positions : points,
 		 // id: pathId,
@@ -177,13 +181,14 @@ WV.Robots.handleTrailData = function(layer, rec, data)
     //route = polylines.add({polyline: opts});
     route = polylines.add({polyline: opts, id: pathId});
     route = route.polyline;
-    var obj = {layerName: 'robots', id: pathId, data: data, tourName: rec.tourName,
+    var obj = {layerName: 'robots', id: pathId, data: data,
+	       pathRec: rec, tourName: rec.tourName,
                points: points};
     WV.recs[pathId] = obj;
     layer.recs[pathId] = obj;
     return route;
 }
-
+/*
 WV.findNearestPoint = function(pt, points)
 {
     report("findNearestPoint: pt: "+pt+" npoints: "+points.length);
@@ -198,6 +203,25 @@ WV.findNearestPoint = function(pt, points)
     }
     return {'i': iMin, nearestPt: points[i], 'd': Math.sqrt(d2)};
 }
+*/
+WV.findNearestPoint = function(pt, points)
+{
+    report("findNearestPoint: pt: "+pt+" npoints: "+points.length);
+    if (points.length == 0) {
+	report("findNearestPoint called with no points");
+	null;
+    }
+    var d2Min = Cesium.Cartesian3.distanceSquared(pt, points[0]);
+    iMin = 0;
+    for (var i=1; i<points.length; i++) {
+	var d2 = Cesium.Cartesian3.distanceSquared(pt, points[i]);
+	if (d2 < d2Min) {
+	    d2Min = d2;
+	    iMin = i;
+	}
+    }
+    return {'i': iMin, nearestPt: points[iMin], 'd': Math.sqrt(d2Min)};
+}
 
 WV.Robots.handleClick = function(rec, xy, xyz)
 {
@@ -209,22 +233,32 @@ WV.Robots.handleClick = function(rec, xy, xyz)
 	return;
     }
     var res = WV.findNearestPoint(xyz, rec.points);
-    var i = res.i;
+    report("res: "+JSON.stringify(res));
+    RES_ = res;
     var frameRate = 29.97;
-    var idx;
-    report("res: "+res);
-    if (i) {
+    var idx = 0;
+    var dt = 0;
+    if (res) {
 	var data = rec.data;
 	var startTime = data.startTime;
-	var t = data.recs[i].time;
-	var dt = t - startTime;
+	var t = data.recs[res.i].time;
+	dt = t - startTime;
 	idx = Math.floor(dt * frameRate);
 	report("dt: "+dt+"   idx: "+idx);
     }
     else {
 	report("Cannot find estimate of t:");
 	idx = Math.floor(10*WV.getClockTime()) % 2000;
+	dt = Math.floor(10*WV.getClockTime()) % 100;
     }
+    if (rec.pathRec && rec.pathRec.youtubeId) {
+	// We have a youtube video and a time to seek to
+	var playOpts = {'youtubeId': rec.pathRec.youtubeId, 't': dt}
+	report("playing prec: "+JSON.stringify(playOpts));
+	WV.playVid(playOpts);
+	return;
+    }
+    // We have a set of still image panaramas and and index
     var url = "http://tours.paldeploy.com:8001/pannellum/viewPano.html";
     url += "?imageId="+rec.tourName+"/"+idx;
     WV.showPage({url: url});

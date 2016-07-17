@@ -310,7 +310,7 @@ WV.playVidInPopup = function(rec)
 WV.playVidInIFrame = function(rec)
 {
     var youtubeId = rec.youtubeId;
-    WVYT.playVideo(youtubeId);
+    WVYT.playVideo(youtubeId, rec);
     /*
     var url = "https://www.youtube.com/watch?v="+youtubeId;
     setTimeout(function() {

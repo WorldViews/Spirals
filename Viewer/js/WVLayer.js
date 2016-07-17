@@ -323,6 +323,14 @@ WV.requireModule = function(jsURL, done)
     var name = WV.getModuleName(jsURL);
     if (WV.modules[name]) {
 	report("already have module "+jsURL);
+	if (done) {
+	    try {
+		done();
+	    }
+	    catch (err) {
+		report("caught error: "+err);
+	    }
+	}
 	return;
     }
     if (!jsURL.startsWith("/"))

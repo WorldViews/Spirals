@@ -45,6 +45,10 @@ WV.addCoordinateSystem = function(csName, csys)
 WV.xyzToLla = function(xyz, coordSys)
 {
 //    report("xyzToGeoPos: xyz: "+xyz+"  "+coordSys);
+    if (coordSys.toLowerCase() == "geo") {
+	//return {lat: xyz[0], lon: xyz[1], alt: xyz[2]};
+	return xyz;
+    }
     var cs = WV.coordinateSystems[coordSys];
     lxyz = M33.transform(cs.modelToLocal, xyz);
     gxyz = V3.add(cs.origin_xyz, M33.transform(cs.localToGlobal, lxyz));
@@ -53,6 +57,9 @@ WV.xyzToLla = function(xyz, coordSys)
 
 WV.xyzToGeoPos = function(xyz, coordSys)
 {
+   if (coordSys.toLowerCase() == "geo") {
+	return {lat: xyz[0], lon: xyz[1], alt: xyz[2]};
+   }
    var lla = WV.xyzToLla(xyz, coordSys);
    return {lat: lla[0], lon: lla[1], alt: lla[2]};
 }
@@ -60,6 +67,10 @@ WV.xyzToGeoPos = function(xyz, coordSys)
 WV.geoPosToXyz = function(lla, coordSys)
 {
 //    report("geoPosToXyz: lla: "+lla+"  "+coordSys);
+   if (coordSys.toLowerCase() == "geo") {
+       //return lla;
+       return [lla.lat, lla.lon, lla.alt];
+   }
     var cs = WV.coordinateSystems[coordSys];
     var gxyz = V3.latLonAltToCartesian(lla);
     var lxyz = M33.transform(cs.globalToLocal, V3.sub(gxyz, cs.origin_xyz));

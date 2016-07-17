@@ -63,6 +63,19 @@
           "xurl": "https://fxpal.com"
        },
        {
+          "id": "FXPALoutsideWalk1",
+          "type": "robotTrail",
+          "robotType": "wheelchair",
+          "description": "Walkaround by Enock.",
+	  "tourName": "porter_tour_3",
+	  "dataUrl": "data/paths/FXPAL_Outside_Walkaround_1.json",
+	  "youtubeId": "iw5W7PXW43Y",
+	  "youtubeUrl": "https://youtu.be/iw5W7PXW43Y",
+	  "coordSys": "GEO",
+	  "height": 0.3,
+          "xurl": "https://fxpal.com"
+       },
+       {
           "id": "7",
 	  "type": "model",
 	  "name": "PORTER_MAP",
