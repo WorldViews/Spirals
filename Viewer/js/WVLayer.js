@@ -190,6 +190,8 @@ WV.handleVideoRecs = function(data, layerName)
         var rec = recs[i];
 	rec.layerName = layerName;
         layer.numObjs++;
+	if (rec.type == "youtube" && rec.id)
+	    rec.youtubeId = rec.id;
 	if (!rec.youtubeId) {
             report("skipping recs with no youtube video");
             continue;

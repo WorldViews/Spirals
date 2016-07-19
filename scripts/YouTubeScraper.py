@@ -4,9 +4,6 @@
 import codecs
 import sys, time, json, traceback
 
-UTF8Writer = codecs.getwriter('utf8')
-sys.stdout = UTF8Writer(sys.stdout)
-
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 #from oauth2client.tools import argparser
@@ -25,7 +22,11 @@ YOUTUBE_API_VERSION = "v3"
 
 
 class YouTubeScraper:
-   def __init__(self):
+   def __init__(self, useUTF8=True):
+      if useUTF8:
+         UTF8Writer = codecs.getwriter('utf8')
+         sys.stdout = UTF8Writer(sys.stdout)
+      self.query = ""
       self.recs = {}
       self.VIDNUM = 0
       self.youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
@@ -178,17 +179,26 @@ class YouTubeScraper:
       items = video_response.get("items", [])
       print "Got %d items" % len(items)
       for video_result in items:
+         """
          if "recordingDetails" not in video_result:
             print "video_result missing recordingDetails for id", video_result["id"]
             continue
-         if 1:
+         if "location" not in video_result['recordingDetails']:
+            print "no location in recording details for id", video_result["id"]
+            continue
+         if 0:
             print json.dumps(video_result, indent=4)
             print
-         self.VIDNUM += 1
+         """
          #print video_result
-         lat = video_result["recordingDetails"]["location"]["latitude"]
-         lon = video_result["recordingDetails"]["location"]["longitude"]
-         title = video_result["snippet"]["title"]
+         try:
+            lat = video_result["recordingDetails"]["location"]["latitude"]
+            lon = video_result["recordingDetails"]["location"]["longitude"]
+            title = video_result["snippet"]["title"]
+         except:
+            print "Cannot get location data from record for", video_result["id"]
+            continue
+         self.VIDNUM += 1
          id = video_result["id"]
          rec = {'youtubeId': id,
                 'id': "%d" % self.VIDNUM,
@@ -222,6 +232,22 @@ def fetch(name, query=None, loc="global", dimension="any", username=None):
    ys.fetch(name, query, loc, dimension, username)
 #   ys.fetch(name, query, loc, dimension)
 
+def getMetaData(id=None, opath=None):
+    ys = YouTubeScraper()
+    ys.processIds(id)
+    print ys.recs
+    if opath:
+       ys.saveRecs(opath)
+
+def testGetMetaData():
+   print "-----------------------------------"
+   getMetaData("JYk0qa8D4JY")
+   print "-----------------------------------"
+   getMetaData("cFtySuUNCcQ")
+   print "-----------------------------------"
+   ids = "JYk0qa8D4JY,cFtySuUNCcQ"
+   getMetaData(ids, "testMetaData.json")
+   
 def saveEnocksVideoLayer():
    ys = YouTubeScraper()
    ys.getChannelVideosForUser("enockglidden")
@@ -246,8 +272,8 @@ if __name__ == "__main__":
 #    fetch("test", username="enockglidden", loc=["36.98,-122.00"])
 #    fetch("test", query="Wilder Ranch State Park", loc=["36.98418,-122.09912"])
 #   testChannels()
-   saveEnocksVideoLayer()
-
+#   saveEnocksVideoLayer()
+   testGetMetaData()
 
 
 

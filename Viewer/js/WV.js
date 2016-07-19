@@ -322,6 +322,10 @@ WV.playVidInIFrame = function(rec)
 WV.playVid = function(rec)
 {
     setTimeout(function() {
+	if (!rec.youtubeId) {
+	   WV.showPage(rec);
+	   return;
+	}
 	if (WV.playVideoInIframe)
 	    WV.playVidInIFrame(rec);
 	else

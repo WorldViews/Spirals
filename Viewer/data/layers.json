@@ -2,13 +2,25 @@
     "layers": [
        {
           "name": "drones",
-          "description": "Drone videos",
-	  "maxNum": 501,
+          "description": "Drone videos (Travel By Drone)",
+	  "maxNum": 3000,
 	  "visible": false,
-	  "scale": 0.12,
-	  "iconUrl": "images/orangeDrone.png",
+	  "scale": 0.25,
+	  "XXXiconUrl": "images/orangeDrone.png",
+	  "iconUrl": "images/tbd_drone_icon.png",
 	  "mediaType": "youtube",
 	  "dataFile": "data/tbd_data.json"
+       },
+       {
+          "name": "drones_twd",
+          "description": "Drone videos (Travel with Drone)",
+	  "maxNum": 3000,
+	  "visible": false,
+	  "scale": 0.09,
+	  "xxxiconUrl": "images/orangeDrone.png",
+	  "iconUrl": "images/twd_logo.png",
+	  "mediaType": "youtube",
+	  "dataFile": "data/twd_data.json"
        },
        {
           "name": "climbing",
