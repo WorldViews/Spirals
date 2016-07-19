@@ -167,7 +167,7 @@ WV.Robots.handleTrailData = function(layer, rec, data)
 	points.push(Cesium.Cartesian3.fromDegrees(lla[1], lla[0], h));
     }
     var color = Cesium.Color.RED;
-    if (rec.youtubeUrl)
+    if (rec.youtubeId)
 	color = Cesium.Color.BLUE;
     var material = new Cesium.PolylineGlowMaterialProperty({
 	    color : color,
@@ -253,7 +253,12 @@ WV.Robots.handleClick = function(rec, xy, xyz)
     }
     if (rec.pathRec && rec.pathRec.youtubeId) {
 	// We have a youtube video and a time to seek to
-	var playOpts = {'youtubeId': rec.pathRec.youtubeId, 't': dt}
+	var t = dt;
+	if (rec.pathRec.youtubeDeltaT) {
+	    report("**** youtubeDeltaT: "+rec.pathRec.youtubeDeltaT);
+	    t += rec.pathRec.youtubeDeltaT;
+        }
+	var playOpts = {'youtubeId': rec.pathRec.youtubeId, 't': t}
 	report("playing prec: "+JSON.stringify(playOpts));
 	WV.playVid(playOpts);
 	return;
