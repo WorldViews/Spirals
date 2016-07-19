@@ -10,6 +10,14 @@
 	  "heading": 32.0
        },
        {
+          "type": "CoordinateSystem",
+	  "coordSys": "PAL2",
+          "lat":  37.40587,
+	  "lon": -122.15082,
+	  "alt": 41.0,
+	  "heading": 32.0
+       },
+       {
          "type": "robot",
          "robotType": "beam",
          "description": "FXPAL Beam 1",
@@ -58,7 +66,7 @@
           "description": "PanoBot tour inside PAL.",
 	  "tourName": "porter_tour_3",
 	  "dataUrl": "data/porter_tour_3.json",
-	  "coordSys": "PAL",
+	  "coordSys": "PAL2",
 	  "height": 0.3,
           "xurl": "https://fxpal.com"
        },
@@ -78,16 +86,17 @@
        },
        {
           "id": "7",
-	  "type": "xmodel",
+	  "type": "model",
 	  "name": "PORTER_MAP",
 	  "modelUrl": "../static/models/PorterPAL.glb",
-          "lat":  37.40581,
-	  "lon": -122.15080,
-	  "scale": 53,
+          "lat":  37.40587,
+	  "lon": -122.15082,
+	  "xscale": 53,
+	  "scale": 48,
 	  "height": 0.2,
 	  "heading": 33.2,
-	  "coordSys": "PAL",
-	  "flyTo": 3
+	  "coordSys": "PAL2",
+	  "flyTo": 1.4
        },
        {
           "id": "9",
