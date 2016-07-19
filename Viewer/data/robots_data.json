@@ -70,14 +70,15 @@
 	  "tourName": "porter_tour_3",
 	  "dataUrl": "data/paths/FXPAL_Outside_Walkaround_1.json",
 	  "youtubeId": "iw5W7PXW43Y",
-	  "youtubeUrl": "https://youtu.be/iw5W7PXW43Y",
+	  "youtubeDeltaT": -35,
+	  "XyoutubeUrl": "https://youtu.be/iw5W7PXW43Y",
 	  "coordSys": "GEO",
 	  "height": 0.3,
           "xurl": "https://fxpal.com"
        },
        {
           "id": "7",
-	  "type": "model",
+	  "type": "xmodel",
 	  "name": "PORTER_MAP",
 	  "modelUrl": "../static/models/PorterPAL.glb",
           "lat":  37.40581,
