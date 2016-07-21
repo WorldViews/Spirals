@@ -221,12 +221,7 @@
           "description": "Per Capita GDP",
 	  "visible": false
        },
-       {
-	  "mediaType": "html",
-	  "dataFile": "data/matt_harding_dancing_data.json",
-          "name": "Dance Around the World",
-          "description": "Dance Around the World"
-       },
+       C
        {
 	  "mediaType": "spirals",
 	  "require": "WVSpirals.js",
@@ -245,13 +240,14 @@
 	  "dataFile": "data/gardens_data.json"
        },
 	   {
-          "name": "enockglidden",
-          "description": "Enock Gliddens Channel Videos",
+          "name": "localwiki",
+          "description": "LocalWiki Entries",
 	  "maxNum": 8000,
 	  "visible": false,
-	  "iconUrl": "images/enock.png",
-	  "mediaType": "youtube",
-	  "dataFile": "data/enockglidden_data.json"
+	  "iconUrl": "images/LocalWiki_Logo.png",
+	  "mediaType": "html",
+	  "dataFile": "data/localWikiRegions_data.json"
        }
+	   
     ]
 }
