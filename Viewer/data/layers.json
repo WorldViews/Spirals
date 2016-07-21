@@ -242,12 +242,11 @@
 	   {
           "name": "localwiki",
           "description": "LocalWiki Entries",
-	  "maxNum": 8000,
-	  "visible": false,
 	  "iconUrl": "images/LocalWiki_Logo.png",
 	  "mediaType": "html",
-	  "dataFile": "data/localWikiRegions_data.json"
-       }
-	   
+	  "scale": 0.1,
+	  "dataFile": "data/localWikiRegions_data.json",
+	  "visible": false
+	   }
     ]
 }
