@@ -2,6 +2,7 @@ import slumber
 import json
 
 api = slumber.API("https://localwiki.org/api/v4/maps/")
+
 class mapPoints (object):
 
 	points = False

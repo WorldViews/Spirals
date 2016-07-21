@@ -1,3 +1,4 @@
+
 import slumber
 
 api = slumber.API("https://localwiki.org/api/v4/")
