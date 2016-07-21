@@ -1,0 +1,201 @@
+{
+    "records": [
+        {
+            "lat": 35.08617733769254, 
+            "url": "https://localwiki.org/api/v4/regions/1/", 
+            "lon": -92.41796544069206, 
+            "id": "1", 
+            "title": "Conway"
+        }, 
+        {
+            "lat": 37.75888818356761, 
+            "url": "https://localwiki.org/api/v4/regions/2/", 
+            "lon": -122.44233990662737, 
+            "id": "2", 
+            "title": "San Francisco"
+        }, 
+        {
+            "lat": 37.532086423565794, 
+            "url": "https://localwiki.org/api/v4/regions/4/", 
+            "lon": -77.4405428279099, 
+            "id": "3", 
+            "title": "Richmond, VA"
+        }, 
+        {
+            "lat": 43.607329836867095, 
+            "url": "https://localwiki.org/api/v4/regions/5/", 
+            "lon": -116.23767062876337, 
+            "id": "4", 
+            "title": "Boise"
+        }, 
+        {
+            "lat": 39.741639671271294, 
+            "url": "https://localwiki.org/api/v4/regions/6/", 
+            "lon": -121.82314903421724, 
+            "id": "5", 
+            "title": "Chico"
+        }, 
+        {
+            "lat": -33.873222687789486, 
+            "url": "https://localwiki.org/api/v4/regions/7/", 
+            "lon": 151.20539957235837, 
+            "id": "6", 
+            "title": "Sydney"
+        }, 
+        {
+            "lat": 37.95365018522519, 
+            "url": "https://localwiki.org/api/v4/regions/8/", 
+            "lon": -122.34878407755177, 
+            "id": "7", 
+            "title": "Richmond, CA"
+        }, 
+        {
+            "lat": 47.26532850115299, 
+            "url": "https://localwiki.org/api/v4/regions/9/", 
+            "lon": -122.45969961891848, 
+            "id": "8", 
+            "title": "Tacoma"
+        }, 
+        {
+            "lat": 33.902341646474035, 
+            "url": "https://localwiki.org/api/v4/regions/11/", 
+            "lon": -83.40946444750722, 
+            "id": "9", 
+            "title": "Athens"
+        }, 
+        {
+            "lat": 43.583656395778405, 
+            "url": "https://localwiki.org/api/v4/regions/13/", 
+            "lon": -79.6641569353369, 
+            "id": "10", 
+            "title": "Mississauga"
+        }, 
+        {
+            "lat": 41.81827241924469, 
+            "url": "https://localwiki.org/api/v4/regions/14/", 
+            "lon": -73.88970560809778, 
+            "id": "11", 
+            "title": "Hudson Valley"
+        }, 
+        {
+            "lat": 36.09741908320047, 
+            "url": "https://localwiki.org/api/v4/regions/15/", 
+            "lon": -94.17023042111947, 
+            "id": "12", 
+            "title": "Fayetteville, Arkansas"
+        }, 
+        {
+            "lat": 38.55941410095444, 
+            "url": "https://localwiki.org/api/v4/regions/17/", 
+            "lon": -121.54930906930217, 
+            "id": "13", 
+            "title": "West Sacramento"
+        }, 
+        {
+            "lat": 39.14144153938209, 
+            "url": "https://localwiki.org/api/v4/regions/18/", 
+            "lon": -121.64451511158374, 
+            "id": "14", 
+            "title": "Yuba-Sutter"
+        }, 
+        {
+            "lat": 42.36181007638955, 
+            "url": "https://localwiki.org/api/v4/regions/19/", 
+            "lon": -71.05486024857353, 
+            "id": "15", 
+            "title": "Boston"
+        }, 
+        {
+            "lat": 37.86281772849584, 
+            "url": "https://localwiki.org/api/v4/regions/21/", 
+            "lon": -122.27421426412693, 
+            "id": "16", 
+            "title": "Berkeley"
+        }, 
+        {
+            "lat": -42.040570905543774, 
+            "url": "https://localwiki.org/api/v4/regions/22/", 
+            "lon": 146.65247667114483, 
+            "id": "17", 
+            "title": "Tasmania"
+        }, 
+        {
+            "lat": -34.97882278750366, 
+            "url": "https://localwiki.org/api/v4/regions/27/", 
+            "lon": 138.87384507143085, 
+            "id": "18", 
+            "title": "Adelaide Hills"
+        }, 
+        {
+            "lat": 38.972252678680746, 
+            "url": "https://localwiki.org/api/v4/regions/733/", 
+            "lon": -80.23649597167609, 
+            "id": "19", 
+            "title": "Upshur County WV"
+        }, 
+        {
+            "lat": -41.28366281849466, 
+            "url": "https://localwiki.org/api/v4/regions/28/", 
+            "lon": 174.73079539131055, 
+            "id": "20", 
+            "title": "Wellington"
+        }, 
+        {
+            "lat": 33.752492588441655, 
+            "url": "https://localwiki.org/api/v4/regions/29/", 
+            "lon": -84.38841957844916, 
+            "id": "21", 
+            "title": "Atlanta"
+        }, 
+        {
+            "lat": 44.281445177850024, 
+            "url": "https://localwiki.org/api/v4/regions/31/", 
+            "lon": -78.31583821497094, 
+            "id": "22", 
+            "title": "Peterborough, Ontario"
+        }, 
+        {
+            "lat": 52.75674295685333, 
+            "url": "https://localwiki.org/api/v4/regions/32/", 
+            "lon": 0.404961790016051, 
+            "id": "23", 
+            "title": "King's Lynn"
+        }, 
+        {
+            "lat": 26.124458890615397, 
+            "url": "https://localwiki.org/api/v4/regions/34/", 
+            "lon": -80.15001258612477, 
+            "id": "24", 
+            "title": "Fort Lauderdale"
+        }, 
+        {
+            "lat": 37.772179009203974, 
+            "url": "https://localwiki.org/api/v4/regions/38/", 
+            "lon": -122.28204295065919, 
+            "id": "25", 
+            "title": "Alameda"
+        }, 
+        {
+            "lat": 37.31620344040403, 
+            "url": "https://localwiki.org/api/v4/regions/39/", 
+            "lon": -121.86497930155844, 
+            "id": "26", 
+            "title": "San Jose, California"
+        }, 
+        {
+            "lat": 44.028212296736264, 
+            "url": "https://localwiki.org/api/v4/regions/41/", 
+            "lon": -123.12903997422309, 
+            "id": "27", 
+            "title": "Eugene"
+        }, 
+        {
+            "lat": 44.5424670225368, 
+            "url": "https://localwiki.org/api/v4/regions/42/", 
+            "lon": -123.3657890523896, 
+            "id": "28", 
+            "title": "Philomath, Oregon"
+        }
+    ], 
+    "name": "LocalWiki Regions"
+}
