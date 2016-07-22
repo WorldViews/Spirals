@@ -221,7 +221,6 @@
           "description": "Per Capita GDP",
 	  "visible": false
        },
-       C
        {
 	  "mediaType": "spirals",
 	  "require": "WVSpirals.js",
@@ -230,7 +229,7 @@
           "description": "Spirals Art Play",
 	  "visible": false
        },
-	    {
+       {
           "name": "gardens",
           "description": "Garden Videos",
 	  "maxNum": 8000,
@@ -239,7 +238,7 @@
 	  "mediaType": "youtube",
 	  "dataFile": "data/gardens_data.json"
        },
-	   {
+       {
           "name": "localwiki",
           "description": "LocalWiki Entries",
 	  "iconUrl": "images/LocalWiki_Logo.png",
@@ -247,6 +246,6 @@
 	  "scale": 0.1,
 	  "dataFile": "data/localWikiRegions_data.json",
 	  "visible": false
-	   }
+       }
     ]
 }
