@@ -85,6 +85,18 @@
           "xurl": "https://fxpal.com"
        },
        {
+          "id": "PresidioWalk1",
+          "type": "robotTrail",
+          "robotType": "wheelchair",
+          "description": "Walkaround Presidio by Enock.",
+	  "tourName": "presidio_tour_1",
+	  "dataUrl": "data/paths/Golden_Gate_Presidio.json",
+	  "youtubeId": "Xg6Op_UEXbk",
+	  "youtubeDeltaT": -35,
+	  "coordSys": "GEO",
+	  "height": 0.3
+       },
+       {
           "id": "7",
 	  "type": "model",
 	  "name": "PORTER_MAP",
