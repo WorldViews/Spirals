@@ -3,7 +3,7 @@ import json
 import requests
 # def fetchPlaces():
     # id = 0
-    # url = " https://en.wikipedia.org/w/api.php"
+    # url = "https://en.wikipedia.org/wiki/Geographic_coordinate_system"
     # uos = urllib2.urlopen(url)
     # buf = uos.read()
     # obj = json.loads(buf)
@@ -31,7 +31,7 @@ import requests
 	# print
 # wvrec = {'id': "%d" % id,
 		 # 'lat': coords[1],
-		 # 'lon': coords[0],
+		 # 'lon': coords[0], should my_atts from below go here?
 		 # 'title': name,
 		 # 'url': url}
 # wvrecs.append(wvrec)
@@ -42,13 +42,25 @@ import requests
 # layer["records"] = wvrecs
 # print layer
 
-
+# I am unsure how to go from what's below to get it to work like what is above.  Also I am unable to put in multiple search points so I am not sure how I might get more pages. 
+#When I change my_atts['list'] = 'geosearch'  to my_atts['list'] = 'records' the script sends back this:
+# {
+    # "batchcomplete": "", 
+    # "warnings": {
+        # "query": {
+            # "*": "Unrecognized value for parameter 'list': records"
+        # }, 
+        # "main": {
+            # "*": "Unrecognized parameters: 'gscoord', 'gslimit', 'gsradius', 'gsprimary'"
+        # }
+    # }
+# }
 
 baseurl = 'http://en.wikipedia.org/w/api.php'
 my_atts = {}
 my_atts['action'] = 'query'  # action=query
 my_atts['list'] = 'geosearch'     # prop=info
-my_atts['gscoord'] = '37.4061498|-122.1508337' 
+my_atts['gscoord'] = '37.4061498|-122.1508337'
 my_atts['gsradius'] = '10000' 
 my_atts['gsprimary'] = 'primary' 
 my_atts['gslimit'] = '500' 
