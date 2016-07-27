@@ -47,7 +47,7 @@ import requests
 baseurl = 'http://en.wikipedia.org/w/api.php'
 my_atts = {}
 my_atts['action'] = 'query'  # action=query
-my_atts['list'] = 'records'     # prop=info
+my_atts['list'] = 'geosearch'     # prop=info
 my_atts['gscoord'] = '37.4061498|-122.1508337' 
 my_atts['gsradius'] = '10000' 
 my_atts['gsprimary'] = 'primary' 
