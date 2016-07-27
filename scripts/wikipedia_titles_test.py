@@ -22,7 +22,7 @@ import requests
 	    # continue
 	# url = res["url"]
 	# try:
-	    # coords = res["conditions"]["nodes"]["coordinates"]
+	    # coords = res["conditions"]["nodes"]["coordinates"] I am sure I need to change this line but not sure to what
 	# except:
             # print "Unable to get coordinates"
 	    # continue
