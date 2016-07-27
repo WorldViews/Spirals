@@ -1,0 +1,11 @@
+{
+    "batchcomplete": "", 
+    "warnings": {
+        "query": {
+            "*": "Unrecognized value for parameter 'list': records"
+        }, 
+        "main": {
+            "*": "Unrecognized parameters: 'gscoord', 'gslimit', 'gsradius', 'gsprimary'"
+        }
+    }
+}
