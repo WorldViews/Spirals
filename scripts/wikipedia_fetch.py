@@ -70,9 +70,9 @@ def getStuff():
 
     resp = requests.get(baseurl, params = my_atts)
     data = resp.json()
-    v = data["query"]
-    lst = data["query"]["geosearch"]
-    results = []
+	v = data["query"]
+	lst = data["query"]["geosearch"]
+	results = []
     for entry in lst:
         t = entry["title"]
         lat = entry["lat"]
