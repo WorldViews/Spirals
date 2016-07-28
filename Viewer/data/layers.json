@@ -246,6 +246,17 @@
 	  "scale": 0.1,
 	  "dataFile": "data/localWikiRegions_data.json",
 	  "visible": false
+       },
+	   {
+          "name": "beyondthefence",
+          "description": "Wikipedia Entries",
+	  "iconUrl": "images/Wikipedia.png",
+	  "height": 500000,
+	  "scale": 0.15,
+	  "showTethers": true,
+	  "mediaType": "html",
+	  "dataFile": "data/wikipedia_data.json",
+	  "visible": false
        }
     ]
 }
