@@ -97,6 +97,18 @@
 	  "height": 0.3
        },
        {
+          "id": "VasonaWalk1",
+          "type": "robotTrail",
+          "robotType": "wheelchair",
+          "description": "Walkaround Vasona by Mark.",
+	  "tourName": "vasona_1",
+	  "dataUrl": "data/paths/Mark_Vasona.json",
+	  "youtubeId": "AoCFLyan_uI",
+	  "youtubeDeltaT": -35,
+	  "coordSys": "GEO",
+	  "height": 0.3
+       },
+       {
           "id": "7",
 	  "type": "model",
 	  "name": "PORTER_MAP",

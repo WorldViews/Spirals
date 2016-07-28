@@ -52,6 +52,9 @@ def test():
     opath = "../Viewer/data/paths/FXPAL_Outside_Walkaround_1.json"
     path = "\\\\palnas2\\vol1\\panobot\\videos\\Enock\\GPX files\\Golden_Gate_Presidio.gpx"
     opath = "../Viewer/data/paths/Golden_Gate_Presidio.json"
+
+    path = "\\\\palnas2\\vol1\\panobot\\videos\\Enock\\Mark Hehir Vasona Lake County Park\\july_23_1102am.gpx"
+    opath = "../Viewer/data/paths/Mark_Vasona.json"
     obj = genIndex(path, opath)
     #print obj
 
