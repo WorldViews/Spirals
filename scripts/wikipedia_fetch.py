@@ -55,20 +55,51 @@ When I change my_atts['list'] = 'geosearch'  to my_atts['list'] = 'records' the 
              "*": "Unrecognized parameters: 'gscoord', 'gslimit', 'gsradius', 'gsprimary'"
          }
     }
- }
+o }
 """
-baseurl = 'http://en.wikipedia.org/w/api.php'
-my_atts = {}
-my_atts['action'] = 'query'  # action=query
-my_atts['list'] = 'geosearch'     # prop=info
-my_atts['gscoord'] = '37.4061498|-122.1508337'
-my_atts['gsradius'] = '10000' 
-my_atts['gsprimary'] = 'primary' 
-my_atts['gslimit'] = '500' 
-my_atts['format'] = 'json'   # format=json
+def getStuff():
+    baseurl = 'http://en.wikipedia.org/w/api.php'
+    my_atts = {}
+    my_atts['action'] = 'query'  # action=query
+    my_atts['list'] = 'geosearch'     # prop=info
+    my_atts['gscoord'] = '37.4061498|-122.1508337'
+    my_atts['gsradius'] = '10000' 
+    my_atts['gsprimary'] = 'primary' 
+    my_atts['gslimit'] = '500' 
+    my_atts['format'] = 'json'   # format=json
 
-resp = requests.get(baseurl, params = my_atts)
-data = resp.json()
-json.dump(data, file("wikipedia_test_data.json", "w"), indent=4)
+    resp = requests.get(baseurl, params = my_atts)
+    data = resp.json()
+    v = data["query"]
+    lst = data["query"]["geosearch"]
+    results = []
+    for entry in lst:
+        t = entry["title"]
+        lat = entry["lat"]
+        lon = entry["lon"]
+        url = "https://en.wikipedia.org/wiki/" + t
+        url = url.replace(" ", "_")
+        d = {}
+        d["url"] = url
+        d["lat"] = lat
+        d["lon"] = lon
+        d["title"] = t
+        results.append(d)
+        try:
+            print d
+        except:
+            continue
+    print
+    #print results
+    res = {}
+    res["records"] = results
+    res["name"] = "WikiLocation"
+    res["numRecords"] = len(results)
+    print
+    print res
+    json.dump(res, file("wikipedia_data.json", "w"), indent=4)
+
+
+getStuff()
 
 
