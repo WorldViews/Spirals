@@ -58,6 +58,7 @@ When I change my_atts['list'] = 'geosearch'  to my_atts['list'] = 'records' the 
 o }
 """
 def getStuff():
+    id = 0
     baseurl = 'http://en.wikipedia.org/w/api.php'
     my_atts = {}
     my_atts['action'] = 'query'  # action=query
@@ -70,10 +71,11 @@ def getStuff():
 
     resp = requests.get(baseurl, params = my_atts)
     data = resp.json()
-	v = data["query"]
-	lst = data["query"]["geosearch"]
-	results = []
+    v = data["query"]
+    lst = data["query"]["geosearch"]
+    results = []
     for entry in lst:
+        id += 1
         t = entry["title"]
         lat = entry["lat"]
         lon = entry["lon"]
@@ -84,6 +86,7 @@ def getStuff():
         d["lat"] = lat
         d["lon"] = lon
         d["title"] = t
+        d["id"] = id
         results.append(d)
         try:
             print d
