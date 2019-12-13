@@ -17,6 +17,6 @@ python-socketio==1.4.2
 rethinkdb==2.3.0.post5
 six==1.10.0
 SQLAlchemy==1.0.14
-Werkzeug==0.11.10
+Werkzeug==0.15.3
 wheel==0.24.0
 WTForms==2.1
